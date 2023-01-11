@@ -12,7 +12,6 @@ def main():
 
     with st.sidebar:
         category = st.selectbox('choose category', options=GAME_CATEGORIES)
-        st.button('선택')
         
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -31,7 +30,21 @@ def main():
         pass
     with col2:
         if st.session_state.game_start:
-            #progress bar
+            
+            # progress bar
+            
+            # get image
+            
+            response = get_image(category)
+            image = response["image"]
+            label = response["label"]
+            origin = response["origin_image"]
+            st.markdown(
+                f'<img src="data:image/gif;base64,{image}" alt="gif">',
+                unsafe_allow_html=True,
+            )
+            
+            
             st.button("Fin", on_click=reset_game)
     with col3:
         pass
@@ -49,10 +62,3 @@ if __name__ == '__main__':
 
 
 
-# if game_start:
-#     image_list, ans_list = [], []
-#     # get_image()
-#     st.markdown(
-#         f'<img src="data:image/gif;base64,{image_list[0]}" alt="gif">',
-#         unsafe_allow_html=True,
-#     )
