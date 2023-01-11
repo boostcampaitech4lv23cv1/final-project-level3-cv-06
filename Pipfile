@@ -8,6 +8,9 @@ fastapi = {extras = ["all"], version = "*"}
 streamlit = "*"
 watchdog = "*"
 opencv-python = "*"
+torch = "*"
+scikit-learn = "*"
+torchvision = "*"
 
 [dev-packages]
 
