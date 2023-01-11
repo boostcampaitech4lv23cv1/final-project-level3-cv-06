@@ -25,6 +25,10 @@ def predict(category):
     selected = random.sample(path_list, 1)[0]
     input_path = os.path.join(input_path, selected)
 
+    origin_image = cv2.imread(input_path)
+    origin_image = cv2.cvtColor(origin_image, cv2.COLOR_BGR2RGB)
+    origin_image = origin_image.tolist()
+
     label = selected.split("_")[0]
     start = time.time()
     pred = main(
@@ -56,12 +60,12 @@ def predict(category):
     buffer.seek(0)
     buffer = base64.b64encode(buffer.read()).decode()
 
-    return buffer, label
+    return buffer, label, origin_image
 
 
 @app.post("/")  # , response_model=PredOut)
 async def get_image(info: str):
     # res, label = predict(info["category"])
-    res, label = predict(info)
-    response = {"image": res, "label": label}
+    res, label, origin_image = predict(info)
+    response = {"image": res, "label": label, "origin_image": origin_image}
     return response
