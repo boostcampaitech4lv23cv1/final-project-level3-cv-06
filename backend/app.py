@@ -69,3 +69,7 @@ async def get_image(info: str):
     res, label, origin_image = predict(info)
     response = {"image": res, "label": label, "origin_image": origin_image}
     return response
+
+@app.get('/')
+def test():
+    return {'messege': 'success'}
