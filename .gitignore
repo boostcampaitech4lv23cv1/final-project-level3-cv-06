@@ -222,3 +222,5 @@ backend/PaintTransformer/inference/input
 backend/output
 Pipfile
 Pipfile.lock
+
+crawling/pixabay/crawled_img
