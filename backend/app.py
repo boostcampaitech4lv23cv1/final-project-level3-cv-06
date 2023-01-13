@@ -13,9 +13,30 @@ import random
 import base64
 import io
 import time
+import uvicorn
+from pydantic import BaseModel, validator
+from starlette.middleware.cors import CORSMiddleware
 
 # Create a FastAPI instance
 app = FastAPI()
+
+
+class PredIn(BaseModel):
+    category: str
+
+
+origins = [
+    "http://localhost:8080/game",
+    "http://192.168.55.139:8080/game",
+    "http://192.168.55.139:8080",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def predict(category):
@@ -64,12 +85,13 @@ def predict(category):
 
 
 @app.post("/")  # , response_model=PredOut)
-async def get_image(info: str):
+async def get_image(info: PredIn):
     # res, label = predict(info["category"])
-    res, label, origin_image = predict(info)
+    res, label, origin_image = predict(info.category)
     response = {"image": res, "label": label, "origin_image": origin_image}
     return response
 
-@app.get('/')
+
+@app.get("/")
 def test():
-    return {'messege': 'success'}
+    return {"messege": "success"}
