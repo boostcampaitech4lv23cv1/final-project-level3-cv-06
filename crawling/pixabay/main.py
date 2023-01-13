@@ -4,7 +4,7 @@ import urllib.request
 from time import sleep
 
 import pandas as pd
-import requests as rq
+import yaml
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from tqdm import tqdm
@@ -127,6 +127,7 @@ def crawling(keyword: str, pages: int):
 
 
 if __name__ == "__main__":
-    keyword = "soccer"
-    pages = 1
-    crawling(keyword, pages)
+    with open("./keywords.yml", "r") as f:
+        words_pages = yaml.load(f, Loader=yaml.FullLoader)
+        for words_pages in words_pages:
+            crawling(keyword=words_pages["word"], pages=words_pages["pages"])

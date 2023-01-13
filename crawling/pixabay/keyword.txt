@@ -1,5 +1,0 @@
-soccer
-cat
-dog
-lion
-singer
