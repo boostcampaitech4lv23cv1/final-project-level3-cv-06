@@ -223,4 +223,6 @@ backend/output
 Pipfile
 Pipfile.lock
 
-crawling/pixabay/crawled_img
+airflow_/dags/crawled_img
+airflow_/dags/logs
+airflow_/logs/
