@@ -1,12 +1,15 @@
+import math
+import os
+
+import numpy as np
+import PaintTransformer.inference.morphology as morphology
+import PaintTransformer.inference.network as network
 import torch
 import torch.nn.functional as F
-import numpy as np
 from PIL import Image
-import PaintTransformer.inference.network as network
-import PaintTransformer.inference.morphology as morphology
-import os
-import math
-import numpy as np
+
+idx = 0
+
 
 idx = 0
 
@@ -28,6 +31,7 @@ def param2stroke(param, H, W, meta_brushes):
         W: output width.
         meta_brushes: a tensor with shape 2 x 3 x meta_brush_height x meta_brush_width.
          The first slice on the batch dimension denotes vertical brush and the second one denotes horizontal brush.
+
     Returns:
         foregrounds: a tensor with shape n_strokes x 3 x H x W, containing color information.
         alphas: a tensor with shape n_strokes x 3 x H x W,
@@ -109,6 +113,7 @@ def param2img_serial(
          on the border before saving, or there would be a black border.
         original_h: to indicate the original height for cropping when saving intermediate results.
         original_w: to indicate the original width for cropping when saving intermediate results.
+
     Returns:
         cur_canvas: a tensor with shape batch size x 3 x H x W, denoting painting results.
     """
@@ -212,10 +217,7 @@ def param2img_serial(
         return this_canvas
 
     global idx
-    if has_border:
-        factor = 2
-    else:
-        factor = 4
+    factor = 2 if has_border else 4
     if even_idx_y.shape[0] > 0 and even_idx_x.shape[0] > 0:
         for i in range(s):
             canvas = partial_render(
@@ -356,8 +358,7 @@ def param2img_serial(
                     original_h,
                     original_w,
                 )
-                frame_list.append(frame[0].cpu().numpy())
-                # save_img(frame[0], os.path.join(frame_dir, "%03d.jpg" % idx))
+                save_img(frame[0], os.path.join(frame_dir, "%03d.jpg" % idx))
 
     cur_canvas = cur_canvas[
         :,
@@ -383,6 +384,7 @@ def param2img_parallel(param, decision, meta_brushes, cur_canvas):
         The first slice on the batch dimension denotes vertical brush and the second one denotes horizontal brush.
         cur_canvas: a tensor with shape batch size x 3 x H x W,
          where H and W denote height and width of padded results of original images.
+
     Returns:
         cur_canvas: a tensor with shape batch size x 3 x H x W, denoting painting results.
     """
@@ -603,45 +605,22 @@ def crop(img, h, w):
 
 
 def main(
-    input_path,
-    model_path,
-    output_dir,
+    input_path: str,
+    model_path: str,
+    output_dir: str,
     need_animation=False,
     resize_h=None,
     resize_w=None,
     serial=False,
 ):
     frame_list = []
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-    input_name = os.path.basename(input_path)
-    output_path = os.path.join(output_dir, input_name)
-    frame_dir = None
-    if need_animation:
-        if not serial:
-            print(
-                "It must be under serial mode if animation results are required, so serial flag is set to True!"
-            )
-            serial = True
-        frame_dir = os.path.join(output_dir, input_name[: input_name.find(".")])
-        if not os.path.exists(frame_dir):
-            os.mkdir(frame_dir)
+    input_name, output_path = make_path(input_path, output_dir)
+    serial, frame_dir = make_frame_dir(output_dir, need_animation, serial, input_name)
     patch_size = 32
     stroke_num = 8
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net_g = network.Painter(5, stroke_num, 256, 8, 3, 3).to(device)
-    net_g.load_state_dict(torch.load(model_path))
-    net_g.eval()
-    for param in net_g.parameters():
-        param.requires_grad = False
-
-    brush_large_vertical = read_img(
-        "PaintTransformer/inference/brush/brush_large_vertical.png", "L"
-    ).to(device)
-    brush_large_horizontal = read_img(
-        "PaintTransformer/inference/brush/brush_large_horizontal.png", "L"
-    ).to(device)
-    meta_brushes = torch.cat([brush_large_vertical, brush_large_horizontal], dim=0)
+    model = prepare_infer_model(model_path, stroke_num, device)
+    meta_brushes = make_meta_brushes(device, mode="small")
 
     with torch.no_grad():
         original_img = read_img(input_path, "RGB", resize_h, resize_w).to(device)
@@ -652,35 +631,16 @@ def main(
             original_img, original_img_pad_size, original_img_pad_size
         )
         final_result = torch.zeros_like(original_img_pad).to(device)
-        for layer in range(0, K + 1):
+        for layer in range(K + 1):
             layer_size = patch_size * (2**layer)
-            img = F.interpolate(original_img_pad, (layer_size, layer_size))
-            result = F.interpolate(
-                final_result, (patch_size * (2**layer), patch_size * (2**layer))
-            )
-            img_patch = F.unfold(
-                img, (patch_size, patch_size), stride=(patch_size, patch_size)
-            )
-            result_patch = F.unfold(
-                result, (patch_size, patch_size), stride=(patch_size, patch_size)
+            img_patch, _ = make_img_patch(patch_size, original_img_pad, layer_size)
+            result_patch, _ = make_img_patch(
+                patch_size, final_result, patch_size * (2**layer)
             )
             # There are patch_num * patch_num patches in total
             patch_num = (layer_size - patch_size) // patch_size + 1
 
-            # img_patch, result_patch: b, 3 * output_size * output_size, h * w
-            img_patch = (
-                img_patch.permute(0, 2, 1)
-                .contiguous()
-                .view(-1, 3, patch_size, patch_size)
-                .contiguous()
-            )
-            result_patch = (
-                result_patch.permute(0, 2, 1)
-                .contiguous()
-                .view(-1, 3, patch_size, patch_size)
-                .contiguous()
-            )
-            shape_param, stroke_decision = net_g(img_patch, result_patch)
+            shape_param, stroke_decision = model(img_patch, result_patch)
             stroke_decision = network.SignWithSigmoidGrad.apply(stroke_decision)
 
             grid = (
@@ -733,64 +693,20 @@ def main(
                 )
 
         border_size = original_img_pad_size // (2 * patch_num)
-        img = F.interpolate(
-            original_img_pad, (patch_size * (2**layer), patch_size * (2**layer))
+        img_patch, img = make_img_patch(
+            patch_size, original_img_pad, patch_size * (2**layer), pad=True
         )
-        result = F.interpolate(
-            final_result, (patch_size * (2**layer), patch_size * (2**layer))
+        result_patch, _ = make_img_patch(
+            patch_size, final_result, patch_size * (2**layer), pad=True
         )
-        img = F.pad(
-            img,
-            [
-                patch_size // 2,
-                patch_size // 2,
-                patch_size // 2,
-                patch_size // 2,
-                0,
-                0,
-                0,
-                0,
-            ],
-        )
-        result = F.pad(
-            result,
-            [
-                patch_size // 2,
-                patch_size // 2,
-                patch_size // 2,
-                patch_size // 2,
-                0,
-                0,
-                0,
-                0,
-            ],
-        )
-        img_patch = F.unfold(
-            img, (patch_size, patch_size), stride=(patch_size, patch_size)
-        )
-        result_patch = F.unfold(
-            result, (patch_size, patch_size), stride=(patch_size, patch_size)
-        )
+
         final_result = F.pad(
             final_result,
             [border_size, border_size, border_size, border_size, 0, 0, 0, 0],
         )
         h = (img.shape[2] - patch_size) // patch_size + 1
         w = (img.shape[3] - patch_size) // patch_size + 1
-        # img_patch, result_patch: b, 3 * output_size * output_size, h * w
-        img_patch = (
-            img_patch.permute(0, 2, 1)
-            .contiguous()
-            .view(-1, 3, patch_size, patch_size)
-            .contiguous()
-        )
-        result_patch = (
-            result_patch.permute(0, 2, 1)
-            .contiguous()
-            .view(-1, 3, patch_size, patch_size)
-            .contiguous()
-        )
-        shape_param, stroke_decision = net_g(img_patch, result_patch)
+        shape_param, stroke_decision = model(img_patch, result_patch)
 
         grid = (
             shape_param[:, :, :2]
@@ -842,6 +758,81 @@ def main(
         # save_img(final_result[0], output_path)
         frame_list = np.array(frame_list)
         return frame_list
+
+
+def make_img_patch(patch_size, original_img_pad, layer_size, pad=False):
+    img = F.interpolate(original_img_pad, (layer_size, layer_size))
+    if pad:
+        img = F.pad(
+            img,
+            [
+                patch_size // 2,
+                patch_size // 2,
+                patch_size // 2,
+                patch_size // 2,
+                0,
+                0,
+                0,
+                0,
+            ],
+        )
+
+    img_patch = F.unfold(img, (patch_size, patch_size), stride=(patch_size, patch_size))
+    img_patch = (
+        img_patch.permute(0, 2, 1)
+        .contiguous()
+        .view(-1, 3, patch_size, patch_size)
+        .contiguous()
+    )
+
+    return img_patch, img
+
+
+def make_meta_brushes(device: torch, mode: str = "large"):
+    """make_meta_brushes
+
+
+    Args:
+        mode (str): brush mode (large, small)
+        device (_type_): torch device
+
+    Returns:
+        torch: meta_brushes
+    """
+    brush_L_vertical = read_img(f"PaintTransformer/inference/brush/brush_{mode}_vertical.png", "L")
+    brush_L_horizontal = read_img(f"PaintTransformer/inference/brush/brush_{mode}_horizontal.png", "L")
+    return torch.cat([brush_L_vertical, brush_L_horizontal], dim=0).to(device)
+
+
+def prepare_infer_model(model_path, stroke_num, device):
+    model = network.Painter(5, stroke_num, 256, 8, 3, 3).to(device)
+    model.load_state_dict(torch.load(model_path))
+    model.eval()
+    for param in model.parameters():
+        param.requires_grad = False
+    return model
+
+
+def make_frame_dir(output_dir, need_animation, serial, input_name):
+    frame_dir = None
+    if need_animation:
+        if not serial:
+            print(
+                "It must be under serial mode if animation results are required, so serial flag is set to True!"
+            )
+            serial = True
+        frame_dir = os.path.join(output_dir, input_name[: input_name.find(".")])
+        if not os.path.exists(frame_dir):
+            os.mkdir(frame_dir)
+    return serial, frame_dir
+
+
+def make_path(input_path, output_dir):
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    input_name = os.path.basename(input_path)
+    output_path = os.path.join(output_dir, input_name)
+    return input_name, output_path
 
 
 if __name__ == "__main__":
