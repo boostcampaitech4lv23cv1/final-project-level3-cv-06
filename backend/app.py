@@ -36,8 +36,7 @@ def predict(category):
         model_path="PaintTransformer/model.pth",
         output_dir="output/",
         need_animation=True,  # whether need intermediate results for animation.
-        resize_h=256,  # resize original input to this size. None means do not resize.
-        resize_w=256,  # resize original input to this size. None means do not resize.
+        resize_l=256,
         serial=True,
     )
     print(time.time() - start)
