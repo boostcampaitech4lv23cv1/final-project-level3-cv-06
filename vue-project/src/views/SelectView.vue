@@ -27,7 +27,7 @@
             </v-col>
         </v-row>
         <v-col cols=12 class="d-flex justify-center mt-16">
-            <v-btn color="primary" @click="startGame">Game start</v-btn>
+            <v-btn :disabled="categoryIsEmpty" color="primary" @click="startGame">Game start</v-btn>
         </v-col>    
 </v-container>
 
@@ -48,16 +48,21 @@ export default{
                 { text: 'Masterpieces', value: 'Masterpieces' },
             ],
             selectedCategory:'',
-            selectedMode: '1',
+            selectedMode: '',
             modeItems: [
                 { text: 'Paint Transformer', value: 'Paint Transformer' },
                 { text: 'Oil Transformer', value: 'Oil Transformer' },
             ],
         }
     },
+    computed: {
+    categoryIsEmpty() {
+      return this.selectedCategory === '' || this.selectedMode === '';
+    }
+  },
     methods: {
     startGame() {
-      this.$router.push({path:'/game', query:{'category':this.selectedCategory,'mode':this.selectedMode}})
+        this.$router.push({path:'/game', query:{category:this.selectedCategory,mode:this.selectedMode}})
     },
     changeMode(value) {
         this.selectedMode = value

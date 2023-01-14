@@ -4,8 +4,11 @@ import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 import router from './router'
 import mixins from './mixins'
+import myIcon from './myIcon'
+import store from "./store/store"
 
 loadFonts()
+
 
 // createApp(App).use(router)
 //   .use(vuetify)
@@ -14,6 +17,11 @@ loadFonts()
 
 const app = createApp(App)
 app.use(router)
-app.use(vuetify)
+app.use(store)
+app.use(vuetify, {
+    icons: {
+      'my-icon': myIcon
+    }
+    })
 app.mixin(mixins);
 app.mount('#app')

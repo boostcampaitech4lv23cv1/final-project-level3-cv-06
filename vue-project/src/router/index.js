@@ -3,6 +3,7 @@ import startview from '../views/StartView.vue'
 import selectview from '../views/SelectView.vue'
 import gameview from '../views/GameView.vue'
 import descriptionview from '../views/DescriptionView'
+import resultview from '../views/ResultView'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path:'/description',
     name:'description',
     component: descriptionview
+  },
+  {
+    path:'/result',
+    name:'result',
+    component: resultview
   }
 ]
 

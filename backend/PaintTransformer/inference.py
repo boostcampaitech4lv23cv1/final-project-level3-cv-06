@@ -2,8 +2,8 @@ import math
 import os
 
 import numpy as np
-import PaintTransformer.inference.morphology as morphology
-import PaintTransformer.inference.network as network
+import PaintTransformer.morphology as morphology
+import PaintTransformer.network as network
 import torch
 import torch.nn.functional as F
 from PIL import Image
@@ -799,8 +799,12 @@ def make_meta_brushes(device: torch, mode: str = "large"):
     Returns:
         torch: meta_brushes
     """
-    brush_L_vertical = read_img(f"PaintTransformer/inference/brush/brush_{mode}_vertical.png", "L")
-    brush_L_horizontal = read_img(f"PaintTransformer/inference/brush/brush_{mode}_horizontal.png", "L")
+    brush_L_vertical = read_img(
+        f"PaintTransformer/inference/brush/brush_{mode}_vertical.png", "L"
+    )
+    brush_L_horizontal = read_img(
+        f"PaintTransformer/inference/brush/brush_{mode}_horizontal.png", "L"
+    )
     return torch.cat([brush_L_vertical, brush_L_horizontal], dim=0).to(device)
 
 

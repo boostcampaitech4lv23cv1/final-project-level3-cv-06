@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi import File
 from fastapi import FastAPI
 from schemas import PredIn
-from PaintTransformer.inference.inference import main
+from PaintTransformer.inference import main
 import os
 import numpy as np
 import cv2
@@ -14,16 +14,12 @@ import base64
 import io
 import time
 import uvicorn
-from pydantic import BaseModel, validator
+from schemas import PredIn, GameIn
 from starlette.middleware.cors import CORSMiddleware
+import imageio
 
 # Create a FastAPI instance
 app = FastAPI()
-
-
-class PredIn(BaseModel):
-    category: str
-
 
 origins = [
     "http://localhost:8080/game",
@@ -95,3 +91,30 @@ async def get_image(info: PredIn):
 @app.get("/")
 def test():
     return {"messege": "success"}
+
+
+@app.post("/gamestart")
+async def img_return(info: GameIn):
+    img_path = os.listdir("img")
+    img_path = random.sample(img_path, 9)
+    gif_path = []
+    answer_list = []
+    for path in img_path:
+        answer_list.append(path.split(".")[0])
+        gif_path.append(path.split(".")[0] + ".gif")
+    img_list = []
+    gif_list = []
+    for img in img_path:
+        img = "img/" + img
+        tmp = cv2.imread(img)
+        # tmp = cv2.cvtColor(tmp, cv2.COLOR_BGR2RGB)
+        _, buffer = cv2.imencode(".jpg", tmp)
+        img_list.append(base64.b64encode(buffer))
+    for gif in gif_path:
+        gif = "gif/" + gif
+        with open(gif, "rb") as image_file:
+            gif_list.append(base64.b64encode(image_file.read()))
+
+    response = {"origin_img": img_list, "paint_img": gif_list, "answer": answer_list}
+    print(len(img_list))
+    return response
