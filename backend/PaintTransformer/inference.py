@@ -358,7 +358,8 @@ def param2img_serial(
                     original_h,
                     original_w,
                 )
-                save_img(frame[0], os.path.join(frame_dir, "%03d.jpg" % idx))
+                frame_list.append(frame[0].cpu().numpy())
+                # save_img(frame[0], os.path.join(frame_dir, "%03d.jpg" % idx))
 
     cur_canvas = cur_canvas[
         :,
