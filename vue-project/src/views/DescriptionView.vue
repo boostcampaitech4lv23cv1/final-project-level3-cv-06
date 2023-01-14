@@ -1,19 +1,7 @@
 <template>
-    <!-- <v-app class="hero">
-        <v-overlay v-model="overlay" contained class="align-center justify-center">
-            <v-container class="no-overlay-container">
-              123
-            </v-container>
-            <v-container class="overay-container">
-              123
-            </v-container>
-        </v-overlay>
-    </v-app> -->
-    <v-app class="hero">
-        <v-overlay v-model="overlay" class="justify-center">
-            <mainview></mainview>
-        </v-overlay>
-    </v-app>
+    <mainview :page="$route.query.page"/>
+    
+
 </template>
 <script>
     import mainview from '../components/ExampleView.vue'

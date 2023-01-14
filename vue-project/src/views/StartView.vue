@@ -17,34 +17,17 @@
         icon="mdi-file-document"
         color="white"
         style="position: absolute; left: 1200px; top: 85px "
-        @click="overlay = !overlay"
+        @click='movePage("/description",{page:1})'
       ></v-btn>
 
-    <v-overlay
-        v-model="overlay"
-        contained
-        class="align-center justify-center"
-      >
-        <v-contaner v-if="current_page==='page1'">
-            <v-btn @click="current_page='page2'">
-              page1
-            </v-btn>
-        </v-contaner>
-
-        <v-container v-if="current_page==='page2'">
-          <v-btn @click="overlay = !overlay; current_page='page1'">
-            page2
-          </v-btn>
-        </v-container>
-    </v-overlay>
 
     <v-container style="position: relative; top: 350px;">
-      <v-row class="d-flex justify-center align center mb-6">
-        <v-btn variant="flat" color="red" width="15%" @click='movePage("/game")'>
+      <v-row class="d-flex justify-center align-center mb-6">
+        <v-btn variant="flat" color="red" width="15%" @click='movePage("/select")'>
           Game Start
         </v-btn>
       </v-row>
-      <v-row class="d-flex justify-center align center">
+      <v-row class="d-flex justify-center aligncenter">
         <v-btn variant="flat" color="yellow" width="15%" class="text-white" @click='movePage("/transform")'>
           Paint My Image
         </v-btn>
@@ -65,8 +48,10 @@
           },
     methods: {
       movePage(route) {
-        this.$router.push({path:route})
-      },
+        this.$router.push({path:route,
+                            query:{'page':1}
+                          })
+        },
       soundChange(){
           if (this.sound_icon=='mdi-volume-high'){
             this.sound_icon='mdi-volume-off'
