@@ -621,27 +621,39 @@ def crop(img, h, w):
     return img
 
 
-def main(
+def init(stroke_num: int, model_path: str):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = prepare_infer_model(model_path, stroke_num, device)
+    meta_brushes = make_meta_brushes(device, mode="small")    
+    return model, meta_brushes, device
+
+def inference(
+    model,
+    device,
+    meta_brushes,
     input_path: str,
-    model_path: str,
     output_dir: str,
+    stroke_num: int,
+    patch_size: int,
+    K=None,
     need_animation=False,
     resize_l=None,
     serial=False,
 ):
-    frame_list = []
+    # patch_size = 32
+    # stroke_num = 8
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # model = prepare_infer_model(model_path, stroke_num, device)
+    # meta_brushes = make_meta_brushes(device, mode="small")
+
     input_name, output_path = make_path(input_path, output_dir)
     serial, frame_dir = make_frame_dir(output_dir, need_animation, serial, input_name)
-    patch_size = 32
-    stroke_num = 8
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = prepare_infer_model(model_path, stroke_num, device)
-    meta_brushes = make_meta_brushes(device, mode="small")
-
     with torch.no_grad():
+        frame_list = []
         original_img = read_img(input_path, "RGB", resize_l).to(device)
         original_h, original_w = original_img.shape[-2:]
-        K = max(math.ceil(math.log2(max(original_h, original_w) / patch_size)), 0)
+        if K==None:
+            K = max(math.ceil(math.log2(max(original_h, original_w) / patch_size)), 0)
         original_img_pad_size = patch_size * (2**K)
         original_img_pad = pad(
             original_img, original_img_pad_size, original_img_pad_size
@@ -869,12 +881,21 @@ if __name__ == "__main__":
     resize_l = args.resize_l
     K = args.K
 
-    main(
+    stroke_num = 8
+    patch_size = 32
+
+    model, meta_brushes, device = init(stroke_num, model_path="PaintTransformer/inference/model.pth")
+
+    inference(
+        model,
+        device,
+        meta_brushes,
         input_path=input_path,
-        model_path="PaintTransformer/inference/model.pth",
         output_dir=output_dir_root,
-        need_animation=True,  # whether need intermediate results for animation.
-        resize_l=resize_l,        # resize original input to this size. (max(w, h) = resize_l)
-        serial=True,
+        stroke_num=stroke_num,
+        patch_size=32,
         K=K,
-    )  # if need animation, serial must be True.
+        need_animation=True,        # whether need intermediate results for animation.
+        resize_l=resize_l,          # resize original input to this size. (max(w, h) = resize_l)
+        serial=True,                # if need animation, serial must be True.
+    )
