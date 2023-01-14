@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi import File
 from fastapi import FastAPI
 from schemas import PredIn
-from PaintTransformer.inference.inference import main
+from PaintTransformer.inference import main
 import os
 import numpy as np
 import cv2
@@ -33,7 +33,7 @@ def predict(category):
     start = time.time()
     pred = main(
         input_path=input_path,
-        model_path="PaintTransformer/inference/model.pth",
+        model_path="PaintTransformer/model.pth",
         output_dir="output/",
         need_animation=True,  # whether need intermediate results for animation.
         resize_h=256,  # resize original input to this size. None means do not resize.
