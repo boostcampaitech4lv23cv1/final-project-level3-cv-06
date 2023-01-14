@@ -15,7 +15,14 @@ if not client.bucket_exists(BUCKET_NAME):
     client.make_bucket(BUCKET_NAME)
 
 
-def upload_local_directory_to_minio(local_path, bucket_name, minio_path):
+def upload_local_directory_to_minio(local_path: str, bucket_name: str, minio_path: str):
+    """local_path 및 하위 directory, file들을 저장
+    Args:
+        local_path (str): bucket에 저장할 directory
+        bucket_name (str): bucket name
+        minio_path (str): minio path
+    Returns:
+    """
     assert os.path.isdir(local_path)
 
     for local_file in glob(local_path + '/**'):
