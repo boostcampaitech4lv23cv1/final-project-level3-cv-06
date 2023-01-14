@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi import File
 from fastapi import FastAPI
 from schemas import PredIn
-from PaintTransformer.inference.inference import main
+from PaintTransformer.inference import init, inference
 import os
 import numpy as np
 import cv2
@@ -17,8 +17,20 @@ import time
 # Create a FastAPI instance
 app = FastAPI()
 
+model_path="PaintTransformer/model.pth"
+
+resize_l = 256
+
+K = 4
+
+stroke_num = 8
+patch_size = 32
+
+model, meta_brushes, device = init(stroke_num, model_path="PaintTransformer/model.pth")
+
 
 def predict(category):
+
     input_path = os.path.join("input", category)
     path_list = os.listdir(input_path)
 
@@ -29,17 +41,25 @@ def predict(category):
     origin_image = cv2.cvtColor(origin_image, cv2.COLOR_BGR2RGB)
     origin_image = origin_image.tolist()
 
+    output_dir_root= "output/"
+
     label = selected.split("_")[0]
     start = time.time()
-    pred = main(
+
+    pred = inference(
+        model,
+        device,
+        meta_brushes,
         input_path=input_path,
-        model_path="PaintTransformer/inference/model.pth",
-        output_dir="output/",
-        need_animation=True,  # whether need intermediate results for animation.
-        resize_h=256,  # resize original input to this size. None means do not resize.
-        resize_w=256,  # resize original input to this size. None means do not resize.
-        serial=True,
+        output_dir=output_dir_root,
+        stroke_num=stroke_num,
+        patch_size=patch_size,
+        K=K,
+        need_animation=True,        # whether need intermediate results for animation.
+        resize_l=resize_l,          # resize original input to this size. (max(w, h) = resize_l)
+        serial=True,                # if need animation, serial must be True.
     )
+
     print(time.time() - start)
     buffer = io.BytesIO()
     pred = pred.transpose((0, 2, 3, 1))
@@ -65,7 +85,6 @@ def predict(category):
 
 @app.post("/")  # , response_model=PredOut)
 async def get_image(info: str):
-    # res, label = predict(info["category"])
     res, label, origin_image = predict(info)
     response = {"image": res, "label": label, "origin_image": origin_image}
     return response
