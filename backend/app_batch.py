@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi import File
 from fastapi import FastAPI
 from schemas import PredIn
-from PaintTransformer.inference import init, inference
+from PaintTransformer.inference_batch import init, inference
 import os
 import numpy as np
 import cv2
@@ -13,6 +13,8 @@ import random
 import base64
 import io
 import time
+
+from fastapi import UploadFile
 
 # Create a FastAPI instance
 app = FastAPI()
@@ -28,29 +30,28 @@ patch_size = 32
 
 model, meta_brushes, device = init(stroke_num, model_path="PaintTransformer/model.pth")
 
-def predict(category):
+def predict_batch(img):
 
-    input_path = os.path.join("input", category)
-    path_list = os.listdir(input_path)
+    # input_path = "input"
+    # path_list = os.listdir(input_path)
 
-    selected = random.sample(path_list, 1)[0]
-    input_path = os.path.join(input_path, selected)
+    # selected = random.sample(path_list, 1)[0]
+    # input_path = os.path.join(input_path, selected)
 
-    origin_image = cv2.imread(input_path)
-    origin_image = cv2.cvtColor(origin_image, cv2.COLOR_BGR2RGB)
-    origin_image = origin_image.tolist()
+    # origin_image = cv2.imread(input_path)
+    # origin_image = cv2.cvtColor(origin_image, cv2.COLOR_BGR2RGB)
+    # origin_image = origin_image.tolist()
 
-    output_dir_root= "output/"
+    # output_dir_root= "output/"
 
-    label = selected.split("_")[0]
+    # label = selected.split("_")[0]
     start = time.time()
 
     pred = inference(
         model,
         device,
         meta_brushes,
-        input_path=input_path,
-        output_dir=output_dir_root,
+        image=img,
         stroke_num=stroke_num,
         patch_size=patch_size,
         K=K,
@@ -79,11 +80,15 @@ def predict(category):
     buffer.seek(0)
     buffer = base64.b64encode(buffer.read()).decode()
 
-    return buffer, label, origin_image
+    return buffer
 
 
 @app.post("/")  # , response_model=PredOut)
-async def get_image(info: str):
-    res, label, origin_image = predict(info)
-    response = {"image": res, "label": label, "origin_image": origin_image}
+async def get_image(img_encoded):
+    img = Image.open(io.BytesIO(base64.b64decode(img_encoded)))
+    print(img.size)
+    print(type(img))
+    print(img)
+    res = predict_batch(img)
+    response = {"image": res}
     return response
