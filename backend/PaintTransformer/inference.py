@@ -12,9 +12,6 @@ from argparse import ArgumentParser
 idx = 0
 
 
-idx = 0
-
-
 def save_img(img, output_path):
     result = Image.fromarray(
         (img.data.cpu().numpy().transpose((1, 2, 0)) * 255).astype(np.uint8)
