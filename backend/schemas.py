@@ -14,3 +14,8 @@ class PredIn(BaseModel):
 
 # class PredOut(BaseModel):
 #     image: np.ndarray
+
+
+class GameIn(BaseModel):
+    category: str
+    mode: str
