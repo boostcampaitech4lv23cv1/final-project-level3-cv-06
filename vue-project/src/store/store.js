@@ -3,21 +3,25 @@ import { createStore } from "vuex";
 const store = createStore({
     state (){
         return{
-            origin_img:[],
-            paint_img:[],
+            originImg:[],
+            paintImg:[],
             answer:[],
+            result:[],
         }
     },
     mutations:{
-        get_origin(state,img){
-            state.origin_img=img
+        setOrigin(state,img){
+            state.originImg=img
         },
-        get_paint(state,gif){
-            state.paint_img=gif
+        setPaint(state,gif){
+            state.paintImg=gif
         },
-        get_answer(state,answer){
+        setAnswer(state,answer){
             state.answer=answer
-        }
+        },
+        setResult(state,result){
+            state.result=result
+        },
     }
 });
 

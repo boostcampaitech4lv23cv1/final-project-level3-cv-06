@@ -4,6 +4,7 @@ import selectview from '../views/SelectView.vue'
 import gameview from '../views/GameView.vue'
 import descriptionview from '../views/DescriptionView'
 import resultview from '../views/ResultView'
+import detailview from '../views/DetailView'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path:'/result',
     name:'result',
     component: resultview
+  },
+  {
+    path:'/detail',
+    name:'detail',
+    component: detailview
   }
 ]
 

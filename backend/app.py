@@ -104,17 +104,27 @@ async def img_return(info: GameIn):
         gif_path.append(path.split(".")[0] + ".gif")
     img_list = []
     gif_list = []
+    result_list = []
     for img in img_path:
+        res = "result/" + img
         img = "img/" + img
         tmp = cv2.imread(img)
-        # tmp = cv2.cvtColor(tmp, cv2.COLOR_BGR2RGB)
         _, buffer = cv2.imencode(".jpg", tmp)
         img_list.append(base64.b64encode(buffer))
+
+        tmp = cv2.imread(res)
+        _, buffer = cv2.imencode(".jpg", tmp)
+        result_list.append(base64.b64encode(buffer))
     for gif in gif_path:
         gif = "gif/" + gif
         with open(gif, "rb") as image_file:
             gif_list.append(base64.b64encode(image_file.read()))
 
-    response = {"origin_img": img_list, "paint_img": gif_list, "answer": answer_list}
+    response = {
+        "origin_img": img_list,
+        "paint_img": gif_list,
+        "answer": answer_list,
+        "result": result_list,
+    }
     print(len(img_list))
     return response

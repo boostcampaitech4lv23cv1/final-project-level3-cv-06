@@ -8,7 +8,7 @@
             <v-col cols="4"></v-col>
             <v-col cols="4">
                 <v-img src="../assets/example.jpg" height="350" width="350" class="mx-auto" v-show="game_status===0" />
-                <v-img class="mx-auto" :src="gameStatusImage" alt="Game Status Image" height="350" width="350" v-show="game_status!=0"/>
+                <v-img class="mx-auto" :src="gameStatusImage" height="350" width="350" v-show="game_status!=0"/>
             </v-col>
             <v-col cols=4>
             <v-progress-linear
@@ -64,27 +64,29 @@ game_status: 시작 전 0 각 문제 마다 +1(총 9) -> 게임이 끝날 때 10
                 test:0,
                 head_text:'Save Paint!',
                 game_status:0,
-                origin_img:[],
-                paint_img:[],
+                originImg:[],
+                paintImg:[],
                 answer:[]
             };
         },
         computed: {
             gameStatusImage() {
-                return 'data:image/gif;base64,'+this.paint_img[this.game_status-1]
+                return 'data:image/gif;base64,'+this.paintImg[this.game_status-1]
             },
             
         },
         methods:{
             async getGame(){
                let response = await this.$api('http://127.0.0.1:8000/gamestart','POST',{category:this.$route.query.category,mode:this.$route.query.mode})
-               this.origin_img=response['origin_img']
-               this.paint_img=response['paint_img']
+               this.originImg=response['origin_img']
+               this.paintImg=response['paint_img']
                this.answer=response['answer']
+               this.result=response['result']
                 
-               this.$store.commit('get_origin',response['origin_img'])
-               this.$store.commit('get_paint',response['paint_img'])
-               this.$store.commit('get_answer',response['answer'])
+               this.$store.commit('setOrigin',response['origin_img'])
+               this.$store.commit('setPaint',response['paint_img'])
+               this.$store.commit('setAnswer',response['answer'])
+               this.$store.commit('setResult',response['result'])
                
             },
             
@@ -94,7 +96,7 @@ game_status: 시작 전 0 각 문제 마다 +1(총 9) -> 게임이 끝날 때 10
                     this.game_status+=1
                 }
                 if (this.game_status===10){
-                    this.$router.push({path: '/result',props:{origin_img:this.origin_img,paint_img:this.paint_img,answer:this.answer}})
+                    this.$router.push({path: '/result',props:{originImg:this.originImg,paintImg:this.paintImg,answer:this.answer}})
                 }
 
             },
