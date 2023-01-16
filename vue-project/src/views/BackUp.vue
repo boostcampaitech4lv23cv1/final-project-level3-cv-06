@@ -8,11 +8,11 @@
             <v-col cols="4"></v-col>
             <v-col cols="4">
                 <v-img src="../assets/example.jpg" height="350" width="350" class="mx-auto" v-show="game_status===0" />
-                <v-img @load="imageLoaded = true" class="mx-auto" :src="gameStatusImage" height="350" width="350" v-show="game_status!=0"/>
+                <v-img class="mx-auto" :src="gameStatusImage" height="350" width="350" v-show="game_status!=0"/>
             </v-col>
             <v-col cols=4>
             <v-progress-linear
-                    v-show="game_status>0 && imageLoaded"
+                    v-show="game_status>0"
                     class="rotate"
                     height="20"
                     width="40"
@@ -22,7 +22,7 @@
         </v-row>
         <v-row class="d-flex justify-center mt-8">
             <v-col cols=4>
-                <v-progress-linear v-show="game_status>0 && imageLoaded" v-model="img_timer" height="7" rounded color="indigo" ></v-progress-linear>
+                <v-progress-linear v-show="game_status>0" v-model="image_timer" height="7" rounded color="indigo" ></v-progress-linear>
             </v-col>
         </v-row>
         <v-row class="d-flex justify-center mt-10">
@@ -46,7 +46,6 @@
 </template>
 
 <script>
-    import { ref } from 'vue'
 
 /*
 image_timer : 이미지 한장당 타이머 -> 퍼센트
@@ -57,23 +56,11 @@ head_text: 맨 위에 나올 text 게임 시작 전엔 save paint -> 문제 개�
 game_status: 시작 전 0 각 문제 마다 +1(총 9) -> 게임이 끝날 때 10
 */
     export default{
-        setup(){
-            const img_timer=ref(100)
-            const total_timer=ref(100)
 
-            setInterval(() => {
-                img_timer.value = img_timer.value - 1;
-                total_timer.value = total_timer.value-1;
-            }, 100);
-
-            return{
-                img_timer,
-                total_timer
-            }
-        },
         data(){
             return {
-                imageLoaded: false,
+                image_timer:100,
+                total_timer:100,
                 text:'',
                 test:0,
                 head_text:'Save Paint!',
@@ -89,9 +76,9 @@ game_status: 시작 전 0 각 문제 마다 +1(총 9) -> 게임이 끝날 때 10
             },
         },
 
-        // created(){
-        //     this.getGame()
-        // },
+        created(){
+            this.getGame()
+        },
 
         methods:{
             async getGame(){
@@ -121,9 +108,7 @@ game_status: 시작 전 0 각 문제 마다 +1(총 9) -> 게임이 끝날 때 10
 
             startGame(){
                 this.game_status+=1
-                this.getGame()
-                this.img_timer.value=100
-                this.total_timer.value=100
+                // this.getGame()
             },
             
         }
