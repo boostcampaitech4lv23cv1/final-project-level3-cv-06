@@ -7,6 +7,7 @@ import PaintTransformer.network as network
 import torch
 import torch.nn.functional as F
 from PIL import Image
+import PIL
 from argparse import ArgumentParser
 
 idx = 0
@@ -16,6 +17,12 @@ def save_img(img, output_path):
         (img.data.cpu().numpy().transpose((1, 2, 0)) * 255).astype(np.uint8)
     )
     result.save(output_path)
+
+def tensor_to_pil_image(image_tensor):
+    pil_image = Image.fromarray(
+        (image_tensor.data.cpu().numpy().transpose((1, 2, 0)) * 255).astype(np.uint8)
+    )
+    return pil_image
 
 
 def param2stroke(param, H, W, meta_brushes):
@@ -630,26 +637,15 @@ def inference(
     image,
     stroke_num: int,
     patch_size: int,
-    K=None,
-    need_animation=False,
-    resize_l=None,
-    serial=False,
+    K: int=None,
+    resize_l: int=None,
+    serial: bool=False,
 ):
     print(image)
-    # patch_size = 32
-    # stroke_num = 8
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # model = prepare_infer_model(model_path, stroke_num, device)
-    # meta_brushes = make_meta_brushes(device, mode="small")
-
-    # input_name, output_path = make_path(input_path, output_dir)
-    # serial, frame_dir = make_frame_dir(output_dir, need_animation, serial, input_name)
     with torch.no_grad():
         frame_dir ='/output'
         frame_list = []
         original_img = read_img(image, "RGB", resize_l).to(device)
-        # print('original_img:', original_img)
-        # print(original_img.shape)
         original_h, original_w = original_img.shape[-2:]
         if K==None:
             K = max(math.ceil(math.log2(max(original_h, original_w) / patch_size)), 0)
@@ -783,9 +779,9 @@ def inference(
         ]
 
         final_result = crop(final_result, original_h, original_w)
-        # save_img(final_result[0], output_path)
         frame_list = np.array(frame_list)
-        return frame_list
+        only_final = tensor_to_pil_image(final_result[0])
+        return frame_list, only_final
 
 
 def make_img_patch(patch_size, original_img_pad, layer_size, pad=False):
