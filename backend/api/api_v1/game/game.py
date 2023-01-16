@@ -1,6 +1,10 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse, FileResponse
 
-from utils import predict
+from PIL import Image
+from utils import predict, predict_test
+from io import BytesIO
+
 
 router = APIRouter()
 
@@ -8,7 +12,9 @@ router = APIRouter()
 async def gamestart(category: str, mode: str):
     # TODO
     # 카테고리, 모드 따라서 알맞은 사진 반환하기
-    predict(category)
+    # predict(category)
+    return FileResponse("gif/cat.gif", media_type='image/gif')
+    
 
 @router.post('/gameover')
 async def gameover():

@@ -2,5 +2,5 @@ from typing import Union
 
 from pydantic import BaseModel
 
-class PaintTransformer(BaseModel):
+class PaintImage(BaseModel):
     pass
