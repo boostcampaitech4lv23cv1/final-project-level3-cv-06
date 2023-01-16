@@ -53,7 +53,7 @@ async def get_image(img_encoded: str):
         patch_size=patch_size,
         K=K,
         resize_l=resize_l,          # resize original input to this size. (max(w, h) = resize_l)
-        serial=True,                # if need animation, serial must be True.
+        serial=False,                # if need animation, serial must be True.
     )
     image_bytes = from_image_to_bytes(only_final)
     response = {"image": image_bytes}

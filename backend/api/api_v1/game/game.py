@@ -1,9 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse, FileResponse
 
-from PIL import Image
-from utils import predict, predict_test
-from io import BytesIO
 
 
 router = APIRouter()
