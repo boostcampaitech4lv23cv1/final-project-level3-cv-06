@@ -9,7 +9,7 @@
                 <v-card class="mx-auto mb-16" style="width: 150px;">
                     <v-card-title class="text-center">Mode</v-card-title>
                 </v-card>
-                <v-radio-group v-model="selectedRadio" row>
+                <v-radio-group v-model="selectedMode" row>
                     <v-btn rounded v-for="item in modeItems" :key="item.value" :value="item.value" v-radio @click="changeMode(item.value)" :class="{'darken': selectedMode === item.value ,'mb-4 w-50 mx-auto grey':true,}">
                     {{ item.text }}
                     </v-btn>

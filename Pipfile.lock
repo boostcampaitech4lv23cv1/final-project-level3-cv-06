@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "459a3ce07c1ba95ae3e72a5993edf9dbe07e05bfdc3c07da5e03355bf823f0a6"
+            "sha256": "b39dac1d60626f84a3dd2cc55b2c956c5369aa42ce50238de4aa06c7b16f17d8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,14 @@
         ]
     },
     "default": {
+        "aiofiles": {
+            "hashes": [
+                "sha256:1142fa8e80dbae46bb6339573ad4c8c0841358f79c6eb50a493dceca14621bad",
+                "sha256:9107f1ca0b2a5553987a94a3c9959fe5b491fdf731389aa5b7b1bd0733e32de6"
+            ],
+            "index": "pypi",
+            "version": "==22.1.0"
+        },
         "altair": {
             "hashes": [
                 "sha256:0c724848ae53410c13fa28be2b3b9a9dcb7b5caa1a70f7f217bd663bb419935a",
@@ -229,11 +237,11 @@
         },
         "dnspython": {
             "hashes": [
-                "sha256:0f7569a4a6ff151958b64304071d370daa3243d15941a7beedf0c9fe5105603e",
-                "sha256:a851e51367fb93e9e1361732c1d60dab63eff98712e503ea7d92e6eccb109b4f"
+                "sha256:224e32b03eb46be70e12ef6d64e0be123a64e621ab4c0822ff6d450d52a540b9",
+                "sha256:89141536394f909066cabd112e3e1a37e4e654db00a25308b0f130bc3152eb46"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4.0'",
-            "version": "==2.2.1"
+            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "version": "==2.3.0"
         },
         "email-validator": {
             "hashes": [
@@ -556,7 +564,7 @@
                 "sha256:ef85cf1f693c88c1fd229ccd1055570cb41cdf4875873b7728b6301f12cd05bf",
                 "sha256:f1b739841821968798947d3afcefd386fa56da0caf97722a5de53e07c4ccedc7"
             ],
-            "markers": "python_version >= '3.8'",
+            "markers": "python_version >= '3.9'",
             "version": "==1.24.1"
         },
         "nvidia-cublas-cu11": {
@@ -1102,10 +1110,10 @@
         },
         "pytz": {
             "hashes": [
-                "sha256:7ccfae7b4b2c067464a6733c6261673fdb8fd1be905460396b97a073e9fa683a",
-                "sha256:93007def75ae22f7cd991c84e02d434876818661f8df9ad5df9e950ff4e52cfd"
+                "sha256:01a0681c4b9684a28304615eba55d1ab31ae00bf68ec157ec3708a8182dbbcd0",
+                "sha256:78f4f37d8198e0627c5f1143240bb0206b8691d8d7ac6d78fee88b78733f8c4a"
             ],
-            "version": "==2022.7"
+            "version": "==2022.7.1"
         },
         "pytz-deprecation-shim": {
             "hashes": [
@@ -1263,11 +1271,11 @@
         },
         "rich": {
             "hashes": [
-                "sha256:25f83363f636995627a99f6e4abc52ed0970ebbd544960cc63cbb43aaac3d6f0",
-                "sha256:41fe1d05f433b0f4724cda8345219213d2bfa472ef56b2f64f415b5b94d51b04"
+                "sha256:81c73a30b144bbcdedc13f4ea0b6ffd7fdc3b0d3cc259a9402309c8e4aee1964",
+                "sha256:f846bff22a43e8508aebf3f0f2410ce1c6f4cde429098bd58d91fde038c57299"
             ],
             "markers": "python_full_version >= '3.7.0'",
-            "version": "==13.0.1"
+            "version": "==13.1.0"
         },
         "scikit-learn": {
             "hashes": [
