@@ -6,6 +6,7 @@ WORKDIR /app
 COPY ../app .
 
 COPY ../Pipfile .
+COPY ../Pipfile.lock .
 
 RUN apt-get update && apt-get install -y \
 libgl1-mesa-glx \
