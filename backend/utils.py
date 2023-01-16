@@ -3,7 +3,6 @@ import cv2
 import time
 import random
 import base64
-import aiofiles
 import io
 from PIL import Image
 import numpy as np
@@ -20,7 +19,6 @@ stroke_num = 8
 patch_size = 32
 
 model, meta_brushes, device = init(stroke_num, model_path=model_path)
-
 
 
 def predict(category):
