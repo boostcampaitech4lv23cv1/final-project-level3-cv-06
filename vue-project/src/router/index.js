@@ -6,6 +6,7 @@ import descriptionview from '../views/DescriptionView'
 import resultview from '../views/ResultView'
 import detailview from '../views/DetailView'
 import transformview from '../views/TransformView'
+import testview from '../views/TestView'
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path:'/transform',
     name:'transform',
     component: transformview
+  },
+  {
+    path:'/test',
+    name:'test',
+    component: testview
   }
 ]
 

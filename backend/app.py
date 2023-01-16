@@ -126,5 +126,4 @@ async def img_return(info: GameIn):
         "answer": answer_list,
         "result": result_list,
     }
-    print(len(img_list))
     return response

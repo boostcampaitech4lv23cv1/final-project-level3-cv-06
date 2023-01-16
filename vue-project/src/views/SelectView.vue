@@ -62,7 +62,7 @@ export default{
   },
     methods: {
     startGame() {
-        this.$router.push({path:'/game', query:{category:this.selectedCategory,mode:this.selectedMode}})
+        this.$router.push({path:'/test', query:{category:this.selectedCategory,mode:this.selectedMode}})
     },
     changeMode(value) {
         this.selectedMode = value
