@@ -8,6 +8,7 @@ from PIL import Image
 import numpy as np
 
 from PaintTransformer.inference import init, inference
+from PaintTransformer.inference_only_final import inference as inference_by_img
 
 
 model_path="PaintTransformer/model.pth" # main.py 기준으로 경로 설정해야 함
@@ -72,29 +73,13 @@ def predict(category):
 
     return buffer, label, origin_image
 
-def predict_test(category):
+def predict_by_img(img):
 
-    input_path = os.path.join("input", category)
-    path_list = os.listdir(input_path)
-
-    selected = random.sample(path_list, 1)[0]
-    input_path = os.path.join(input_path, selected)
-
-    origin_image = cv2.imread(input_path)
-    origin_image = cv2.cvtColor(origin_image, cv2.COLOR_BGR2RGB)
-    origin_image = origin_image.tolist()
-
-    output_dir_root= "output/"
-
-    label = selected.split("_")[0]
-    # start = time.time()
-
-    pred = inference(
+    _, final_img = inference_by_img(
         model,
         device,
         meta_brushes,
-        input_path=input_path,
-        output_dir=output_dir_root,
+        image=img,
         stroke_num=stroke_num,
         patch_size=patch_size,
         K=K,
@@ -103,24 +88,4 @@ def predict_test(category):
         serial=True,                # if need animation, serial must be True.
     )
 
-    # print(time.time() - start)
-    buffer = io.BytesIO()
-    pred = pred.transpose((0, 2, 3, 1))
-    pred = (255 * np.clip(pred, 0, 1)).astype(np.uint8)
-    im = []
-    for n in range(len(pred)):
-        im.append(Image.fromarray(pred[n]))
-    # start = time.time()
-    im[0].save(
-        buffer,
-        format="GIF",
-        save_all=True,
-        append_images=im[1:],
-        optimize=True,
-        duration=100,
-    )
-    # print(time.time() - start)
-    buffer.seek(0)
-    buffer = base64.b64encode(buffer.read()).decode()
-
-    return buffer, label, origin_image
+    return final_img

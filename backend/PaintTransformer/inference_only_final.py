@@ -880,14 +880,12 @@ if __name__ == "__main__":
     stroke_num = 8
     patch_size = 32
 
-    model, meta_brushes, device = init(stroke_num, model_path="PaintTransformer/inference/model.pth")
+    model, meta_brushes, device = init(stroke_num, model_path="PaintTransformer/model.pth")
 
     inference(
         model,
         device,
         meta_brushes,
-        input_path=input_path,
-        output_dir=output_dir_root,
         stroke_num=stroke_num,
         patch_size=32,
         K=K,
