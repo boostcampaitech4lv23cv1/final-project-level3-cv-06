@@ -1,4 +1,5 @@
 import datetime
+import io
 import os
 import sys
 import urllib.request
@@ -7,6 +8,7 @@ from time import sleep
 import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
+from PIL import Image
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from tqdm import tqdm
@@ -53,20 +55,23 @@ class PixabayCrawler:
             # user-agent 헤더를 가지고 있어야 접근 허용하는 사이트도 있을 수 있음(pixabay가 이에 해당)
             req = urllib.request.Request(src, headers={"User-Agent": "Mozilla/5.0"})
             try:
-                img_path = urllib.request.urlopen(req).read()  # 웹 페이지 상의 이미지를 불러옴
+                img_byte = urllib.request.urlopen(req).read()  # 웹 페이지 상의 이미지를 불러옴
                 with open(save_url, "wb") as f:  # 디렉토리 오픈
-                    f.write(img_path)  # 파일 저장
+                    f.write(img_byte)  # 파일 저장
+                img = Image.open(io.BytesIO(img_byte))
+                return save_url, img.size
             except urllib.error.HTTPError:
                 print("에러")
                 sys.exit(0)
         else:
             print(f"No image: {srcset}")
+
         return save_url
 
     def save_metadata(self, dfs, keyword):
-        result = pd.concat(dfs)
+        concat_df = pd.concat(dfs).reset_index(drop=True)
         save_path = self.make_data_dir("metadata")
-        result.reset_index().to_feather(f"{save_path}/{keyword}.feather")
+        concat_df.to_feather(f"{save_path}/{keyword}.feather")
 
     def get_srcset_from_img_html(self, img):
         if img.get("srcset") is None:
@@ -88,15 +93,20 @@ class PixabayCrawler:
         soup = BeautifulSoup(html, "html.parser")
         return soup.select("div.row-masonry.search-results img")
 
-    def make_feather(self, keyword: str, img_alt: str, srcset: str, img_path):
+    def make_feather(
+        self, keyword: str, img_alt: str, srcset: str, img_path: str, img_size: tuple
+    ):
         """make feather dataframe from crawled data"""
         return pd.DataFrame(
             [
                 {
-                    "keyword": keyword,
-                    "img_alt": img_alt,
+                    "category": keyword,
+                    "alt": img_alt,
                     "srcset": srcset,
                     "img_path": img_path,
+                    "img_width": img_size[0],
+                    "img_height": img_size[1],
+                    "label": None,
                     "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 }
             ]
@@ -124,8 +134,10 @@ class PixabayCrawler:
             for img in tqdm(imgs):
                 srcset = self.get_srcset_from_img_html(img)
                 img_alt = self.get_img_alt_from_img_html(img)
-                img_path = self.save_img(save_path, srcset)
-                dfs.append(self.make_feather(self.keyword, img_alt, srcset, img_path))
+                img_path, img_size = self.save_img(save_path, srcset)
+                dfs.append(
+                    self.make_feather(self.keyword, img_alt, srcset, img_path, img_size)
+                )
                 count += 1
         browser.quit()
 
@@ -134,9 +146,9 @@ class PixabayCrawler:
         print(f"{count} {self.keyword} images are crawled in {self.pages} pages")
 
 
-def crawl_img():
+def crawl_img_by_keyword():
     print("os.getcwd(): ", os.getcwd())
-    with open("dags/pixabay/keywords.yml", "r") as f:
+    with open("dags/pixabay/keyword.yml", "r") as f:
         words_pages = yaml.load(f, Loader=yaml.FullLoader)
         print("read keywords.yml")
         for words_pages in words_pages:
@@ -149,12 +161,22 @@ def crawl_img():
             print("crawling finished!")
 
 
-if __name__ == "__main__":
-
-    with open("./keywords.yml", "r") as f:
+def crawl_img_by_category():
+    print("os.getcwd(): ", os.getcwd())
+    with open("dags/pixabay/category.yml", "r") as f:
         words_pages = yaml.load(f, Loader=yaml.FullLoader)
+        print("read category.yml")
         for words_pages in words_pages:
+            print("word: ", words_pages["word"])
             crawler = PixabayCrawler(
                 keyword=words_pages["word"], pages=words_pages["pages"]
             )
+            print("init crawler")
             crawler.crawling()
+            print("crawling finished!")
+
+
+if __name__ == "__main__":
+
+    # crawl_img_by_keyword()
+    crawl_img_by_category()
