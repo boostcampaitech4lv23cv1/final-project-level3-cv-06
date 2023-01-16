@@ -5,6 +5,7 @@ import gameview from '../views/GameView.vue'
 import descriptionview from '../views/DescriptionView'
 import resultview from '../views/ResultView'
 import detailview from '../views/DetailView'
+import transformview from '../views/TransformView'
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
     path:'/detail',
     name:'detail',
     component: detailview
+  },
+  {
+    path:'/transform',
+    name:'transform',
+    component: transformview
   }
 ]
 
