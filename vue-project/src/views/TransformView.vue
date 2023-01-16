@@ -34,10 +34,10 @@
 
             async transformImg(){
                 const formData = new FormData();
-                formData.append('uf', this.image);
+                formData.append('file', this.image);
 
-                let response = await this.$api2('http://127.0.0.1:8000/inference','POST',formData)
-                this.returnImg=response['pred']
+                let response = await this.$api2('http://127.0.0.1:8000/api/v1/infer','POST',formData)
+                this.returnImg=response
             },
         }
     }
