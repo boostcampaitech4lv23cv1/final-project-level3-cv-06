@@ -6,13 +6,14 @@ import os
 import pandas as pd
 from PIL import Image
 
+
 def dummy_dataset_to_df():
     """dataset directory에 있는 이미지의 정보를 df 형식으로 변환
     Args:
     Returns:
         pd.DataFrame: 이미지의 정보를 포함
     """
-    original_file_paths = glob('../dataset/original/**/*.*', recursive=True)
+    original_file_paths = glob("../dataset/original/**/*.*", recursive=True)
     dataset_list = []
     for i in original_file_paths:
 
@@ -20,12 +21,12 @@ def dummy_dataset_to_df():
         img_width, img_height = img.size
 
         original_fn = os.path.basename(i)
-        processed_file_path_split = i.split('/')
+        processed_file_path_split = i.split("/")
 
         category = processed_file_path_split[3]
         label = processed_file_path_split[4]
 
-        processed_file_path_split[2] = 'processed'
+        processed_file_path_split[2] = "processed"
         processed_file_path = os.path.join(*processed_file_path_split)
         processed_file_paths = glob(os.path.splitext(processed_file_path)[0] + ".*")
         if len(processed_file_paths) == 1:
@@ -34,8 +35,29 @@ def dummy_dataset_to_df():
         else:
             processed = False
             processed_fn = None
-        dataset_list.append([category, label, img_height, img_width, original_fn, processed_fn, processed])
-    df = pd.DataFrame(dataset_list, columns=['category', 'label', 'img_height', 'img_width', 'original_fn', 'processed_fn', 'processed'])
+        dataset_list.append(
+            [
+                category,
+                label,
+                img_height,
+                img_width,
+                original_fn,
+                processed_fn,
+                processed,
+            ]
+        )
+    df = pd.DataFrame(
+        dataset_list,
+        columns=[
+            "category",
+            "label",
+            "img_height",
+            "img_width",
+            "original_fn",
+            "processed_fn",
+            "processed",
+        ],
+    )
     return df
 
 
@@ -79,6 +101,6 @@ if __name__ == "__main__":
         port=5432,
         database="mydatabase",
     )
-    
+
     df = dummy_dataset_to_df()
     insert_data(db_connect, df)
