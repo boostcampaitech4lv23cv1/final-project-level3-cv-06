@@ -3,7 +3,6 @@ import cv2
 import time
 import random
 import base64
-import aiofiles
 import io
 from PIL import Image
 import numpy as np

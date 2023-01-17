@@ -9,6 +9,7 @@ router = APIRouter()
 async def gamestart(category: str, mode: str):
     # TODO
     # 카테고리, 모드 따라서 알맞은 사진 반환하기
+    
     # predict(category)
     return FileResponse("gif/cat.gif", media_type="image/gif")
 

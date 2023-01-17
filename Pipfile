@@ -5,22 +5,18 @@ name = "pypi"
 
 [packages]
 fastapi = {extras = ["all"], version = "*"}
-streamlit = "*"
-watchdog = "*"
-opencv-python = "*"
-torch = "*"
-scikit-learn = "*"
-torchvision = "*"
 pandas = "*"
+opencv-python = "*"
 psycopg2-binary = "*"
-<<<<<<< HEAD
-aiofiles = "*"
-=======
-minio = "*"
-ipywidgets = "*"
->>>>>>> 2a36b7d23d3e3f03ad041b5f0381232a0aff7e99
+torch = "*"
+torchvision = "*"
+scikit-learn = "*"
 
 [dev-packages]
+streamlit = "*"
+watchdog = "*"
+minio = "*"
+ipywidgets = "*"
 
 [requires]
 python_version = "3.9"

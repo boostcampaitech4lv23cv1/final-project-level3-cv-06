@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+
+  webserver:
+
+    container_name: webserver
+    
+    image: nginx:latest
+    
+    restart: always
+    
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/nginx/build:/usr/share/front/build
+
+    depends_on:
+      - webapp_1
+      - webapp_2
+
+    ports:
+      - 80:80
+    
+    networks:
+      - noops
+
+
+  webapp_1:
+
+    container_name: webapp_1
+
+    restart: always
+
+    # depends_on:
+    #   - db
+
+    build: 
+      context: .
+      dockerfile: ./docker/backend1.dockerfile
+
+    # command: sh -c "cd /app && pipenv shell && uvicorn main:app --host 0.0.0.0 --port 8000"
+
+    networks:
+      - noops
+
+
+  webapp_2:
+
+    container_name: webapp_2
+
+    restart: always
+
+    build: 
+      context: .
+      dockerfile: ./docker/backend2.dockerfile
+
+    # command: sh -c "cd /app && pipenv shell && uvicorn main:app --host 0.0.0.0 --port 8001"
+
+    networks:
+      - noops
+
+
+  # db:
+
+  #   image: mysql:8.0.30
+
+  #   container_name: db
+  
+  #   restart: always
+
+  #   env_file:
+  #     - ./config/mysql/.env
+
+  #   # environment:
+  #   #   MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  #     # MYSQL_DATABASE: TODOS
+
+  #   volumes:
+  #     - mysql-db:/var/lib/mysql/
+  #     - ./config/mysql/initdb.d/:/docker-entrypoint-initdb.d/
+
+  #   networks:
+  #     - noops
+
+  #   expose:
+  #     - 8008
+    
+networks:
+  noops:
+    driver: bridge
