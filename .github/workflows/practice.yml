@@ -1,0 +1,47 @@
+# name: Github Action Practice
+# # workflow 이름
+# on:
+#   # on: 특정 이벤트가 발생했을 때 workflow를 실행할지 말지를 결정
+#   # 이벤트로는 push, PR, issues, 등 매우 많음 https://docs.github.com/ko/github-ae@latest/actions/using-workflows/events-that-trigger-workflows
+
+#   pull_request:
+#     branches: [main, DEV]
+#     # main, DEV 브랜치에 push 이벤트가 발생했을 때 workflow를 실행
+#   schedule:
+#     - cron: "15 12 * * 1"
+# # (cron 문법) 매주 월요일 12:15PM 에 workflow를 실행 https://crontab.guru/#0_12_*_*_1
+
+# jobs:
+#   # workflow는 job으로 구성됨
+#   # job은 step으로 구성됨
+#   # workflow > job > step
+#   code-quality:
+#     # job 이름
+#     runs-on: ubuntu-latest
+#     # 우분투 최신 환경에 code-quality라는 job을 실행
+#     # 총 3가지 step으로 구성됨
+
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#       # uses는 Checkout step에서 할 action을 의미
+#       # actions의 checkout이라는  것을 repo의 action을 사용하겠다는의미
+#       # repo를 checkout하고 runner에 다운로드하여 코드를 실행하게 해주는 action
+#       # 우리의 repo 코드를 다루는 모든 workflow에 대해서 이 action을 사용해야 함
+#       # https://github.com/actions/checkout
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: "3.9"
+#       # setup-python action을 사용하여 python 3.9 버전을 runner에 설치
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+#       # - name: run
+#       #   run: |
+#       #     python main.py
+
+# # 해볼 수 있는 것들
+# # main에 push하면, pytest를 통해 코드 test를 하고 도커 이미지를 빌드해서 도커허브에 push
