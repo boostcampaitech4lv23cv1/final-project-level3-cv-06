@@ -13,6 +13,8 @@ from pytorch_lightning import LightningModule, Trainer
 from sqlalchemy import create_engine
 from torch.utils.data import DataLoader, Dataset
 
+AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
+
 
 class ClassifyDataset(Dataset):
     def __init__(self, df, transform=None):
@@ -74,11 +76,7 @@ def pred2imgnetlabel(predictions, imagenet_labels):
 
 
 def read_imgnet_labels():
-    # with open("dags/classification/imagenet_class.yaml", "r") as f:
-    with open(
-        "/Users/juheon/Desktop/jh/final-project-level3-cv-06/airflow_/dags/classification/imagenet_class.yaml",
-        "r",
-    ) as f:
+    with open(f"{AIRFLOW_HOME}/dags/classification/imagenet_class.yaml", "r") as f:
         labels = yaml.load(f, Loader=yaml.FullLoader)
         return np.array(labels)
 
@@ -98,9 +96,8 @@ def make_img_label(feather_name: str) -> pd.DataFrame:
     """
 
     imagenet_labels = read_imgnet_labels()
-    # df = read_feather(path=f"dags/crawled_img/metadata/{feather_name}.feather")
     df = read_feather(
-        f"/Users/juheon/Desktop/jh/final-project-level3-cv-06/airflow_/dags/crawled_img/pixabay/metadata/{feather_name}.feather"
+        f"{AIRFLOW_HOME}/dags/crawled_img/pixabay/metadata/{feather_name}.feather"
     )
 
     predictions = inference(df, feather_name)
@@ -126,13 +123,12 @@ def join_df2db(df):
 
     # Update the table in PostgreSQL
     animal_df.to_sql(name="animal", con=engine, if_exists="replace", index=False)
-
+def infer_senddb():
+    df = make_img_label(feather_name="animal")
+    print("label: ", df["label"])
+    join_df2db(df)
 
 if __name__ == "__main__":
     df = make_img_label(feather_name="animal")
     print("label: ", df["label"])
     join_df2db(df)
-
-# TODO airflow 연결, DB 연결
-# TODO 이미지 경로 airflow_home에 맞게 변경
-# TODO 제작된 label을 간소화해서 DB에 저장
