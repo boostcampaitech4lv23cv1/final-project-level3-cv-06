@@ -4,6 +4,7 @@ import time
 import random
 import base64
 import io
+from glob import glob
 from PIL import Image
 import numpy as np
 
@@ -11,7 +12,8 @@ from PaintTransformer.inference import init, inference
 from PaintTransformer.inference_only_final import inference as inference_by_img
 
 
-model_path="PaintTransformer/model.pth" # main.py 기준으로 경로 설정해야 함
+DATA_PATH = 'dataset'
+model_path = "PaintTransformer/model.pth" # main.py 기준으로 경로 설정해야 함
 
 resize_l = 256
 K = 4
@@ -142,4 +144,17 @@ async def save_img(uf):
         print('저장 실패')
     finally:
         print('save image')
+    
+
+def get_paint_img(category: str):
+    category_path = os.path.join(DATA_PATH, 'processed', f'{category}')
+    labels = os.listdir(category_path)
+    answer = random.choice(labels)
+    
+    label_path = os.path.join(category_path, answer)
+    img_paths = glob(f'{label_path}/*')
+    random_img_path = random.choice(img_paths)
+    
+    return random_img_path, answer
+    
     

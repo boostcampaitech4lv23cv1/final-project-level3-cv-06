@@ -1,16 +1,18 @@
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.responses import StreamingResponse, FileResponse, Response, JSONResponse
+
+from utils import get_paint_img, from_image_to_bytes
 
 
 router = APIRouter()
 
 @router.get('/gamestart')
-async def gamestart(category: str, mode: str):
+async def gamestart(category: str, mode: str = "PaintTransformer"):
     # TODO
     # 카테고리, 모드 따라서 알맞은 사진 반환하기
-    
-    # predict(category)
-    return FileResponse("gif/cat.gif", media_type='image/gif')
+    img_path, answer = get_paint_img(category)
+    return FileResponse(path=img_path, headers={"answer" : answer}, media_type='image/jpeg')
+    # return JSONResponse(content={"text": 'test'}, media_type="application/json")
     
 
 @router.post('/gameover')
