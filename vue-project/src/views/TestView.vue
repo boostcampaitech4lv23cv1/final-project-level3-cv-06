@@ -99,7 +99,6 @@ function enter() {
         resetImg()
     }
     if (gameStatus.value === 10) {
-        // router.push({path: '/result'})
         store.commit('setRank', rank)
         router.push({ path: '/rank' })
     }
@@ -109,16 +108,16 @@ onMounted(async () => {
     const headers = { 'Content-Type': 'application/json' }
     const query = router.currentRoute.value.query
     const params = { category: query.category, mode: query.mode }
-    let response = await axios.post('http://127.0.0.1:8000/gamestart', params, { headers })
+    let response = await axios.post('http://127.0.0.1:8000/api/v1/gamestart', params, { headers })
     originImg.value = response.data.origin_img
     paintImg.value = response.data.paint_img
     answer.value = response.data.answer
-    result.value = response.data.result
+    result.value = response.data.result_img
 
     store.commit('setOrigin', response.data.origin_img)
     store.commit('setPaint', response.data.paint_img)
     store.commit('setAnswer', response.data.answer)
-    store.commit('setResult', response.data.result)
+    store.commit('setResult', response.data.result_img)
 })
 
 watch(imgTimer, (newVal) => {

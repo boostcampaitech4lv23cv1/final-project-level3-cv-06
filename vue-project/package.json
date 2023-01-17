@@ -28,6 +28,8 @@
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "vue-cli-plugin-vuetify": "~2.5.8",
+    "vue-svg-loader": "^0.17.0-beta.2",
+    "vue-template-compiler": "^2.7.14",
     "webpack-plugin-vuetify": "^2.0.0-alpha.0"
   },
   "eslintConfig": {
