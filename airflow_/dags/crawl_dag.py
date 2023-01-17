@@ -10,10 +10,18 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 
+from slack_sdk import WebClient
+
 # package for tasks
 
 local_tz = pendulum.timezone("Asia/Seoul")
 
+SLACK_BOT_TOKEN = "cv-06-알림 채널에서 확인"
+CHANNEL_CODE = "채널 오른쪽 클릭 - 채널 세부정보 보기 하단에서 확인"
+
+def send_slack_message(channel, message):
+    client = WebClient(token=SLACK_BOT_TOKEN)
+    client.chat_postMessage(channel=channel, text=message)
 
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
@@ -44,28 +52,40 @@ default_args = {
 with DAG("crawling", default_args=default_args, schedule="@once") as dag:
 
     #####################    JOBS    #######################
-    from pixabay.scrape_img import crawl_img_by_category
+    # from pixabay.scrape_img import crawl_img_by_category
 
-    img_job = PythonOperator(
-        task_id="img_crawler", python_callable=crawl_img_by_category
+    # img_job = PythonOperator(
+    #     task_id="img_crawler", python_callable=crawl_img_by_category
+    # )
+
+    # from database.metadata2db import df2db
+
+    # send_data_job = PythonOperator(
+    #     task_id="metadata2db",
+    #     python_callable=df2db,
+    #     op_kwargs={"keyword": "animal"},
+    # )
+    # infer_job = BashOperator(
+    #     task_id="infer_animal",
+    #     bash_command="python ${AIRFLOW_HOME}/dags/classification/infer_animal.py",
+    # )
+
+    notification_job = PythonOperator(
+        task_id="send_slack_message",
+        python_callable=send_slack_message,
+        op_kwargs=dict(
+            channel=CHANNEL_CODE,
+            message="good job!"
+        )
     )
 
-    from database.metadata2db import df2db
-
-    send_data_job = PythonOperator(
-        task_id="metadata2db",
-        python_callable=df2db,
-        op_kwargs={"keyword": "animal"},
-    )
-    infer_job = BashOperator(
-        task_id="infer_animal",
-        bash_command="python ${AIRFLOW_HOME}/dags/classification/infer_animal.py",
-    )
+    infer_job = BashOperator(task_id='test',bash_command="echo hello ")
     # from classification.infer_animal import infer_senddb
     # infer_job = PythonOperator(task_id="infer_animal", python_callable=infer_senddb)
 
     #####################    TASKS    #####################
-    img_job >> send_data_job >> infer_job
+    # img_job >> send_data_job >> infer_job
+    infer_job >> notification_job
 
 # TODO handling errors
 # TODO configure the retries % failures
