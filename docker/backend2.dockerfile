@@ -3,10 +3,10 @@ FROM python:3.9
 WORKDIR /app
 
 # 상대경로 절대경로 둘 다 가능
-COPY ../app .
+COPY ../backend .
 
 COPY ../Pipfile .
-COPY ../Pipfile.lock .
+# COPY ../Pipfile.lock .
 
 RUN apt-get update && apt-get install -y \
 libgl1-mesa-glx \
