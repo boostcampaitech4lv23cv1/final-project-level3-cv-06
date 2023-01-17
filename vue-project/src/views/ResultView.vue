@@ -6,23 +6,11 @@
             </v-row>
 
             <v-row>
-                <v-col
-                v-for="n in 9"
-                :key="n"
-                class="d-flex child-flex no-padding"
-                cols="4"
-                >
-                <v-img
-                    :width="350"
-                    :height="350"
-                    :src="`data:image/gif;base64,${result[n-1]}`"
-                    :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-                    aspect-ratio="1"
-                    cover
-                    class="grey lighten-2"
-                    @click="moveDetail(n)"
-                >
-                </v-img>
+                <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
+                    <v-img :width="350" :height="350" :src="`data:image/gif;base64,${result[n - 1]}`"
+                        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`" aspect-ratio="1" cover
+                        class="grey lighten-2" @click="moveDetail(n)">
+                    </v-img>
                 </v-col>
             </v-row>
 
@@ -31,7 +19,7 @@
 </template>
 
 <script>
-    export default{
+export default {
     data() {
         return {
             originImg: this.$store.state.originImg,
@@ -40,9 +28,9 @@
             result: this.$store.state.result
         };
     },
-    methods:{
-        moveDetail(index){
-            this.$router.push({path:'/detail', query:{index:index}})
+    methods: {
+        moveDetail(index) {
+            this.$router.push({ path: '/detail', query: { index: index } })
         }
     }
 }
@@ -50,6 +38,6 @@
 
 <style scoped>
 .no-padding {
-    padding : 0;
+    padding: 0;
 }
 </style>

@@ -1,23 +1,15 @@
 <template>
   <v-app class="hero">
     <v-container class="mt-16" text-color="white">
-        <div :style="{ 'font-size': '30px', 'color': 'white' }" class="d-flex justify-center align-center">Save Paint!</div>
-    <v-row class="d-flex justify-end mt-10">
-      <v-btn
-          variant="text"
-          v-bind="{icon:sound_icon}"
-          color="white"
-          @click="soundChange"
-        ></v-btn>
-    </v-row>
-    <v-row class="d-flex justify-end">
-      <v-btn
-          variant="text"
-          icon="mdi-file-document"
-          color="white"
-          @click='movePage("/description",{page:1})'
-        ></v-btn>
-    </v-row>
+      <div :style="{ 'font-size': '30px', 'color': 'white' }" class="d-flex justify-center align-center">Save Paint!
+      </div>
+      <v-row class="d-flex justify-end mt-10">
+        <v-btn variant="text" v-bind="{ icon: soundIcon }" color="white" @click="soundChange"></v-btn>
+      </v-row>
+      <v-row class="d-flex justify-end">
+        <v-btn variant="text" icon="mdi-file-document" color="white"
+          @click='movePage("/description", { page: 1 })'></v-btn>
+      </v-row>
 
       <v-row class="d-flex justify-center align-center buttons">
         <v-btn variant="flat" color="red" width="15%" @click='movePage("/select")'>
@@ -34,33 +26,34 @@
 </template>
 
 <script>
-  export default {
-    data(){
-              return {
-                  absolute: true,
-                  overlay: false,
-                  sound_icon:"mdi-volume-high",
-                  current_page:'page1'
-              };
-          },
-    methods: {
-      movePage(route,query) {
-        this.$router.push({path:route,
-                            query:query
-                          })
-        },
-      soundChange(){
-          if (this.sound_icon=='mdi-volume-high'){
-            this.sound_icon='mdi-volume-off'
-          }
-          else{
-            this.sound_icon='mdi-volume-high'
-          }
-
+export default {
+  data() {
+    return {
+      absolute: true,
+      overlay: false,
+      soundIcon: "mdi-volume-high",
+      currentPage: 'page1'
+    };
+  },
+  methods: {
+    movePage(route, query) {
+      this.$router.push({
+        path: route,
+        query: query
+      })
+    },
+    soundChange() {
+      if (this.soundIcon == 'mdi-volume-high') {
+        this.soundIcon = 'mdi-volume-off'
+      }
+      else {
+        this.soundIcon = 'mdi-volume-high'
       }
 
     }
+
   }
+}
 </script>
 
 <style scoped>
@@ -71,6 +64,6 @@
 }
 
 .buttons {
-  margin-top:400px
+  margin-top: 400px
 }
 </style>
