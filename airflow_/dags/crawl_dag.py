@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 
 import pendulum
@@ -14,7 +15,7 @@ from airflow.utils.dates import days_ago
 
 local_tz = pendulum.timezone("Asia/Seoul")
 
-
+AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
 default_args = {
@@ -59,9 +60,10 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     )
     infer_job = BashOperator(
         task_id="infer_animal",
-        bash_command="python ${AIRFLOW_HOME}/dags/classification/infer_animal.py",
+        bash_command=f"python ${AIRFLOW_HOME}/dags/classification/infer_animal.py",
     )
     # from classification.infer_animal import infer_senddb
+
     # infer_job = PythonOperator(task_id="infer_animal", python_callable=infer_senddb)
 
     #####################    TASKS    #####################
@@ -69,6 +71,5 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
 
 # TODO handling errors
 # TODO configure the retries % failures
-# TODO notifications such as Slack or email
 # TODO Use Airflow's Sensors to detect external events or conditions before executing tasks
 # TODO 새로 올라온 데이터에 대해서만 크롤링 후 db에 저장하도록 수정

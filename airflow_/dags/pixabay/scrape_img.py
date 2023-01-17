@@ -15,6 +15,7 @@ from tqdm import tqdm
 from webdriver_manager.chrome import ChromeDriverManager
 
 os.environ["no_proxy"] = "*"
+AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 # This is for Negsignal.SIGSEGV error
 
 
@@ -28,7 +29,7 @@ class PixabayCrawler:
 
     def make_data_dir(self, keyword):
         print("make_data_dir os.getcwd(): ", os.getcwd())
-        save_path = f"dags/crawled_img/pixabay/{keyword}"
+        save_path = f"{AIRFLOW_HOME}/dags/crawled_img/pixabay/{keyword}"
         os.makedirs(save_path, exist_ok=True)
         return save_path
 
@@ -148,7 +149,7 @@ class PixabayCrawler:
 
 def crawl_img_by_keyword():
     print("os.getcwd(): ", os.getcwd())
-    with open("dags/pixabay/keyword.yml", "r") as f:
+    with open(f"{AIRFLOW_HOME}/dags/pixabay/keyword.yml", "r") as f:
         words_pages = yaml.load(f, Loader=yaml.FullLoader)
         print("read keywords.yml")
         for words_pages in words_pages:
@@ -163,7 +164,7 @@ def crawl_img_by_keyword():
 
 def crawl_img_by_category():
     print("os.getcwd(): ", os.getcwd())
-    with open("dags/pixabay/category.yml", "r") as f:
+    with open(f"{AIRFLOW_HOME}/dags/pixabay/category.yml", "r") as f:
         words_pages = yaml.load(f, Loader=yaml.FullLoader)
         print("read category.yml")
         for words_pages in words_pages:
