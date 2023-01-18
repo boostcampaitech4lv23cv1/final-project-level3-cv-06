@@ -4,4 +4,4 @@ from pydantic import BaseModel
 
 class GameIn(BaseModel):
     category: str
-    mode: str = "PaintTransformer"
+    mode: str = "painttransformer"

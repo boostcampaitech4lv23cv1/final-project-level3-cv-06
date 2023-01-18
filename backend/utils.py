@@ -155,8 +155,8 @@ def get_img(category: str):
     path_lst = glob(f'{category_path}/*/*')
     
     origin_paths = random.sample(path_lst, 9)
-    paint_paths = [path.replace('original', 'processed') for path in origin_paths]
-    result_paths = [path.replace('original', 'processed') for path in origin_paths] # 변경 필요
+    paint_paths = [f"{path.replace('original', 'paint').split('.')[0]}.gif" for path in origin_paths]
+    result_paths = [path.replace('original', 'result') for path in origin_paths] # 변경 필요
     answers = [path.split('/')[-2] for path in origin_paths]
     
     for origin, paint, result in zip(origin_paths, paint_paths, result_paths):
@@ -166,7 +166,6 @@ def get_img(category: str):
         paint_imgs.append(from_image_to_str(paint_img, paint_img.format))
         result_img = Image.open(result)
         result_imgs.append(from_image_to_str(result_img, result_img.format))
-
     
     return origin_imgs, result_imgs, paint_imgs, answers
 
