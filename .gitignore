@@ -221,3 +221,4 @@ output/
 input/
 Pipfile
 Pipfile.lock
+dataset/

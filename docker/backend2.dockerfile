@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.9.16-slim
 
 WORKDIR /app
 
@@ -6,14 +6,14 @@ WORKDIR /app
 COPY ../backend .
 
 COPY ../Pipfile .
-# COPY ../Pipfile.lock .
+COPY ../Pipfile.lock .
 
 RUN apt-get update && apt-get install -y \
 libgl1-mesa-glx \
 libglib2.0-0
 
-RUN pip install pipenv
+RUN pip install --upgrade pip && pip install pipenv
 
-RUN pipenv install
+RUN pipenv install --system --deploy
 
-CMD ["pipenv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]

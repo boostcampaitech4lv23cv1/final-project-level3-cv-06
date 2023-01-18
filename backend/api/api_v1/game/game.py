@@ -1,16 +1,22 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse, FileResponse, Response, JSONResponse
 
-from utils import get_paint_img, from_image_to_bytes
-
+from utils import get_img, from_image_to_bytes
+from scheme import *
 
 router = APIRouter()
 
-@router.get('/gamestart')
-async def gamestart(category: str, mode: str = "PaintTransformer"):
-    img_path, answer = get_paint_img(category)
-    return FileResponse(path=img_path, headers={"answer" : answer}, media_type='image/jpeg')
-    # return JSONResponse(content={"text": 'test'}, media_type="application/json")
+@router.post('/gamestart')
+async def gamestart(game_in: GameIn):
+    # 나중에 GCP Path보내는 걸로 교체할 것
+    paint_imgs, origin_imgs, result_imgs, answers = get_img(game_in.category)
+    return JSONResponse(content={
+        "answer": answers,
+        "paint_img": paint_imgs,
+        "origin_img": origin_imgs,
+        "result_img": result_imgs
+        }, 
+        media_type="application/json")
     
 
 @router.post('/gameover')

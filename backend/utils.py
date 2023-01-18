@@ -104,22 +104,20 @@ def from_image_to_bytes(img):
     return imgByteArr
 
 
-def from_image_to_str(uf, extend: str):
+def from_image_to_str(img, extend):
     """
     pillow image 객체를 bytes로 변환
     """
     # Pillow 이미지 객체를 Bytes로 변환
     imgByteArr = io.BytesIO()
-    if extend == 'jpg':
-        extend = 'jpeg'
-    uf.save(imgByteArr, format=extend)
+    img.save(imgByteArr, format=extend)
     # img.save(imgByteArr, format="PNG")
     imgByteArr = imgByteArr.getvalue()
     # Base64로 Bytes를 인코딩
     encoded = base64.b64encode(imgByteArr)
     # Base64로 ascii로 디코딩
-    # decoded = encoded.decode('ascii')
-    return encoded
+    decoded = encoded.decode('utf-8')
+    return decoded
 
 
 async def save_img(uf):
@@ -146,15 +144,31 @@ async def save_img(uf):
         print('save image')
     
 
-def get_paint_img(category: str):
-    category_path = os.path.join(DATA_PATH, 'processed', f'{category}')
-    labels = os.listdir(category_path)
-    answer = random.choice(labels)
+def get_img(category: str):
+    # 이미지 9개 반환
+    paint_imgs = []
+    origin_imgs = []
+    result_imgs = []
+    answers = []
     
-    label_path = os.path.join(category_path, answer)
-    img_paths = glob(f'{label_path}/*')
-    random_img_path = random.choice(img_paths)
+    category_path = os.path.join(DATA_PATH, 'original', f'{category}')
+    path_lst = glob(f'{category_path}/*/*')
     
-    return random_img_path, answer
+    origin_paths = random.sample(path_lst, 9)
+    paint_paths = [path.replace('original', 'processed') for path in origin_paths]
+    result_paths = [path.replace('original', 'processed') for path in origin_paths] # 변경 필요
+    answers = [path.split('/')[-2] for path in origin_paths]
+    
+    for origin, paint, result in zip(origin_paths, paint_paths, result_paths):
+        origin_img = Image.open(origin)
+        origin_imgs.append(from_image_to_str(origin_img, origin_img.format))
+        paint_img = Image.open(paint)
+        paint_imgs.append(from_image_to_str(paint_img, paint_img.format))
+        result_img = Image.open(result)
+        result_imgs.append(from_image_to_str(result_img, result_img.format))
+
+    
+    return origin_imgs, result_imgs, paint_imgs, answers
+
     
     

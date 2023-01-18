@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b9a76319e7f74062eb21d8e1f3eabeebd9dd0f14af75fef57ef1803f9b75680b"
+            "sha256": "0cbc47bbf6d508f014bee2b7d8bba716e175bab293bd8d373731c2b71ec5f101"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -335,8 +335,7 @@
                 "sha256:ef85cf1f693c88c1fd229ccd1055570cb41cdf4875873b7728b6301f12cd05bf",
                 "sha256:f1b739841821968798947d3afcefd386fa56da0caf97722a5de53e07c4ccedc7"
             ],
-            "index": "pypi",
-            "markers": "python_version <= '3.9' and platform_system == 'Darwin' and platform_machine == 'arm64'",
+            "markers": "python_version >= '3.8'",
             "version": "==1.24.1"
         },
         "opencv-python": {
@@ -1524,8 +1523,7 @@
                 "sha256:ef85cf1f693c88c1fd229ccd1055570cb41cdf4875873b7728b6301f12cd05bf",
                 "sha256:f1b739841821968798947d3afcefd386fa56da0caf97722a5de53e07c4ccedc7"
             ],
-            "index": "pypi",
-            "markers": "python_version <= '3.9' and platform_system == 'Darwin' and platform_machine == 'arm64'",
+            "markers": "python_version >= '3.8'",
             "version": "==1.24.1"
         },
         "packaging": {
