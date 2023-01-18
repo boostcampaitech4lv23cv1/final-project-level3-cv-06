@@ -6,8 +6,8 @@
                     Score</div>
             </v-row>
             <v-row>
-                <S height="300" class="score-space mx-auto" />
-                <F height="300" class="score-space mx-auto" />
+                <F v-show="rank == 'F'" height="300" class="score-space mx-auto" />
+                <S v-show="rank == 'S'" height="300" class="score-space mx-auto" />
             </v-row>
 
             <v-row>
@@ -21,6 +21,7 @@
 <script>
 import F from '../svg/fRank.vue'
 import S from '../svg/sRank.vue'
+
 export default {
     components: {
         F,
@@ -28,7 +29,8 @@ export default {
     },
     data() {
         return {
-            rank: this.$store.state.rank
+            // rank: this.$store.state.rank
+            rank: 'S'
         };
     },
     methods: {

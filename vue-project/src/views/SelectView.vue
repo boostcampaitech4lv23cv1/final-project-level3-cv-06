@@ -45,18 +45,21 @@ export default {
     data() {
         return {
             categoryItems: [
-                { text: 'Random', value: 'Raondom' },
-                { text: 'Actors', value: 'Actors' },
-                { text: 'Movie Posters', value: 'Movie Posters' },
-                { text: 'Animals', value: 'Animals' },
-                { text: 'Landmarks', value: 'Landmarks' },
-                { text: 'Masterpieces', value: 'Masterpieces' },
+                // { text: 'Random', value: 'Raondom' },
+                // { text: 'Actors', value: 'Actors' },
+                // { text: 'Movie Posters', value: 'Movie Posters' },
+                // { text: 'Animals', value: 'Animals' },
+                // { text: 'Landmarks', value: 'Landmarks' },
+                // { text: 'Masterpieces', value: 'Masterpieces' },
+                { text: 'Animal', value: 'animal' },
+                { text: 'Landmark', value: 'landmark' },
+                { text: 'Entertainment', value: 'entertainer' }
             ],
             selectedCategory: '',
             selectedMode: '',
             modeItems: [
-                { text: 'Paint Transformer', value: 'Paint Transformer' },
-                { text: 'Oil Transformer', value: 'Oil Transformer' },
+                { text: 'Paint Transformer', value: 'painttransformer' },
+                // { text: 'Oil Transformer', value: 'Oil Transformer' },
             ],
         }
     },
