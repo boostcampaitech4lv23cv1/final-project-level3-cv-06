@@ -96,6 +96,7 @@ def test():
 
 @app.post("/gamestart")
 async def img_return(info: GameIn):
+    print(info)
     img_path = os.listdir("img")
     img_path = random.sample(img_path, 9)
     gif_path = []
