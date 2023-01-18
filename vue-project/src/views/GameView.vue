@@ -32,10 +32,7 @@
                 <v-btn v-show="gameStatus == 0" @click="startGame">Game Start!</v-btn>
             </v-row>
         </v-container>
-        <!-- <img :src="'data:image/gif;base64,'+test"/> -->
     </v-app>
-
-
 </template>
 
 <script setup>
@@ -43,7 +40,6 @@ import { ref, onMounted, watch, computed, } from 'vue'
 import { useRouter } from 'vue-router';
 import { useStore } from "vuex";
 import axios from 'axios';
-
 const imgTimer = ref(100)
 const totalTimer = ref(100)
 const gameStatus = ref(0)
@@ -57,23 +53,19 @@ const store = useStore()
 const result = ref([])
 const loaded = ref(0)
 const rank = 'A'
-
 setInterval(() => {
     if (loaded.value == 1) {
         imgTimer.value = imgTimer.value - 1;
     }
-}, 300);
-
+}, 150);
 setInterval(() => {
     if (loaded.value == 1) {
         totalTimer.value = totalTimer.value - 1;
     }
 }, 1800);
-
 function timeStart() {
     loaded.value = 1
 }
-
 const currentImg = computed(function () {
     if (gameStatus.value > 0 && paintImg.value.length > 0) {
         return `data:image/gif;base64, ${paintImg.value[gameStatus.value - 1]}`
@@ -82,30 +74,25 @@ const currentImg = computed(function () {
         return null
     }
 });
-
 function resetImg() {
     gameStatus.value += 1
     imgTimer.value = 100
     headText.value = `${gameStatus.value}/9`
     text.value = ''
 }
-
 function startGame() {
     resetImg()
     totalTimer.value = 100
 }
-
 function enter() {
     if (text.value == answer.value[gameStatus.value - 1]) {
         resetImg()
     }
     if (gameStatus.value === 10) {
-        // router.push({path: '/result'})
         store.commit('setRank', rank)
         router.push({ path: '/rank' })
     }
 }
-
 onMounted(async () => {
     const headers = { 'Content-Type': 'application/json' }
     const query = router.currentRoute.value.query
@@ -114,26 +101,22 @@ onMounted(async () => {
     originImg.value = response.data.origin_img
     paintImg.value = response.data.paint_img
     answer.value = response.data.answer
-    result.value = response.data.result
-
+    result.value = response.data.result_img
     store.commit('setOrigin', response.data.origin_img)
     store.commit('setPaint', response.data.paint_img)
     store.commit('setAnswer', response.data.answer)
-    store.commit('setResult', response.data.result)
+    store.commit('setResult', response.data.result_img)
 })
-
 watch(imgTimer, (newVal) => {
     if (newVal == 0) {
         resetImg()
     }
 })
-
 watch(totalTimer, (newVal) => {
     if (newVal == 0) {
         router.push({ path: '/rank', props: { rank: 'A' } })
     }
 })
-
 </script>
 
 <style scoped>
@@ -147,7 +130,6 @@ watch(totalTimer, (newVal) => {
     transform: rotate(270deg);
     border-radius: 12px;
     margin-top: 150px;
-
 }
 
 .text {

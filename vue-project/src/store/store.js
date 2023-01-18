@@ -7,7 +7,7 @@ const store = createStore({
             paintImg:[],
             answer:[],
             result:[],
-            rank:'A',
+            rank:'S',
         }
     },
     mutations:{

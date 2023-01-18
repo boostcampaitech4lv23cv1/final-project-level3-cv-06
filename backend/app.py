@@ -23,6 +23,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:8080/game",
+    "http://localhost:8080/test",
     "http://192.168.55.139:8080/game",
     "http://192.168.55.139:8080",
 ]
@@ -124,6 +125,6 @@ async def img_return(info: GameIn):
         "origin_img": img_list,
         "paint_img": gif_list,
         "answer": answer_list,
-        "result": result_list,
+        "result_img": result_list,
     }
     return response
