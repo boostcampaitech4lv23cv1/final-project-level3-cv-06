@@ -11,7 +11,6 @@ from argparse import ArgumentParser
 
 idx = 0
 
-
 def save_img(img, output_path):
     result = Image.fromarray(
         (img.data.cpu().numpy().transpose((1, 2, 0)) * 255).astype(np.uint8)
@@ -556,8 +555,8 @@ def param2img_parallel(param, decision, meta_brushes, cur_canvas):
     return cur_canvas
 
 
-def read_img(img_path, img_type='RGB', l=None):
-    img = Image.open(img_path).convert(img_type)
+def read_img(img, img_type='RGB', l=None):
+    img = img.convert(img_type)
     if l is not None:
         original_w, original_h = img.size
         if original_w > original_h:
@@ -571,16 +570,16 @@ def read_img(img_path, img_type='RGB', l=None):
     img = torch.from_numpy(img).unsqueeze(0).float() / 255.
     return img
 
-# def read_img(img_path, img_type="RGB", h=None, w=None):
-#     img = Image.open(img_path).convert(img_type)
-#     if h is not None and w is not None:
-#         img = img.resize((w, h), resample=Image.NEAREST)
-#     img = np.array(img)
-#     if img.ndim == 2:
-#         img = np.expand_dims(img, axis=-1)
-#     img = img.transpose((2, 0, 1))
-#     img = torch.from_numpy(img).unsqueeze(0).float() / 255.0
-#     return img
+def read_img_file(img_path, img_type="RGB", h=None, w=None):
+    img = Image.open(img_path).convert(img_type)
+    if h is not None and w is not None:
+        img = img.resize((w, h), resample=Image.NEAREST)
+    img = np.array(img)
+    if img.ndim == 2:
+        img = np.expand_dims(img, axis=-1)
+    img = img.transpose((2, 0, 1))
+    img = torch.from_numpy(img).unsqueeze(0).float() / 255.0
+    return img
 
 
 def pad(img, H, W):
@@ -628,8 +627,7 @@ def inference(
     model,
     device,
     meta_brushes,
-    input_path: str,
-    output_dir: str,
+    image,
     stroke_num: int,
     patch_size: int,
     K=None,
@@ -637,17 +635,21 @@ def inference(
     resize_l=None,
     serial=False,
 ):
+    print(image)
     # patch_size = 32
     # stroke_num = 8
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # model = prepare_infer_model(model_path, stroke_num, device)
     # meta_brushes = make_meta_brushes(device, mode="small")
 
-    input_name, output_path = make_path(input_path, output_dir)
-    serial, frame_dir = make_frame_dir(output_dir, need_animation, serial, input_name)
+    # input_name, output_path = make_path(input_path, output_dir)
+    # serial, frame_dir = make_frame_dir(output_dir, need_animation, serial, input_name)
     with torch.no_grad():
+        frame_dir ='/output'
         frame_list = []
-        original_img = read_img(input_path, "RGB", resize_l).to(device)
+        original_img = read_img(image, "RGB", resize_l).to(device)
+        # print('original_img:', original_img)
+        # print(original_img.shape)
         original_h, original_w = original_img.shape[-2:]
         if K==None:
             K = max(math.ceil(math.log2(max(original_h, original_w) / patch_size)), 0)
@@ -700,17 +702,18 @@ def inference(
             # decision: b, h, w, stroke_per_patch
             param[..., :2] = param[..., :2] / 2 + 0.25
             param[..., 2:4] = param[..., 2:4] / 2
+
             if serial:
                 final_result = param2img_serial(
-                    param,
-                    decision,
-                    meta_brushes,
-                    final_result,
-                    frame_dir,
-                    False,
-                    original_h,
-                    original_w,
-                    frame_list,
+                    param=param,
+                    decision=decision,
+                    meta_brushes=meta_brushes,
+                    cur_canvas=final_result,
+                    frame_dir='/output',
+                    has_border=False,
+                    original_h=original_h,
+                    original_w=original_w,
+                    frame_list=frame_list,
                 )
             else:
                 final_result = param2img_parallel(
@@ -824,8 +827,8 @@ def make_meta_brushes(device: torch, mode: str = "large"):
     Returns:
         torch: meta_brushes
     """
-    brush_L_vertical = read_img(f"PaintTransformer/brush/brush_{mode}_vertical.png", "L")
-    brush_L_horizontal = read_img(f"PaintTransformer/brush/brush_{mode}_horizontal.png", "L")
+    brush_L_vertical = read_img_file(f"PaintTransformer/brush/brush_{mode}_vertical.png", "L")
+    brush_L_horizontal = read_img_file(f"PaintTransformer/brush/brush_{mode}_horizontal.png", "L")
     return torch.cat([brush_L_vertical, brush_L_horizontal], dim=0).to(device)
 
 
