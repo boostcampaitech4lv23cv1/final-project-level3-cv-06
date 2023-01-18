@@ -9,7 +9,7 @@ router = APIRouter()
 @router.post('/gamestart')
 async def gamestart(game_in: GameIn):
     # 나중에 GCP Path보내는 걸로 교체할 것
-    paint_imgs, origin_imgs, result_imgs, answers = get_img(game_in.category)
+    origin_imgs, result_imgs, paint_imgs, answers = get_img(game_in.category)
     return JSONResponse(content={
         "answer": answers,
         "paint_img": paint_imgs,
