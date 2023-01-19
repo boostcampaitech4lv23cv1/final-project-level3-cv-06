@@ -38,8 +38,8 @@ services:
       context: .
       dockerfile: ./docker/backend1.dockerfile
 
-    # volumes: # 사용자 한테 받은 이미지 저장 필요
-    #   - :/usr/local/app
+    volumes: # 사용자 한테 받은 이미지 저장 필요
+      - ./backend/raw_image:/app/raw_image
 
     # command: sh -c "cd /app && pipenv shell && uvicorn main:app --host 0.0.0.0 --port 8000"
 
@@ -56,6 +56,9 @@ services:
     build: 
       context: .
       dockerfile: ./docker/backend2.dockerfile
+
+    volumes: # 사용자 한테 받은 이미지 저장 필요
+      - ./backend/raw_image:/app/raw_image
 
     # command: sh -c "cd /app && pipenv shell && uvicorn main:app --host 0.0.0.0 --port 8001"
 
