@@ -1,4 +1,5 @@
 from typing import List
+import platform
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse, FileResponse, Response, JSONResponse
@@ -12,7 +13,14 @@ router = APIRouter()
 @router.post('/gamestart')
 async def gamestart(game_in: GameIn):
     img_paths = set_game_imgs(game_in.category)
-    return JSONResponse(content={"img_list" : img_paths})
+    if platform.system() == "Windows":
+        answer_list = [path.split('\\')[-2] for path in img_paths]
+    else:
+        answer_list = [path.split('/')[-2] for path in img_paths]
+    return JSONResponse(content={
+        "img_list" : img_paths,
+        "answer_list": answer_list
+        })
     
 
 @router.post('/paint')

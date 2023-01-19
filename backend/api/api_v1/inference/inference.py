@@ -1,4 +1,5 @@
 from io import BytesIO
+import base64
 from PIL import Image
 
 from utils import predict_by_img, from_image_to_bytes, from_image_to_str, save_img
@@ -27,4 +28,5 @@ async def inference(
     img_byte = BytesIO()
     paint_img.save(img_byte, format=extend)
     img_byte = img_byte.getvalue()
-    return Response(content=img_byte, media_type=f'image/{extend}')
+    encoded = base64.b64encode(img_byte)
+    return JSONResponse(content={"painte_img": encoded})
