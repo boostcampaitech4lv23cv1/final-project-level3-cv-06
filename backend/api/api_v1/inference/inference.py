@@ -15,16 +15,16 @@ async def inference(
 ):
     # print(uf.filename)
     file_name = file.filename
-    extend = file_name.split(".")[-1]
+    extend = file_name.split('.')[-1]
+    if extend == 'jpg':
+        extend = 'jpeg'
     background_tasks.add_task(save_img, file)
 
     content = await file.read()
     bytes_data = BytesIO(content)
     img = Image.open(bytes_data)
-
     paint_img = predict_by_img(img)
-
-    encoed_img = from_image_to_str(paint_img, extend)
-    return JSONResponse(content={
-        "image": encoed_img},
-        media_type="application/json")
+    img_byte = BytesIO()
+    paint_img.save(img_byte, format=extend)
+    img_byte = img_byte.getvalue()
+    return Response(content=img_byte, media_type=f'image/{extend}')
