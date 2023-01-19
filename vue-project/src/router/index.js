@@ -8,6 +8,9 @@ import detailview from '../views/DetailView'
 import transformview from '../views/TransformView'
 import testview from '../views/TestView'
 import rankview from '../views/RankView'
+import demoview from '../views/DemoView'
+import demoresult from '../views/DemoResult'
+import demodetail from '../views/DemoDetail'
 
 const routes = [
   {
@@ -54,6 +57,21 @@ const routes = [
     path:'/rank',
     name:'rank',
     component: rankview
+  },
+  {
+    path:'/demo',
+    name:'demo',
+    component: demoview
+  },
+  {
+    path:'/demoresult',
+    name:'demoresult',
+    component:demoresult
+  },
+  {
+    path:'/demodetail',
+    name:'demodetail',
+    component:demodetail
   }
 ]
 

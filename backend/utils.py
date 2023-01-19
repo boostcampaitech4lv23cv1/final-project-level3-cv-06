@@ -14,8 +14,8 @@ from PaintTransformer.inference import init, inference
 from PaintTransformer.inference_only_final import inference as inference_by_img
 
 
-DATA_PATH = 'dataset'
-model_path = "PaintTransformer/model.pth" # main.py 기준으로 경로 설정해야 함
+DATA_PATH = "dataset"
+model_path = "PaintTransformer/model.pth"  # main.py 기준으로 경로 설정해야 함
 
 resize_l = 256
 K = 4
@@ -37,7 +37,7 @@ def predict(category):
     origin_image = cv2.cvtColor(origin_image, cv2.COLOR_BGR2RGB)
     origin_image = origin_image.tolist()
 
-    output_dir_root= "output/"
+    output_dir_root = "output/"
 
     label = selected.split("_")[0]
     # start = time.time()
@@ -51,9 +51,9 @@ def predict(category):
         stroke_num=stroke_num,
         patch_size=patch_size,
         K=K,
-        need_animation=True,        # whether need intermediate results for animation.
-        resize_l=resize_l,          # resize original input to this size. (max(w, h) = resize_l)
-        serial=True,                # if need animation, serial must be True.
+        need_animation=True,  # whether need intermediate results for animation.
+        resize_l=resize_l,  # resize original input to this size. (max(w, h) = resize_l)
+        serial=True,  # if need animation, serial must be True.
     )
 
     # print(time.time() - start)
@@ -78,6 +78,7 @@ def predict(category):
 
     return buffer, label, origin_image
 
+
 def predict_by_img(img):
 
     _, final_img = inference_by_img(
@@ -88,11 +89,12 @@ def predict_by_img(img):
         stroke_num=stroke_num,
         patch_size=patch_size,
         K=K,
-        resize_l=resize_l,          # resize original input to this size. (max(w, h) = resize_l)
-        serial=False,                # if need animation, serial must be True.
+        resize_l=resize_l,  # resize original input to this size. (max(w, h) = resize_l)
+        serial=False,  # if need animation, serial must be True.
     )
 
     return final_img
+
 
 def from_image_to_bytes(img, extend):
     """
@@ -118,48 +120,48 @@ def from_image_to_str(img, extend):
     # img.save(imgByteArr, format="PNG")
     imgByteArr = imgByteArr.getvalue()
     # Base64로 Bytes를 인코딩
-    encoded = base64.b64encode(imgByteArr) # byte
+    encoded = base64.b64encode(imgByteArr)  # byte
     # Base64로 utf-8로 디코딩
-    decoded = encoded.decode('utf-8') # 
+    decoded = encoded.decode("utf-8")  #
     return decoded
 
 
 async def save_img(uf):
-    
+
     # async with aiofiles.open(out_file_path, 'wb') as out_file:
     #     while content := await in_file.read(1024):  # async read chunk
     #         await out_file.write(content)  # async write chunk
-    
+
     # try: # db저장 필요
     #     async with aiofiles.open('./raw_image/test.jpg', 'wb') as out_file: # 받은 사진 저장
     #         content = await img_b.read()  # async read
     #         await out_file.write(content)  # async write
-    
-    try: # db 저장 필요
+
+    try:  # db 저장 필요
         # aiofiles사용시 오류남
-        with open(f'./raw_image/{uf.filename}', 'wb') as out_file: # 받은 사진 저장
+        with open(f"./raw_image/{uf.filename}", "wb") as out_file:  # 받은 사진 저장
             await uf.seek(0)
             content = await uf.read()  # async read
             out_file.write(content)  # async write
     except Exception as e:
-        print(f'ERROR: {e}')
-        print('저장 실패')
+        print(f"ERROR: {e}")
+        print("저장 실패")
     finally:
-        print('save image')
-        
+        print("save image")
+
 
 # async def get_img(category: str):
 #     # 이미지 9개 반환
-    
-    
+
+
 #     category_path = os.path.join(DATA_PATH, 'original', f'{category}')
 #     path_lst = glob(f'{category_path}/*/*')
-    
+
 #     origin_path = random.choice(path_lst)
 #     paint_path = origin_path.replace('original', 'paint').replace('jpg', 'gif')
 #     result_path = origin_path.replace('original', 'result')
 #     answer = origin_path.split('/')[-2]
-    
+
 #     with open(paint_path, 'rb') as f:
 #         while True:
 #             paint_chunk = f.read(1024)
@@ -168,57 +170,52 @@ async def save_img(uf):
 #             else:
 #                 # encoded = base64.b64encode(paint_chunk)
 #                 yield paint_chunk
-        
+
 #         # result_img = Image.open(result)
 
-    
 
 def set_game_imgs(category: str) -> List[str]:
-    
-    category_path = os.path.join(DATA_PATH, 'original', f'{category}')
-    path_lst = glob(f'{category_path}/*/*')
-    
+
+    category_path = os.path.join(DATA_PATH, "original", f"{category}")
+    path_lst = glob(f"{category_path}/*/*")
+
     origin_paths = random.sample(path_lst, 9)
-    
+
     return origin_paths
 
 
 async def get_paint_img(img_path: str):
-    paint_img_path = img_path.replace('original', 'paint').replace('jpg', 'gif')
-    with open(paint_img_path, 'rb') as f: # 비동기 처리
+    paint_img_path = img_path.replace("original", "paint").replace("jpg", "gif")
+    with open(paint_img_path, "rb") as f:  # 비동기 처리
         while True:
             chunk = f.read(1024)
             if not chunk:
                 break
             else:
                 yield chunk
-            
-            
+
+
 def get_result_imgs(img_paths: List[str]) -> list:
 
     result_imgs = []
-    
-    result_img_paths = [path.replace('original', 'result') for path in img_paths]
+
+    result_img_paths = [path.replace("original", "result") for path in img_paths]
     for path in result_img_paths:
-        with open(f'{path}', 'rb') as f:
+        with open(f"{path}", "rb") as f:
             data = f.read()
             encoded = base64.b64encode(data)
             result_imgs.append(encoded)
-    
+
     return result_imgs
-    
+
 
 def get_origin_imgs(img_paths: List[str]) -> list:
-    
+
     origin_imgs = []
     for path in img_paths:
-        with open(f'{path}', 'rb') as f:
+        with open(f"{path}", "rb") as f:
             data = f.read()
             encoded = base64.b64encode(data)
             origin_imgs.append(encoded)
-    
+
     return origin_imgs
-    
-    
-        
-        

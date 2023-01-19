@@ -35,7 +35,7 @@ export default {
     },
     methods: {
         goResult() {
-            this.$router.push({ path: '/result' })
+            this.$router.push({ path: '/demoresult' })
         }
     }
 }
