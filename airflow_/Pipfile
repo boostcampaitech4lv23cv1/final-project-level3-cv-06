@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+albumentations = "*"
+pytorch-lightning = "*"
+beautifulsoup4 = "*"
+pandas = "*"
+selenium = "*"
+webdriver-manager = "3.8.5"
+timm = "*"
+apache-airflow = "*"
+psycopg2 = "*"
+pyarrow = "*"
+apache-airflow-providers-ssh = "*"
+apache-airflow-providers-sftp = "*"
+minio = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
+python_full_version = "3.9.16"
