@@ -8,6 +8,8 @@ from glob import glob
 from PIL import Image
 import numpy as np
 
+from typing import List
+
 from PaintTransformer.inference import init, inference
 from PaintTransformer.inference_only_final import inference as inference_by_img
 
@@ -92,31 +94,33 @@ def predict_by_img(img):
 
     return final_img
 
-def from_image_to_bytes(img):
-    """
-    pillow image 객체를 bytes로 변환
-    """
-    # Pillow 이미지 객체를 Bytes로 변환
-    imgByteArr = io.BytesIO()
-    # img.save(imgByteArr, format=img.format)
-    img.save(imgByteArr, format="PNG")
-    imgByteArr = imgByteArr.getvalue()
-    return imgByteArr
-
-
-def from_image_to_str(img, extend):
+def from_image_to_bytes(img, extend):
     """
     pillow image 객체를 bytes로 변환
     """
     # Pillow 이미지 객체를 Bytes로 변환
     imgByteArr = io.BytesIO()
     img.save(imgByteArr, format=extend)
+    imgByteArr = imgByteArr.getvalue()
+    encoded = base64.b64encode(imgByteArr)
+    return encoded
+
+
+def from_image_to_str(img, extend):
+    """
+    pillow image 객체를 bytes로 변환
+    """
+    if extend == "jpg":
+        extend = "jpeg"
+
+    imgByteArr = io.BytesIO()
+    img.save(imgByteArr, format=extend)
     # img.save(imgByteArr, format="PNG")
     imgByteArr = imgByteArr.getvalue()
     # Base64로 Bytes를 인코딩
-    encoded = base64.b64encode(imgByteArr)
-    # Base64로 ascii로 디코딩
-    decoded = encoded.decode('utf-8')
+    encoded = base64.b64encode(imgByteArr) # byte
+    # Base64로 utf-8로 디코딩
+    decoded = encoded.decode('utf-8') # 
     return decoded
 
 
@@ -142,32 +146,79 @@ async def save_img(uf):
         print('저장 실패')
     finally:
         print('save image')
+        
+
+# async def get_img(category: str):
+#     # 이미지 9개 반환
+    
+    
+#     category_path = os.path.join(DATA_PATH, 'original', f'{category}')
+#     path_lst = glob(f'{category_path}/*/*')
+    
+#     origin_path = random.choice(path_lst)
+#     paint_path = origin_path.replace('original', 'paint').replace('jpg', 'gif')
+#     result_path = origin_path.replace('original', 'result')
+#     answer = origin_path.split('/')[-2]
+    
+#     with open(paint_path, 'rb') as f:
+#         while True:
+#             paint_chunk = f.read(1024)
+#             if not paint_chunk:
+#                 break
+#             else:
+#                 # encoded = base64.b64encode(paint_chunk)
+#                 yield paint_chunk
+        
+#         # result_img = Image.open(result)
+
     
 
-def get_img(category: str):
-    # 이미지 9개 반환
-    paint_imgs = []
-    origin_imgs = []
-    result_imgs = []
-    answers = []
+def set_game_imgs(category: str) -> List[str]:
     
     category_path = os.path.join(DATA_PATH, 'original', f'{category}')
     path_lst = glob(f'{category_path}/*/*')
     
     origin_paths = random.sample(path_lst, 9)
-    paint_paths = [f"{path.replace('original', 'paint').split('.')[0]}.gif" for path in origin_paths]
-    result_paths = [path.replace('original', 'result') for path in origin_paths] # 변경 필요
-    answers = [path.split('/')[-2] for path in origin_paths]
     
-    for origin, paint, result in zip(origin_paths, paint_paths, result_paths):
-        origin_img = Image.open(origin)
-        origin_imgs.append(from_image_to_str(origin_img, origin_img.format))
-        paint_img = Image.open(paint)
-        paint_imgs.append(from_image_to_str(paint_img, paint_img.format))
-        result_img = Image.open(result)
-        result_imgs.append(from_image_to_str(result_img, result_img.format))
-    
-    return origin_imgs, result_imgs, paint_imgs, answers
+    return origin_paths
 
+
+async def get_paint_img(img_path: str):
+    paint_img_path = img_path.replace('original', 'paint').replace('jpg', 'gif')
+    with open(paint_img_path, 'rb') as f: # 비동기 처리
+        while True:
+            chunk = f.read(1024)
+            if not chunk:
+                break
+            else:
+                yield chunk
+            
+            
+def get_result_imgs(img_paths: List[str]) -> list:
+
+    result_imgs = []
+    
+    result_img_paths = [path.replace('original', 'result') for path in img_paths]
+    for path in result_img_paths:
+        with open(f'{path}', 'rb') as f:
+            data = f.read()
+            encoded = base64.b64encode(data)
+            result_imgs.append(encoded)
+    
+    return result_imgs
+    
+
+def get_origin_imgs(img_paths: List[str]) -> list:
+    
+    origin_imgs = []
+    for path in img_paths:
+        with open(f'{path}', 'rb') as f:
+            data = f.read()
+            encoded = base64.b64encode(data)
+            origin_imgs.append(encoded)
+    
+    return origin_imgs
     
     
+        
+        
