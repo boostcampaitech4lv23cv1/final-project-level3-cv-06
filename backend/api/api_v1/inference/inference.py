@@ -29,4 +29,4 @@ async def inference(
     paint_img.save(img_byte, format=extend)
     img_byte = img_byte.getvalue()
     encoded = base64.b64encode(img_byte)
-    return JSONResponse(content={"painte_img": encoded})
+    return Response(content=encoded)
