@@ -12,6 +12,7 @@
                         v-show="gameStatus === 0" />
                     <v-img v-if="gameStatus != 0" :src="currentImg" class="mx-auto" height="350" width="350"
                         @load="timeStart" />
+                    <v-img :src="gifUrl" alt="GIF" />
                 </v-col>
                 <v-col cols=4>
                     <v-progress-linear v-show="gameStatus > 0" class="rotate" height="20" width="40"
@@ -53,6 +54,8 @@ const store = useStore()
 const result = ref([])
 const loaded = ref(0)
 const rank = 'A'
+
+const gifUrl = ref('')
 setInterval(() => {
     if (loaded.value == 1) {
         imgTimer.value = imgTimer.value - 1;
@@ -89,23 +92,66 @@ function enter() {
         resetImg()
     }
     if (gameStatus.value === 10) {
+        console.log(gameStatus)
         store.commit('setRank', rank)
         router.push({ path: '/rank' })
     }
 }
+
+function nowTime() {
+    let today = new Date();
+    let hours = today.getHours();
+    let minutes = today.getMinutes();
+    let seconds = today.getSeconds();
+    console.log(hours + ' : ' + minutes + ' : ' + seconds);
+}
+
 onMounted(async () => {
-    const headers = { 'Content-Type': 'application/json' }
+    // const headers = { 'Content-Type': 'application/json' }
+    nowTime()
     const query = router.currentRoute.value.query
     const params = { category: query.category, mode: query.mode }
-    let response = await axios.post('http://127.0.0.1:8000/api/v1/gamestart', params, { headers })
-    originImg.value = response.data.origin_img
-    paintImg.value = response.data.paint_img
-    answer.value = response.data.answer
-    result.value = response.data.result_img
-    store.commit('setOrigin', response.data.origin_img)
-    store.commit('setPaint', response.data.paint_img)
-    store.commit('setAnswer', response.data.answer)
-    store.commit('setResult', response.data.result_img)
+    // let response = await axios.post('http://127.0.0.1:8000/api/v1/game/gamestart', params, { headers })
+    // console.log(response)
+    // originImg.value = response.data.origin_img
+    // paintImg.value = response.data.paint_img
+    // answer.value = response.data.answer
+    // result.value = response.data.result_img
+    // store.commit('setOrigin', response.data.origin_img)
+    // store.commit('setPaint', response.data.paint_img)
+    // store.commit('setAnswer', response.data.answer)
+    // store.commit('setResult', response.data.result_img)
+    // paintImg.value = response.value
+
+    // const response = await axios.post('http://127.0.0.1:8000/api/v1/game/gamestart', params, {
+    //     headers: {
+    //         responseType: 'stream'
+    //     }
+    // });
+
+    // const response = await axios.post("http://127.0.0.1:8000/api/v1/game/gamestart", params, {
+    //     responseType: 'arraybuffer'
+    // })
+    // const data = new Uint8Array(response.data);
+    // paintImg.value = data
+    const response = await axios.post("http://127.0.0.1:8000/api/v1/game/gamestart", params, {
+        responseType: 'arraybuffer'
+    });
+
+    const chunks = new Uint8Array(response.data);
+    let total = chunks.length;
+    let chunksArr = new Array();
+    let offset = 0;
+    for (let i = 0; i < total; i += 1024) {
+        chunksArr.push(chunks.slice(offset, offset + 1024));
+        offset += 1024;
+    }
+    const gifBlob = new Blob(chunksArr, { type: 'image/gif' });
+    gifUrl.value = URL.createObjectURL(gifBlob);
+
+    originImg.value = 1
+    result.value = 1
+
 })
 watch(imgTimer, (newVal) => {
     if (newVal == 0) {

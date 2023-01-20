@@ -7,9 +7,7 @@ import PaintTransformer.network as network
 import torch
 import torch.nn.functional as F
 from PIL import Image
-
-idx = 0
-
+from argparse import ArgumentParser
 
 idx = 0
 
@@ -358,7 +356,8 @@ def param2img_serial(
                     original_h,
                     original_w,
                 )
-                save_img(frame[0], os.path.join(frame_dir, "%03d.jpg" % idx))
+                frame_list.append(frame[0].cpu().numpy())
+                # save_img(frame[0], os.path.join(frame_dir, "%03d.jpg" % idx))
 
     cur_canvas = cur_canvas[
         :,
@@ -557,16 +556,31 @@ def param2img_parallel(param, decision, meta_brushes, cur_canvas):
     return cur_canvas
 
 
-def read_img(img_path, img_type="RGB", h=None, w=None):
+def read_img(img_path, img_type='RGB', l=None):
     img = Image.open(img_path).convert(img_type)
-    if h is not None and w is not None:
-        img = img.resize((w, h), resample=Image.NEAREST)
+    if l is not None:
+        original_w, original_h = img.size
+        if original_w > original_h:
+            img = img.resize((l, int(l/original_w*original_h)), resample=Image.NEAREST)
+        else:
+            img = img.resize((int(l/original_h*original_w), l), resample=Image.NEAREST)
     img = np.array(img)
     if img.ndim == 2:
         img = np.expand_dims(img, axis=-1)
     img = img.transpose((2, 0, 1))
-    img = torch.from_numpy(img).unsqueeze(0).float() / 255.0
+    img = torch.from_numpy(img).unsqueeze(0).float() / 255.
     return img
+
+# def read_img(img_path, img_type="RGB", h=None, w=None):
+#     img = Image.open(img_path).convert(img_type)
+#     if h is not None and w is not None:
+#         img = img.resize((w, h), resample=Image.NEAREST)
+#     img = np.array(img)
+#     if img.ndim == 2:
+#         img = np.expand_dims(img, axis=-1)
+#     img = img.transpose((2, 0, 1))
+#     img = torch.from_numpy(img).unsqueeze(0).float() / 255.0
+#     return img
 
 
 def pad(img, H, W):
@@ -604,28 +618,39 @@ def crop(img, h, w):
     return img
 
 
-def main(
-    input_path: str,
-    model_path: str,
-    output_dir: str,
-    need_animation=False,
-    resize_h=None,
-    resize_w=None,
-    serial=False,
-):
-    frame_list = []
-    input_name, output_path = make_path(input_path, output_dir)
-    serial, frame_dir = make_frame_dir(output_dir, need_animation, serial, input_name)
-    patch_size = 32
-    stroke_num = 8
+def init(stroke_num: int, model_path: str):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = prepare_infer_model(model_path, stroke_num, device)
-    meta_brushes = make_meta_brushes(device, mode="small")
+    meta_brushes = make_meta_brushes(device, mode="small")    
+    return model, meta_brushes, device
 
+def inference(
+    model,
+    device,
+    meta_brushes,
+    input_path: str,
+    output_dir: str,
+    stroke_num: int,
+    patch_size: int,
+    K=None,
+    need_animation=False,
+    resize_l=None,
+    serial=False,
+):
+    # patch_size = 32
+    # stroke_num = 8
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # model = prepare_infer_model(model_path, stroke_num, device)
+    # meta_brushes = make_meta_brushes(device, mode="small")
+
+    input_name, output_path = make_path(input_path, output_dir)
+    serial, frame_dir = make_frame_dir(output_dir, need_animation, serial, input_name)
     with torch.no_grad():
-        original_img = read_img(input_path, "RGB", resize_h, resize_w).to(device)
+        frame_list = []
+        original_img = read_img(input_path, "RGB", resize_l).to(device)
         original_h, original_w = original_img.shape[-2:]
-        K = max(math.ceil(math.log2(max(original_h, original_w) / patch_size)), 0)
+        if K==None:
+            K = max(math.ceil(math.log2(max(original_h, original_w) / patch_size)), 0)
         original_img_pad_size = patch_size * (2**K)
         original_img_pad = pad(
             original_img, original_img_pad_size, original_img_pad_size
@@ -799,12 +824,8 @@ def make_meta_brushes(device: torch, mode: str = "large"):
     Returns:
         torch: meta_brushes
     """
-    brush_L_vertical = read_img(
-        f"PaintTransformer/inference/brush/brush_{mode}_vertical.png", "L"
-    )
-    brush_L_horizontal = read_img(
-        f"PaintTransformer/inference/brush/brush_{mode}_horizontal.png", "L"
-    )
+    brush_L_vertical = read_img(f"PaintTransformer/brush/brush_{mode}_vertical.png", "L")
+    brush_L_horizontal = read_img(f"PaintTransformer/brush/brush_{mode}_horizontal.png", "L")
     return torch.cat([brush_L_vertical, brush_L_horizontal], dim=0).to(device)
 
 
@@ -818,6 +839,7 @@ def prepare_infer_model(model_path, stroke_num, device):
 
 
 def make_frame_dir(output_dir, need_animation, serial, input_name):
+
     frame_dir = None
     if need_animation:
         if not serial:
@@ -840,12 +862,37 @@ def make_path(input_path, output_dir):
 
 
 if __name__ == "__main__":
-    main(
-        input_path="input/chicago.jpg",
-        model_path="PaintTransformer/inference/model.pth",
-        output_dir="output/",
-        need_animation=True,  # whether need intermediate results for animation.
-        resize_h=256,  # resize original input to this size. None means do not resize.
-        resize_w=256,  # resize original input to this size. None means do not resize.
-        serial=True,
-    )  # if need animation, serial must be True.
+    parser = ArgumentParser()
+    # parser.add_argument("--output-dir", dest="output_dir", type=str, default="default_output")
+    parser.add_argument("--resize", dest="resize_l", type=int, default=512)
+    parser.add_argument("--K", dest="K", type=int, default=5)
+    parser.add_argument("--input", dest="input", type=str, default="iu")
+    args = parser.parse_args()
+
+
+    output_dir_name = os.path.splitext(args.input)[0] + '_resize_' + '{:04d}'.format(args.resize_l) + '_K_' + '{:01d}'.format(args.K)
+
+    output_dir_root = os.path.join('output', output_dir_name)
+
+    input_path = os.path.join('input', args.input)
+    resize_l = args.resize_l
+    K = args.K
+
+    stroke_num = 8
+    patch_size = 32
+
+    model, meta_brushes, device = init(stroke_num, model_path="PaintTransformer/inference/model.pth")
+
+    inference(
+        model,
+        device,
+        meta_brushes,
+        input_path=input_path,
+        output_dir=output_dir_root,
+        stroke_num=stroke_num,
+        patch_size=32,
+        K=K,
+        need_animation=True,        # whether need intermediate results for animation.
+        resize_l=resize_l,          # resize original input to this size. (max(w, h) = resize_l)
+        serial=True,                # if need animation, serial must be True.
+    )

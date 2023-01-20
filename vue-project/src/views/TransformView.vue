@@ -37,8 +37,9 @@ export default {
             const formData = new FormData();
             formData.append('file', this.image);
 
-            let response = await this.$api2('http://127.0.0.1:8000/api/v1/infer', 'POST', formData)
-            this.returnImg = response['pred']
+            let response = await this.$api2('http://127.0.0.1/api/v1/infer', 'POST', formData)
+            // this.returnImg = response
+            this.returnImg = response['image']
         },
     }
 }

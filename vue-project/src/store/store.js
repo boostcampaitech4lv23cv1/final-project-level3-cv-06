@@ -8,6 +8,7 @@ const store = createStore({
             answer:[],
             result:[],
             rank:'S',
+            imgList:[],
         }
     },
     mutations:{
@@ -25,6 +26,9 @@ const store = createStore({
         },
         setRank(state,rank){
             state.rank=rank
+        },
+        setPath(state,path){
+            state.imgList=path
         }
     }
 });

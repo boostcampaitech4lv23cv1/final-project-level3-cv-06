@@ -217,9 +217,11 @@ poetry.toml
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,python
 
-backend/PaintTransformer/inference/model.pth
-backend/PaintTransformer/inference/output
-backend/PaintTransformer/inference/input
-backend/output
+model.pth
+output/
+input/
 Pipfile
 Pipfile.lock
+backend/PaintTransformer/model.pth
+model.pth
+dataset/
