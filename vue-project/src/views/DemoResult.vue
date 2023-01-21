@@ -32,7 +32,7 @@ export default {
         }
     },
     async mounted() {
-        let response = await axios.post("http://127.0.0.1/api/v1/game/result", { paths: this.imgList }, { 'Content-Type': 'application/json' });
+        let response = await axios.post("http://127.0.0.1:8000/api/v1/game/result", { paths: this.imgList }, { 'Content-Type': 'application/json' });
         this.originImg = response.data.origin_imgs
 
 
