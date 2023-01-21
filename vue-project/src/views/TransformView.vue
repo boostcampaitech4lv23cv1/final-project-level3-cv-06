@@ -7,12 +7,19 @@
                     <!-- <input type="file" v-on:change="setImg" /> -->
                 </v-col>
                 <v-col cols="2" class="align-center mt-2">
-                    <v-btn v-model="transform" @click='transformImg'>Transform!</v-btn>
+                    <v-btn @click='transformImg' :disabled='image==null'>Transform!</v-btn>
                 </v-col>
             </v-row>
             <v-row>
-                <v-img class="mx-auto mt-16" max-height="400" max-width="400"
-                    :src="`data:image/gif;base64,${returnImg}`" />
+                <v-img  class="mx-auto mt-16" max-height="400" max-width="400"
+                    :src="`data:image/gif;base64,${returnImg}`" >
+                    <v-progress-circular
+                        v-show='transform==true'
+                        class='mx-auto ml-16 mt-16'
+                        color="grey-lighten-4"
+                        indeterminate
+                ></v-progress-circular>    
+                </v-img>
             </v-row>
         </v-container>
     </v-app>
@@ -28,12 +35,17 @@ export default {
             img_loaded: false,
         }
     },
+    computed:{
+
+    },
     methods: {
         setImg(event) {
             this.image = event.target.files[0]
         },
 
         async transformImg() {
+            this.returnImg = null
+            this.transform = true
             const formData = new FormData();
             formData.append('file', this.image);
 
@@ -41,6 +53,7 @@ export default {
             // this.returnImg = response
             console.log(response['image'])
             this.returnImg = response['image']
+            this.transform = false
         },
     }
 }
