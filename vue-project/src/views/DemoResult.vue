@@ -5,7 +5,7 @@
                 <div :style="{ 'font-size': '30px', 'color': 'black' }" class="mx-auto">Result</div>
             </v-row>
 
-            <v-row>
+            <v-row v-if="originImg != ''">
                 <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
                     <v-img :width="350" :height="350" :src="`data:image/gif;base64,${originImg[n - 1]}`"
                         :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`" aspect-ratio="1" cover
