@@ -7,18 +7,13 @@
                     <!-- <input type="file" v-on:change="setImg" /> -->
                 </v-col>
                 <v-col cols="2" class="align-center mt-2">
-                    <v-btn @click='transformImg' :disabled='image==null'>Transform!</v-btn>
+                    <v-btn @click='transformImg' :disabled='image == null'>Transform!</v-btn>
                 </v-col>
             </v-row>
-            <v-row>
-                <v-img  class="mx-auto mt-16" max-height="400" max-width="400"
-                    :src="`data:image/gif;base64,${returnImg}`" >
-                    <v-progress-circular
-                        v-show='transform==true'
-                        class='mx-auto ml-16 mt-16'
-                        color="grey-lighten-4"
-                        indeterminate
-                ></v-progress-circular>    
+            <v-row class="mt-16">
+                <v-img max-height="400" class="mx-auto" max-width="400" :src="`data:image/gif;base64,${returnImg}`">
+                    <v-progress-circular v-show='transform == true' class='loading' color="grey-lighten-4"
+                        indeterminate></v-progress-circular>
                 </v-img>
             </v-row>
         </v-container>
@@ -35,7 +30,7 @@ export default {
             img_loaded: false,
         }
     },
-    computed:{
+    computed: {
 
     },
     methods: {
@@ -44,14 +39,12 @@ export default {
         },
 
         async transformImg() {
-            this.returnImg = null
+            // this.returnImg = null
             this.transform = true
             const formData = new FormData();
             formData.append('file', this.image);
 
             let response = await this.$api2('http://127.0.0.1:8000/api/v1/infer', 'POST', formData)
-            // this.returnImg = response
-            console.log(response['image'])
             this.returnImg = response['image']
             this.transform = false
         },
@@ -64,5 +57,10 @@ export default {
     background: url('../assets/back.jpg');
     background-size: cover;
     height: 100vh;
+}
+
+.loading {
+    margin-top: 150px;
+    margin-left: 200px
 }
 </style>
