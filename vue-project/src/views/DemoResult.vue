@@ -5,11 +5,11 @@
                 <div :style="{ 'font-size': '30px', 'color': 'black' }" class="mx-auto">Result</div>
             </v-row>
 
-            <v-row v-if="originImg != ''">
+            <v-row>
                 <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
-                    <v-img :width="350" :height="350" :src="`data:image/gif;base64,${originImg[n - 1]}`"
-                        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`" aspect-ratio="1" cover
-                        class="grey lighten-2" @click="moveDetail(n)">
+                    <v-img :width="350" :height="350" :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+                        aspect-ratio="1" cover :src="`data:image/gif;base64,${originImg[n - 1]}`" class="grey lighten-2"
+                        @click="moveDetail(n)">
                     </v-img>
                 </v-col>
             </v-row>
@@ -34,8 +34,6 @@ export default {
     async mounted() {
         let response = await axios.post("http://127.0.0.1:8000/api/v1/game/result", { paths: this.imgList }, { 'Content-Type': 'application/json' });
         this.originImg = response.data.origin_imgs
-
-
         this.$store.commit('setOrigin', response.data.origin_imgs)
         this.$store.commit('setResult', response.data.result_imgs)
     }
