@@ -10,8 +10,8 @@
                     <v-card class="mx-auto mb-16" style="width: 150px;">
                         <v-card-title class="text-center">Mode</v-card-title>
                     </v-card>
-                    <v-radio-group v-model="selectedMode" row>
-                        <v-btn rounded v-for="item in modeItems" :key="item.value" :value="item.value" v-radio
+                    <v-radio-group v-model="selectedMode">
+                        <v-btn rounded v-for="item in modeItems" :key="item.value" :value="item.value"
                             @click="changeMode(item.value)"
                             :class="{ 'darken': selectedMode === item.value, 'mb-4 w-50 mx-auto grey': true, }">
                             {{ item.text }}
@@ -22,8 +22,8 @@
                     <v-card class="mx-auto mb-16" style="width: 150px;">
                         <v-card-title class="text-center">Category</v-card-title>
                     </v-card>
-                    <v-radio-group v-model="selectedCategory" row>
-                        <v-btn rounded v-for="item in categoryItems" :key="item.value" :value="item.value" v-radio
+                    <v-radio-group v-model="selectedCategory">
+                        <v-btn rounded v-for="item in categoryItems" :key="item.value" :value="item.value"
                             @click="changeCategory(item.value)"
                             :class="{ 'darken': selectedCategory === item.value, 'mb-4 w-50 mx-auto grey': true, }">
                             {{ item.text }}
@@ -45,12 +45,6 @@ export default {
     data() {
         return {
             categoryItems: [
-                // { text: 'Random', value: 'Raondom' },
-                // { text: 'Actors', value: 'Actors' },
-                // { text: 'Movie Posters', value: 'Movie Posters' },
-                // { text: 'Animals', value: 'Animals' },
-                // { text: 'Landmarks', value: 'Landmarks' },
-                // { text: 'Masterpieces', value: 'Masterpieces' },
                 { text: 'Animal', value: 'animal' },
                 { text: 'Landmark', value: 'landmark' },
                 { text: 'Entertainment', value: 'entertainer' }
@@ -59,7 +53,6 @@ export default {
             selectedMode: '',
             modeItems: [
                 { text: 'Paint Transformer', value: 'painttransformer' },
-                // { text: 'Oil Transformer', value: 'Oil Transformer' },
             ],
         }
     },
