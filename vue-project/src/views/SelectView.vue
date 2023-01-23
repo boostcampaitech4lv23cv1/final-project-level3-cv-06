@@ -1,14 +1,19 @@
 <template>
     <v-app class=hero>
         <v-container height="100%">
-            <v-row class="justify-center mt-10">
-                <logo :style="{ height: '150px', width: myWidth + '600px' }" />
+            <v-row class="justify-center mt-16">
+                <logo :style="{ height: '150px', width: '600px' }" />
             </v-row>
-            <v-row class="mt-16">
+            <v-row>
+                <v-col cols=6 class="d-flex justify-center align-end">
+                    <mode :style="{height:'50px',width:'150px'}"/>
+                </v-col>
+                <v-col cols=6 class="d-flex justify-center align-end">
+                    <category :style="{height:'50px',width:'230px'}"/>
+                </v-col>
+            </v-row>
+            <v-row>
                 <v-col cols="6">
-                    <v-card class="mx-auto mb-16" style="width: 150px;">
-                        <v-card-title class="text-center">Mode</v-card-title>
-                    </v-card>
                     <v-radio-group v-model="selectedMode">
                         <v-btn rounded v-for="item in modeItems" :key="item.value" :value="item.value"
                             @click="changeMode(item.value)"
@@ -18,9 +23,6 @@
                     </v-radio-group>
                 </v-col>
                 <v-col cols="6">
-                    <v-card class="mx-auto mb-16" style="width: 150px;">
-                        <v-card-title class="text-center">Category</v-card-title>
-                    </v-card>
                     <v-radio-group v-model="selectedCategory">
                         <v-btn rounded v-for="item in categoryItems" :key="item.value" :value="item.value"
                             @click="changeCategory(item.value)"
@@ -41,9 +43,14 @@
 
 <script>
 import logo from '../svg/logoView.vue';
+import mode from '../svg/modeView.vue';
+import category from '../svg/categoryView.vue';
+
 export default {
     components: {
         logo,
+        mode,
+        category,
     },
     data() {
         return {

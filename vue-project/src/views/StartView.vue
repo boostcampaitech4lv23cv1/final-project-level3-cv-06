@@ -1,7 +1,7 @@
 <template>
   <v-app class="hero">
-    <v-container class="mt-16" text-color="white">
-      <v-row class="justify-center">
+    <v-container height="100%">
+      <v-row class="justify-center mt-16">
         <logo :style="{ height: '150px', width: myWidth + '600px' }" />
       </v-row>
       <v-row class="d-flex justify-end mt-10">
@@ -73,7 +73,5 @@ export default {
   height: 100vh;
 }
 
-.buttons {
-  margin-top: 370px
-}
+
 </style>
