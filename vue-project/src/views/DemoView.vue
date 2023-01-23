@@ -107,15 +107,15 @@ function startGame() {
     totalTimer.value = 100
 }
 function enter() {
+    if (gameStatus.value === 9) {
+        store.commit('setRank', rank)
+        router.push({ path: '/rank' })
+    }
     if (text.value == answer.value[gameStatus.value - 1]) {
         resetImg()
     }
     else {
         text.value = ''
-    }
-    if (gameStatus.value === 10) {
-        store.commit('setRank', rank)
-        router.push({ path: '/rank' })
     }
 }
 

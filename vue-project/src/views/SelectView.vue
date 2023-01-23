@@ -1,9 +1,8 @@
 <template>
     <v-app class=hero>
         <v-container height="100%">
-            <v-row class="d-flex justify-center mt-10">
-                <div :style="{ 'font-size': '30px', 'color': 'white' }" class="d-flex justify-center align-center">Save
-                    Paint!</div>
+            <v-row class="justify-center mt-10">
+                <logo :style="{ height: '150px', width: myWidth + '600px' }" />
             </v-row>
             <v-row class="mt-16">
                 <v-col cols="6">
@@ -41,7 +40,11 @@
 </template>
 
 <script>
+import logo from '../svg/logoView.vue';
 export default {
+    components: {
+        logo,
+    },
     data() {
         return {
             categoryItems: [
@@ -77,7 +80,7 @@ export default {
 
 <style scoped>
 .hero {
-    background: url('../assets/back.jpg');
+    background: url('../assets/background.png');
     background-size: cover;
     height: 100vh;
 }
