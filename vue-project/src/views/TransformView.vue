@@ -3,8 +3,7 @@
         <v-container>
             <v-row class="mt-16">
                 <v-col cols=8 class="mx-auto">
-                    <v-file-input clearable label="File input" variant="solo" v-on:change='setImg'></v-file-input>
-                    <!-- <input type="file" v-on:change="setImg" /> -->
+                    <v-file-input clearable label="Your file here!" variant="solo" v-on:change='setImg'></v-file-input>
                 </v-col>
                 <v-col cols="2" class="align-center mt-2">
                     <v-btn @click='transformImg' :disabled='image == null'>Transform!</v-btn>

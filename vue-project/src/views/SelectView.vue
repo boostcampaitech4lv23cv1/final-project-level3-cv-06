@@ -1,7 +1,7 @@
 <template>
     <v-app class=hero>
         <v-container height="100%">
-            <v-row class="justify-center mt-16">
+            <v-row class="justify-center mt-10">
                 <logo :style="{ height: '150px', width: '600px' }" />
             </v-row>
             <v-row>
