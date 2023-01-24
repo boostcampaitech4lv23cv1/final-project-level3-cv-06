@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <v-app class="hero">
         <v-container>
             <v-row class="d-flex justify-center mt-16">
                 <div :style="{ 'font-size': '30px', 'color': 'black' }" class="d-flex justify-center align-center">
@@ -10,7 +10,7 @@
                 <v-col cols="4">
                     <v-img src="../assets/example.jpg" height="350" width="350" class="mx-auto"
                         v-show="gameStatus === 0" />
-                    <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="350" width="350"
+                    <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="500" width="500"
                         @load="timeStart" />
                 </v-col>
                 <v-col cols=4>
@@ -26,10 +26,12 @@
                 </v-col>
             </v-row>
             <v-row class="d-flex justify-center mt-10">
-                <v-text-field v-show="gameStatus > 0" class="text" clearable hide-details="auto" height="10px"
+                <v-col cols="2"></v-col>
+                <v-text-field v-show="gameStatus > 0" class="text" clearable hide-details="auto"
                     label="Enter the answer" single-line density="compact" v-model="text"
                     @keydown.enter="enter"></v-text-field>
                 <v-btn v-show="gameStatus == 0 && nextImg != ''" @click="startGame">Game Start!</v-btn>
+                <v-col cols="2"></v-col>
             </v-row>
         </v-container>
     </v-app>
@@ -159,9 +161,11 @@ watch(totalTimer, (newVal) => {
 
 <style scoped>
 .hero {
-    background: url('../assets/back.jpg');
+    background: url('../assets/canvas.jpg');
     background-size: cover;
+    background-position: center;
     height: 100vh;
+    width: 100vw;
 }
 
 .rotate {

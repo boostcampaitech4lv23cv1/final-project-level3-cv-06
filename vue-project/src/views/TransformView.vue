@@ -53,7 +53,7 @@ export default {
 
 <style>
 .hero {
-    background: url('../assets/background.png');
+    background: url('../assets/test.jpg');
     background-size: cover;
     height: 100vh;
 }

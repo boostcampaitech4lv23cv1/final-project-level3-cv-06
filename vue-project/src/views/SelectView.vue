@@ -4,12 +4,12 @@
             <v-row class="justify-center mt-10">
                 <logo :style="{ height: '150px', width: '600px' }" />
             </v-row>
-            <v-row>
+            <v-row class="buttons">
                 <v-col cols=6 class="d-flex justify-center align-end">
-                    <mode :style="{height:'50px',width:'150px'}"/>
+                    <mode :style="{ height: '50px', width: '150px' }" />
                 </v-col>
                 <v-col cols=6 class="d-flex justify-center align-end">
-                    <category :style="{height:'50px',width:'230px'}"/>
+                    <category :style="{ height: '50px', width: '230px' }" />
                 </v-col>
             </v-row>
             <v-row>
@@ -87,7 +87,7 @@ export default {
 
 <style scoped>
 .hero {
-    background: url('../assets/background.png');
+    background: url('../assets/test.jpg');
     background-size: cover;
     height: 100vh;
 }
@@ -99,5 +99,9 @@ export default {
 .grey {
     background-color: #9E9E9E;
     color: #fff;
+}
+
+.buttons {
+    margin-top: 80px;
 }
 </style>
