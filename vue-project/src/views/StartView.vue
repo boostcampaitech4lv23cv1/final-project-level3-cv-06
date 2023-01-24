@@ -1,24 +1,26 @@
 <template>
   <v-app class="hero">
-    <v-container class="mt-16" text-color="white">
-      <div :style="{ 'font-size': '30px', 'color': 'white' }" class="d-flex justify-center align-center">Save Paint!
-      </div>
-      <v-row class="d-flex justify-end mt-10">
+    <v-container height="100%">
+      <v-row class="justify-center mt-16">
+        <logo :style="{ height: '150px', width: '600px' }" />
+      </v-row>
+      <!-- <v-row class="d-flex justify-end mt-10">
         <v-btn variant="text" v-bind="{ icon: soundIcon }" color="white" @click="soundChange"></v-btn>
-      </v-row>
-      <v-row class="d-flex justify-end">
-        <v-btn variant="text" icon="mdi-file-document" color="white"
-          @click='movePage("/description", { page: 1 })'></v-btn>
-      </v-row>
+      </v-row> -->
 
       <v-row class="d-flex justify-center align-center buttons">
-        <v-btn variant="flat" color="red" width="15%" @click='movePage("/select")'>
-          Game Start
+        <v-btn rounded variant="plain" color="transparent" @click='movePage("/select")'>
+          <game :style="{ height: '80px', width: '180px' }" />
         </v-btn>
       </v-row>
-      <v-row class="d-flex justify-center aligncenter mt-6">
-        <v-btn variant="flat" color="yellow" width="15%" class="text-white" @click='movePage("/transform")'>
-          Paint My Image
+      <v-row class="d-flex justify-center aligncenter mt-16">
+        <v-btn rounded variant="plain" color="transparent" @click='movePage("/transform")'>
+          <transform :style="{ height: '80px', width: '180px' }" />
+        </v-btn>
+      </v-row>
+      <v-row class="d-flex justify-center align-center buttons mt-16">
+        <v-btn rounded variant="plain" color="transparent" @click='movePage("/description", { page: 1 })'>
+          <description :style="{ height: '80px', width: '180px' }" />
         </v-btn>
       </v-row>
     </v-container>
@@ -26,7 +28,18 @@
 </template>
 
 <script>
+import logo from '../svg/logoView.vue';
+import transform from '../svg/transformButton.vue';
+import game from '../svg/GameButton.vue';
+import description from '../svg/descriptionButton.vue'
+
 export default {
+  components: {
+    logo,
+    transform,
+    game,
+    description,
+  },
   data() {
     return {
       absolute: true,
@@ -58,12 +71,11 @@ export default {
 
 <style scoped>
 .hero {
-  background: url('../assets/back.jpg');
+  background: url('../assets/test.jpg');
   background-size: cover;
-  height: 100vh;
 }
 
 .buttons {
-  margin-top: 400px
+  margin-top: 17vh;
 }
 </style>
