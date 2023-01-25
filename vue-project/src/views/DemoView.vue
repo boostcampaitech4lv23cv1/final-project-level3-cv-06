@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <v-app class="hero">
     <v-container>
       <v-row class="d-flex justify-center mt-16">
@@ -70,13 +71,55 @@
       </v-row>
     </v-container>
   </v-app>
+=======
+    <v-app class="hero">
+        <v-container>
+            <v-row class="justify-center">
+                <logo :style="{ height: '20vh', width: '40vw' }" />
+            </v-row>
+            <v-row class="d-flex mt-8">
+                <v-col cols="4"></v-col>
+                <v-col cols="4">
+                    <v-img src="../assets/example.jpg" height="40vh" width="40vw" class="mx-auto"
+                        v-show="gameStatus === 0" />
+                    <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="40vh" width="40vw"
+                        @load="timeStart" />
+                </v-col>
+                <v-col cols=4 class="mx-auto">
+                    <v-progress-linear v-show="gameStatus > 0" class="rotate progress-bar" height="20vh"
+                        v-model="totalTimer">
+                    </v-progress-linear>
+                </v-col>
+            </v-row>
+            <v-row class="d-flex justify-center mt-8">
+                <v-col cols=4>
+                    <v-progress-linear v-show="gameStatus > 0" v-model="imgTimer" height="7" rounded
+                        color="indigo"></v-progress-linear>
+                </v-col>
+            </v-row>
+            <v-row class="d-flex justify-center mt-10">
+                <v-col cols="4"></v-col>
+                <v-text-field v-show="gameStatus > 0" width="10px"
+                    label="Enter the answer" single-line density="compact" v-model="text"
+                    @keydown.enter="enter"></v-text-field>
+                <v-btn v-show="gameStatus == 0 && nextImg != ''" @click="startGame">Game Start!</v-btn>
+                <v-col cols="4"></v-col>
+            </v-row>
+        </v-container>
+    </v-app>
+>>>>>>> 6bbf991ade1557c743a6086e64bb229d0a7e7236
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+<<<<<<< HEAD
 import axios from "axios";
+=======
+import axios from 'axios';
+import logo from '../svg/logoView.vue'
+>>>>>>> 6bbf991ade1557c743a6086e64bb229d0a7e7236
 
 const imgTimer = ref(100);
 const totalTimer = ref(100);
@@ -214,13 +257,20 @@ watch(totalTimer, (newVal) => {
 }
 
 .rotate {
+<<<<<<< HEAD
   transform: rotate(270deg);
   border-radius: 12px;
   margin-top: 150px;
+=======
+    transform: rotate(270deg);
+    border-radius: 12px;
+    margin-top: 17vh;
+>>>>>>> 6bbf991ade1557c743a6086e64bb229d0a7e7236
 }
 
 .text {
   margin-left: 300px;
   margin-right: 300px;
 }
+
 </style>
