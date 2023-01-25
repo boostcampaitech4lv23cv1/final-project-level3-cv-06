@@ -1,37 +1,35 @@
 <template>
-    <mainview :page="$route.query.page" />
+  <mainview :page="$route.query.page" />
 </template>
 <script>
-import mainview from '../components/ExampleView.vue'
+import mainview from "../components/ExampleView.vue";
 
 export default {
-    components: {
-        mainview
-    },
-    data() {
-        return {
-            overlay: true,
-        };
-    },
-}
-
+  components: {
+    mainview,
+  },
+  data() {
+    return {
+      overlay: true,
+    };
+  },
+};
 </script>
-
 
 <style scoped>
 .hero {
-    background: url('../assets/back.jpg');
-    background-size: cover;
-    height: 100vh;
+  background: url("../assets/2.jpg");
+  background-size: cover;
+  height: 100vh;
 }
 
 .no-overlay-container {
-    position: relative;
-    z-index: 1;
-    background-color: blue;
+  position: relative;
+  z-index: 1;
+  background-color: blue;
 }
 
 .overlay-container {
-    background-color: blue;
+  background-color: blue;
 }
 </style>
