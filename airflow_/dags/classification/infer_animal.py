@@ -19,7 +19,6 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 class ClassifyDataset(Dataset):
     def __init__(self, df, transform=None):
         self.img_path = df["img_path"].values
-        self.img_alt = df["alt"].values
         self.transform = transform
 
     def __len__(self):
@@ -27,12 +26,11 @@ class ClassifyDataset(Dataset):
 
     def __getitem__(self, idx):
         img_path = self.img_path[idx]
-        label = self.img_alt[idx]
         image = cv2.imread(img_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         if self.transform:
             image = self.transform(image=image)
-        return image["image"], label
+        return image["image"]
 
 
 class Model(LightningModule):
@@ -123,12 +121,18 @@ def join_df2db(df):
 
     # Update the table in PostgreSQL
     animal_df.to_sql(name="animal", con=engine, if_exists="replace", index=False)
+
+
 def infer_senddb():
     df = make_img_label(feather_name="animal")
     print("label: ", df["label"])
     join_df2db(df)
 
+
 if __name__ == "__main__":
     df = make_img_label(feather_name="animal")
     print("label: ", df["label"])
     join_df2db(df)
+
+# TODO inference 함수 고치기
+# input이 이미지, output이 label
