@@ -7,11 +7,11 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 
 
 def df2db(keyword):
-    user = "myuser"
-    password = "mypassword"
-    host = "localhost"
+    user = "airflow"
+    password = "airflow"
+    host = "postgres"
     port = 5432
-    database = "airflow_db"
+    database = "airflow"
 
     engine = create_engine(f"postgresql://{user}:{password}@{host}:{port}/{database}")
     print("connecting to db")
@@ -24,4 +24,5 @@ def df2db(keyword):
 
 
 if __name__ == "__main__":
-    df2db(keyword="animal")
+    df2db(keyword="animals")
+# TODO airflow로 여러번 실행되었을때도 DB에 중복값이 없도록
