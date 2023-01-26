@@ -12,10 +12,14 @@ name = "pytorch"
 fastapi = {extras = ["all"], version = "*"}
 pandas = "*"
 scikit-learn = "*"
-psycopg2-binary = "*"
 opencv-python = "*"
 torch = {version = "*", index = "pytorch"}
 torchvision = {version = "*", index = "pytorch"}
+google-cloud-storage = "*"
+sqlalchemy = "*"
+python-dotenv = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 streamlit = "*"

@@ -16,7 +16,7 @@ services:
     
     depends_on:
       - webapp_1
-      - webapp_2
+      # - webapp_2
 
     ports:
       - 80:80
@@ -31,8 +31,8 @@ services:
 
     restart: always
 
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
 
     build: 
       context: .
@@ -47,56 +47,50 @@ services:
       - noops
 
 
-  webapp_2:
+  # webapp_2:
 
-    container_name: webapp_2
+  #   container_name: webapp_2
 
-    restart: always
-
-    build: 
-      context: .
-      dockerfile: ./docker/backend.dockerfile
-
-    volumes: # 사용자 한테 받은 이미지 저장 필요
-      - ./raw_image:/app/raw_image
-
-    command: sh -c "cd /app && uvicorn main:app --host 0.0.0.0 --port 8001"
-
-    networks:
-      - noops
-
-
-  # db:
-
-  #   image: mysql:8.0.30
-
-  #   container_name: db
-  
   #   restart: always
 
-  #   env_file:
-  #     - ./config/mysql/.env
+  #   build: 
+  #     context: .
+  #     dockerfile: ./docker/backend.dockerfile
 
-  #   # environment:
-  #   #   MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-  #     # MYSQL_DATABASE: TODOS
+  #   volumes: # 사용자 한테 받은 이미지 저장 필요
+  #     - ./raw_image:/app/raw_image
 
-  #   volumes:
-  #     - mysql-db:/var/lib/mysql/
-  #     - ./config/mysql/initdb.d/:/docker-entrypoint-initdb.d/
+  #   command: sh -c "cd /app && uvicorn main:app --host 0.0.0.0 --port 8001"
 
   #   networks:
   #     - noops
 
-  #   expose:
-  #     - 8008
-    
+
+  db:
+
+    image: postgres:14.0
+
+    container_name: db
+  
+    restart: always
+
+    env_file:
+      - ./config/db/.env
+
+    volumes:
+      - data-vol:/var/lib/postgresql/data
+      - ./config/db/initdb.d/:/docker-entrypoint-initdb.d/
+
+    networks:
+      - noops
+
+    expose:
+      - 5432:5432
+
 networks:
   noops:
     driver: bridge
 
-# TODO
-# 볼륨 추가, gcp에 올리기
-# volumes:
-#   data_vol:
-#     driver: local
+volumes:
+  data-vol:
+    driver: local

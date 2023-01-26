@@ -1,29 +1,31 @@
-from typing import List
-import platform
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.responses import StreamingResponse
 
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import StreamingResponse, FileResponse, Response, JSONResponse
+from sqlalchemy.orm import Session
 
-from utils import set_game_imgs, get_paint_img, get_result_imgs, get_origin_imgs
+from utils import get_paint_img, get_result_imgs, get_origin_imgs
 from scheme import *
+from crud import *
+from db import *
+
+
+Base.metadata.create_all(bind=engine)
 
 router = APIRouter()
 
+@router.get('/create')
+def create_dummy(db: Session = Depends(get_db)):
+    create_dummy_data(db)
     
-@router.post('/gamestart')
-async def gamestart(game_in: GameIn):
-    img_paths = set_game_imgs(game_in.category)
-    if platform.system() == "Windows":
-        answer_list = [path.split('\\')[-2] for path in img_paths]
-    else:
-        answer_list = [path.split('/')[-2] for path in img_paths]
-    return JSONResponse(content={
-        "img_list" : img_paths,
-        "answer_list": answer_list
-        })
+@router.post('/gamestart', response_model=SavePaintOut)
+async def gamestart(game_in: GameIn, db: Session = Depends(get_db)):
     
+    img_paths = read_savepaint(db, game_in.category)
+    # random 추출
+    return img_paths
 
-@router.post('/paint')
+
+@router.post('/paint_test')
 async def paint(path: ImagePath):
     
     return StreamingResponse(
@@ -32,7 +34,7 @@ async def paint(path: ImagePath):
     )
 
 
-@router.post('/result', response_model=GameOut)
+@router.post('/result_test', response_model=GameOut)
 async def result(paths: ImagePaths):
     
     result_imgs = get_result_imgs(paths.paths)

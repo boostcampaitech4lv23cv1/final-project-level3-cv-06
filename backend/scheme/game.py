@@ -18,3 +18,10 @@ class ImagePaths(BaseModel):
 class GameOut(BaseModel):
     result_imgs: List[bytes]
     origin_imgs: List[bytes]
+    
+class SavePaintOut(BaseModel):
+    label: List[str]
+    img_path: str
+    class Config:
+        orm_mode = True
+        

@@ -1,5 +1,6 @@
 FROM python:3.9.16-slim
 
+
 WORKDIR /app
 
 # 상대경로 절대경로 둘 다 가능
@@ -10,7 +11,11 @@ COPY ../Pipfile.lock .
 
 RUN apt-get update && apt-get install -y \
 libgl1-mesa-glx \
-libglib2.0-0
+libglib2.0-0 \
+python-dev \
+libpq-dev \
+build-essential
+# postgresql-server-dev-all
 
 RUN pip install --upgrade pip && pip install pipenv
 

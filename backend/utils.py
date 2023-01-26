@@ -8,14 +8,22 @@ from glob import glob
 from PIL import Image
 import numpy as np
 
+from google.cloud import storage
+from google.oauth2 import service_account
+
 from typing import List
 
 from PaintTransformer.inference import init, inference
 from PaintTransformer.inference_only_final import inference as inference_by_img
 
-
+KEY_PATH = 'env/key.json'
 DATA_PATH = 'dataset'
 model_path = "PaintTransformer/model.pth" # main.py 기준으로 경로 설정해야 함
+bucket_name = "image_cloud_demo"
+
+credentials = service_account.Credentials.from_service_account_file(KEY_PATH)
+client = storage.Client(credentials = credentials, project = credentials.project_id)
+bucket = client.bucket(bucket_name)
 
 resize_l = 256
 K = 4
@@ -78,6 +86,7 @@ def predict(category):
 
     return buffer, label, origin_image
 
+
 def predict_by_img(img):
 
     _, final_img = inference_by_img(
@@ -93,6 +102,7 @@ def predict_by_img(img):
     )
 
     return final_img
+
 
 def from_image_to_bytes(img, extend):
     """
@@ -123,56 +133,7 @@ def from_image_to_str(img, extend):
     decoded = encoded.decode('utf-8') # 
     return decoded
 
-
-async def save_img(uf):
     
-    # async with aiofiles.open(out_file_path, 'wb') as out_file:
-    #     while content := await in_file.read(1024):  # async read chunk
-    #         await out_file.write(content)  # async write chunk
-    
-    # try: # db저장 필요
-    #     async with aiofiles.open('./raw_image/test.jpg', 'wb') as out_file: # 받은 사진 저장
-    #         content = await img_b.read()  # async read
-    #         await out_file.write(content)  # async write
-    
-    try: # db 저장 필요
-        # aiofiles사용시 오류남
-        with open(f'./raw_image/{uf.filename}', 'wb') as out_file: # 받은 사진 저장
-            await uf.seek(0)
-            content = await uf.read()  # async read
-            out_file.write(content)  # async write
-    except Exception as e:
-        print(f'ERROR: {e}')
-        print('저장 실패')
-    finally:
-        print('save image')
-        
-
-# async def get_img(category: str):
-#     # 이미지 9개 반환
-    
-    
-#     category_path = os.path.join(DATA_PATH, 'original', f'{category}')
-#     path_lst = glob(f'{category_path}/*/*')
-    
-#     origin_path = random.choice(path_lst)
-#     paint_path = origin_path.replace('original', 'paint').replace('jpg', 'gif')
-#     result_path = origin_path.replace('original', 'result')
-#     answer = origin_path.split('/')[-2]
-    
-#     with open(paint_path, 'rb') as f:
-#         while True:
-#             paint_chunk = f.read(1024)
-#             if not paint_chunk:
-#                 break
-#             else:
-#                 # encoded = base64.b64encode(paint_chunk)
-#                 yield paint_chunk
-        
-#         # result_img = Image.open(result)
-
-    
-
 def set_game_imgs(category: str) -> List[str]:
     
     category_path = os.path.join(DATA_PATH, 'original', f'{category}')
@@ -220,5 +181,11 @@ def get_origin_imgs(img_paths: List[str]) -> list:
     return origin_imgs
     
     
+def save_user_img(img, file_name, extend):
+    img.save(f"{file_name}.webp", "WEBP")
         
+    
+        
+        
+# gcs에 있는 폴더 구조 가져와서 db업데이트 하기(?)
         
