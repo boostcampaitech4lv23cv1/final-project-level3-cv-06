@@ -44,11 +44,18 @@
         <F v-show="rank == 'F'" height="300" class="score-space mx-auto" />
       </v-row>
 
-      <v-row>
-        <v-btn class="mx-auto mt-16" @click="goResult"> Show Result! </v-btn>
-      </v-row>
-    </v-container>
-  </v-app>
+
+            <v-row v-if="originImg != ''">
+                <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
+                    <v-img :width="350" :height="350" :src="`data:image/gif;base64,${result[n - 1]}`"
+                        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`" aspect-ratio="1" cover
+                        class="grey lighten-2" @click="moveDetail(n)">
+                    </v-img>
+                </v-col>
+            </v-row>
+
+        </v-container>
+    </v-app>
 </template>
 
 <script>

@@ -83,10 +83,10 @@
 </template>
 
 <script>
-import logo from "../svg/logoView.vue";
-import transform from "../svg/transformButton.vue";
-import game from "../svg/GameButton.vue";
-import description from "../svg/descriptionButton.vue";
+import logo from '../svg/logoView.vue';
+import transform from '../svg/transformButton.vue';
+import game from '../svg/GameButton.vue';
+import description from '../svg/descriptionButton.vue'
 
 export default {
   components: {
@@ -131,7 +131,7 @@ export default {
 
 <style scoped>
 .hero {
-  background: url("../assets/test.jpg");
+  background: url('../assets/test.jpg');
   background-size: cover;
 }
 

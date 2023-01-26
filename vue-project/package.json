@@ -18,8 +18,8 @@
     "vue-router": "^4.0.3",
     "vuetify": "^3.0.0-beta.0",
     "vuex": "^4.0.2",
-    "webfontloader": "^1.0.0",
-    "yarn": "^1.22.19"
+    "vuex-persistedstate": "^4.1.0",
+    "webfontloader": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

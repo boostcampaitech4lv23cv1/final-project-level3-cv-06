@@ -1,16 +1,16 @@
-import { createRouter, createWebHistory } from "vue-router";
-import startview from "../views/StartView.vue";
-import selectview from "../views/SelectView.vue";
-import gameview from "../views/GameView.vue";
-import descriptionview from "../views/DescriptionView";
-import resultview from "../views/ResultView";
-import detailview from "../views/DetailView";
-import transformview from "../views/TransformView";
-import testview from "../views/TestView";
-import rankview from "../views/RankView";
-import demoview from "../views/DemoView";
-import demoresult from "../views/DemoResult";
-import demodetail from "../views/DemoDetail";
+import { createRouter, createWebHistory } from 'vue-router'
+import startview from '../views/StartView.vue'
+import selectview from '../views/SelectView.vue'
+import gameview from '../views/GameView.vue'
+import descriptionview from '../views/DescriptionView'
+import resultview from '../views/ResultView'
+import detailview from '../views/DetailView'
+import transformview from '../views/TransformView'
+import rankview from '../views/RankView'
+import demoview from '../views/DemoView'
+import demoresult from '../views/DemoResult'
+import demodetail from '../views/DemoDetail'
+
 
 const routes = [
   {
@@ -49,14 +49,9 @@ const routes = [
     component: transformview,
   },
   {
-    path: "/test",
-    name: "test",
-    component: testview,
-  },
-  {
-    path: "/rank",
-    name: "rank",
-    component: rankview,
+    path:'/rank',
+    name:'rank',
+    component: rankview
   },
 
   {

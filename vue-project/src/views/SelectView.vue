@@ -2,6 +2,7 @@
   <v-app class="hero">
     <v-container height="100%">
       <v-row class="justify-center mt-16">
+
         <logo :style="{ height: '150px', width: '600px' }" />
       </v-row>
       <v-row class="buttons">
@@ -24,6 +25,7 @@
               :class="{
                 selected: selectedMode === item.value,
                 'mb-4 w-50 mx-auto ': true,
+
               }"
             >
               {{ item.text }}
@@ -41,6 +43,7 @@
               :class="{
                 selected: selectedCategory === item.value,
                 'mb-4 w-50 mx-auto ': true,
+
               }"
             >
               {{ item.text }}
@@ -77,6 +80,7 @@ export default {
       ],
       selectedCategory: "animal",
       selectedMode: "painttransformer",
+
       modeItems: [{ text: "Paint Transformer", value: "painttransformer" }],
     };
   },
@@ -115,6 +119,7 @@ export default {
 
 .selected {
   background-color: rgb(255, 196, 0);
+
 }
 
 .grey {

@@ -78,7 +78,6 @@ import axios from "axios";
 import logo from "../svg/logoView.vue";
 import wrong from "../svg/wrongAnswer.vue";
 import right from "../svg/rightAnswer.vue";
-
 const imgTimer = ref(100);
 const totalTimer = ref(100);
 const rightTimer = ref(0);

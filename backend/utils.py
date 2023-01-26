@@ -123,6 +123,7 @@ def from_image_to_str(img, extend):
     encoded = base64.b64encode(imgByteArr)  # byte
     # Base64로 utf-8로 디코딩
     decoded = encoded.decode("utf-8")  #
+    print(decoded)
     return decoded
 
 
