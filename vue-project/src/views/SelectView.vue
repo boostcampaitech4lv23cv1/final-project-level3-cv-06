@@ -1,7 +1,8 @@
 <template>
   <v-app class="hero">
     <v-container height="100%">
-      <v-row class="justify-center mt-10">
+      <v-row class="justify-center mt-16">
+
         <logo :style="{ height: '150px', width: '600px' }" />
       </v-row>
       <v-row class="buttons">
@@ -22,8 +23,9 @@
               :value="item.value"
               @click="changeMode(item.value)"
               :class="{
-                darken: selectedMode === item.value,
-                'mb-4 w-50 mx-auto grey': true,
+                selected: selectedMode === item.value,
+                'mb-4 w-50 mx-auto ': true,
+
               }"
             >
               {{ item.text }}
@@ -39,8 +41,9 @@
               :value="item.value"
               @click="changeCategory(item.value)"
               :class="{
-                darken: selectedCategory === item.value,
-                'mb-4 w-50 mx-auto grey': true,
+                selected: selectedCategory === item.value,
+                'mb-4 w-50 mx-auto ': true,
+
               }"
             >
               {{ item.text }}
@@ -49,7 +52,7 @@
         </v-col>
       </v-row>
       <v-col cols="12" class="d-flex justify-center mt-16">
-        <v-btn :disabled="categoryIsEmpty" color="primary" @click="startGame"
+        <v-btn :disabled="categoryIsEmpty" color="yellow" @click="startGame"
           >Game start</v-btn
         >
       </v-col>
@@ -75,8 +78,9 @@ export default {
         { text: "Landmark", value: "landmark" },
         { text: "Entertainment", value: "entertainer" },
       ],
-      selectedCategory: "",
-      selectedMode: "",
+      selectedCategory: "animal",
+      selectedMode: "painttransformer",
+
       modeItems: [{ text: "Paint Transformer", value: "painttransformer" }],
     };
   },
@@ -111,6 +115,11 @@ export default {
 
 .darken {
   filter: brightness(80%);
+}
+
+.selected {
+  background-color: rgb(255, 196, 0);
+
 }
 
 .grey {

@@ -60,6 +60,12 @@
         >
         <v-col cols="4"></v-col>
       </v-row>
+      <v-row calss="d-flex justify-center">
+        <div v-show="wrongTimer > 0" class="mx-auto">
+          <wrong />
+        </div>
+        <div v-show="rightTimer > 0" class="mx-auto"><right /></div>
+      </v-row>
     </v-container>
   </v-app>
 </template>
@@ -70,9 +76,12 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
 import logo from "../svg/logoView.vue";
-
+import wrong from "../svg/wrongAnswer.vue";
+import right from "../svg/rightAnswer.vue";
 const imgTimer = ref(100);
 const totalTimer = ref(100);
+const rightTimer = ref(0);
+const wrongTimer = ref(0);
 const gameStatus = ref(0);
 const headText = ref("Save Paint!");
 const text = ref("");
@@ -97,6 +106,18 @@ setInterval(() => {
     totalTimer.value = totalTimer.value - 1;
   }
 }, 1800);
+
+setInterval(() => {
+  if (rightTimer.value > 0) {
+    rightTimer.value = rightTimer.value - 1;
+  }
+}, 1000);
+
+setInterval(() => {
+  if (wrongTimer.value > 0) {
+    wrongTimer.value = wrongTimer.value - 1;
+  }
+}, 1000);
 
 function timeStart() {
   loaded.value = 1;
@@ -144,8 +165,16 @@ function enter() {
     router.push({ path: "/rank" });
   }
   if (text.value == answer.value[gameStatus.value - 1]) {
+    if (wrongTimer.value > 0) {
+      wrongTimer.value = 0;
+    }
+    rightTimer.value = 2;
     resetImg();
   } else {
+    if (rightTimer.value > 0) {
+      rightTimer.value = 0;
+    }
+    wrongTimer.value = 2;
     text.value = "";
   }
 }

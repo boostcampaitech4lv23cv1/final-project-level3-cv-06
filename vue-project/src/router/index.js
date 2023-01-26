@@ -11,67 +11,69 @@ import demoview from '../views/DemoView'
 import demoresult from '../views/DemoResult'
 import demodetail from '../views/DemoDetail'
 
+
 const routes = [
   {
-    path: '/',
-    name: 'start',
-    component: startview
+    path: "/",
+    name: "start",
+    component: startview,
   },
   {
-    path: '/select',
-    name: 'select',
-    component: selectview
+    path: "/select",
+    name: "select",
+    component: selectview,
   },
   {
-    path:'/game',
-    name:'game',
-    component: gameview
+    path: "/game",
+    name: "game",
+    component: gameview,
   },
   {
-    path:'/description',
-    name:'description',
-    component: descriptionview
+    path: "/description",
+    name: "description",
+    component: descriptionview,
   },
   {
-    path:'/result',
-    name:'result',
-    component: resultview
+    path: "/result",
+    name: "result",
+    component: resultview,
   },
   {
-    path:'/detail',
-    name:'detail',
-    component: detailview
+    path: "/detail",
+    name: "detail",
+    component: detailview,
   },
   {
-    path:'/transform',
-    name:'transform',
-    component: transformview
+    path: "/transform",
+    name: "transform",
+    component: transformview,
   },
   {
     path:'/rank',
     name:'rank',
     component: rankview
   },
+
   {
-    path:'/demo',
-    name:'demo',
-    component: demoview
+    path: "/demo",
+    name: "demo",
+    component: demoview,
   },
   {
-    path:'/demoresult',
-    name:'demoresult',
-    component:demoresult
+    path: "/demoresult",
+    name: "demoresult",
+    component: demoresult,
   },
   {
-    path:'/demodetail',
-    name:'demodetail',
-    component:demodetail
-  }
-]
+    path: "/demodetail",
+    name: "demodetail",
+    component: demodetail,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
