@@ -2,10 +2,13 @@
   <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    enable-background="new 0 0 32 32"
+    enable-background="new 0 0 100 100"
     id="cancel"
+    height="165px"
+    overflow="visible"
     version="1.1"
-    viewBox="0 0 165 165"
+    viewBox="0 0 33 33"
+    width="165px"
     xml:space="preserve"
   >
     <g>

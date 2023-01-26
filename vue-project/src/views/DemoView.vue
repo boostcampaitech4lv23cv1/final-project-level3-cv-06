@@ -1,23 +1,16 @@
 <template>
-  <v-app>
+  <v-app class="hero">
     <v-container>
-      <v-row class="d-flex justify-center mt-16">
-        <div
-          :style="{ 'font-size': '30px', color: 'black' }"
-          class="d-flex justify-center align-center"
-        >
-          {{ headText }}
-          {{ rightTimer }}
-          {{ wrongTimer }}
-        </div>
+      <v-row class="justify-center">
+        <logo :style="{ height: '20vh', width: '40vw' }" />
       </v-row>
-      <v-row class="d-flex mt-16">
+      <v-row class="d-flex mt-8">
         <v-col cols="4"></v-col>
         <v-col cols="4">
           <v-img
             src="../assets/example.jpg"
-            height="350"
-            width="350"
+            height="40vh"
+            width="40vw"
             class="mx-auto"
             v-show="gameStatus === 0"
           />
@@ -25,17 +18,16 @@
             v-show="gameStatus != 0"
             v-bind:src="currentImg"
             class="mx-auto"
-            height="350"
-            width="350"
+            height="40vh"
+            width="40vw"
             @load="timeStart"
           />
         </v-col>
-        <v-col cols="4">
+        <v-col cols="4" class="mx-auto">
           <v-progress-linear
             v-show="gameStatus > 0"
-            class="rotate"
-            height="20"
-            width="40"
+            class="rotate progress-bar"
+            height="20vh"
             v-model="totalTimer"
           >
           </v-progress-linear>
@@ -53,12 +45,10 @@
         </v-col>
       </v-row>
       <v-row class="d-flex justify-center mt-10">
+        <v-col cols="4"></v-col>
         <v-text-field
           v-show="gameStatus > 0"
-          class="text"
-          clearable
-          hide-details="auto"
-          height="10px"
+          width="10px"
           label="Enter the answer"
           single-line
           density="compact"
@@ -68,13 +58,14 @@
         <v-btn v-show="gameStatus == 0 && nextImg != ''" @click="startGame"
           >Game Start!</v-btn
         >
+        <v-col cols="4"></v-col>
       </v-row>
-      <div v-show="wrongTimer > 0" viewBox="0 0 1000 1000" class="mx-auto">
-        <wrong />
-      </div>
-      <div v-show="rightTimer > 0" class="mx-auto">
-        <right />
-      </div>
+      <v-row calss="d-flex justify-center">
+        <div v-show="wrongTimer > 0" class="mx-auto">
+          <wrong />
+        </div>
+        <div v-show="rightTimer > 0" class="mx-auto"><right /></div>
+      </v-row>
     </v-container>
   </v-app>
 </template>
@@ -84,6 +75,7 @@ import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
+import logo from "../svg/logoView.vue";
 import wrong from "../svg/wrongAnswer.vue";
 import right from "../svg/rightAnswer.vue";
 
@@ -169,6 +161,10 @@ function startGame() {
   totalTimer.value = 100;
 }
 function enter() {
+  if (gameStatus.value === 9) {
+    store.commit("setRank", rank);
+    router.push({ path: "/rank" });
+  }
   if (text.value == answer.value[gameStatus.value - 1]) {
     if (wrongTimer.value > 0) {
       wrongTimer.value = 0;
@@ -180,10 +176,7 @@ function enter() {
       rightTimer.value = 0;
     }
     wrongTimer.value = 2;
-  }
-  if (gameStatus.value === 10) {
-    store.commit("setRank", rank);
-    router.push({ path: "/rank" });
+    text.value = "";
   }
 }
 
@@ -236,23 +229,21 @@ watch(totalTimer, (newVal) => {
 
 <style scoped>
 .hero {
-  background: url("../assets/back.jpg");
+  background: url("../assets/canvas.jpg");
   background-size: cover;
+  background-position: center;
   height: 100vh;
+  width: 100vw;
 }
 
 .rotate {
   transform: rotate(270deg);
   border-radius: 12px;
-  margin-top: 150px;
+  margin-top: 17vh;
 }
 
 .text {
   margin-left: 300px;
   margin-right: 300px;
-}
-
-.score-space {
-  margin-top: 150px;
 }
 </style>
