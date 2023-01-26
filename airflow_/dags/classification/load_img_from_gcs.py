@@ -5,7 +5,7 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 
 
 def download_img_from_gcs(scraped_time, bucket, site, keyword):
-    dest = f"{AIRFLOW_HOME}/dags/classification/data/{scraped_time}/{keyword}/"
+    dest = f"{AIRFLOW_HOME}/dags/classification/data/{keyword}/{site}/{scraped_time}"
     os.makedirs(dest, exist_ok=True)
     bash_script = (
         f"gsutil -m cp -r gs://{bucket}/{keyword}/{site}/{scraped_time}/ {dest}"
