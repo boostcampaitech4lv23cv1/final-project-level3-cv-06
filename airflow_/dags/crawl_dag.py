@@ -9,20 +9,14 @@ from airflow import DAG
 # Operators; we need this to operate!
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
-from airflow.providers.google.cloud.operators.gcs import GCSCreateBucketOperator
 from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
-from airflow.providers.google.cloud.transfers.gcs_to_local import (
-    GCSToLocalFilesystemOperator,
-)
 from airflow.providers.google.cloud.transfers.local_to_gcs import (
     LocalFilesystemToGCSOperator,
 )
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import (
     PostgresToGCSOperator,
 )
-from airflow.providers.sftp.hooks.sftp import SFTPHook
 from airflow.providers.sftp.sensors.sftp import SFTPSensor
-from airflow.providers.ssh.hooks.ssh import SSHHook
 from airflow.providers.ssh.operators.ssh import SSHOperator
 from airflow.utils.dates import days_ago
 from database.metadata2db import df2db
@@ -34,15 +28,7 @@ local_tz = pendulum.timezone("Asia/Seoul")
 scraped_time = datetime.now(timezone("Asia/Seoul")).strftime("%m-%d_%H")
 
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
-
-sshHook = SSHHook(
-    remote_host="101.101.208.220",
-    username="root",
-    password="q1w2e3r4",
-    port="2234",
-)
-sftpHook = SFTPHook(ssh_hook=sshHook)
-
+ssh_base = "/opt/ml/final-project-level3-cv-06"
 keyword = "animals"
 site = "pixabay"
 bucket = "scraped-img"
@@ -100,16 +86,14 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         gcp_conn_id="my_gcs_connection",
     )
     load_img_from_gcs = SSHOperator(
-        ssh_hook=sshHook,
         task_id="download_img_from_gcs",
-        command=f"python /opt/ml/final-project-level3-cv-06/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
+        ssh_conn_id="my_ssh_connection",
+        command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
     )
     sense_ssh_file = SFTPSensor(
         task_id="sense_ssh_file",
-        path="",
-        sftp_conn_id="test_sftp_connection",
-        file_pattern="*.jpg",
-        newer_than="2021-01-01",
+        sftp_conn_id="my_sftp_connection",
+        path=f"python {ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/metadata.feather",
     )
 
     # check_gcs_file = GCSObjectExistenceSensor(
@@ -129,7 +113,13 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     # infer_job = PythonOperator(task_id="infer_animal", python_callable=infer_senddb)
 
     #####################    TASKS    #####################
-    crawl_img >> [metadata2db, img2gcs] >> metadata2gcs >> load_img_from_gcs
+    (
+        crawl_img
+        >> [metadata2db, img2gcs]
+        >> metadata2gcs
+        >> load_img_from_gcs
+        >> sense_ssh_file
+    )
 
 # TODO handling errors
 # TODO configure the retries % failures
