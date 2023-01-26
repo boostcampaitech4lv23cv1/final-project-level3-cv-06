@@ -7,6 +7,8 @@
           class="d-flex justify-center align-center"
         >
           {{ headText }}
+          {{ rightTimer }}
+          {{ wrongTimer }}
         </div>
       </v-row>
       <v-row class="d-flex mt-16">
@@ -67,6 +69,12 @@
           >Game Start!</v-btn
         >
       </v-row>
+      <div v-show="wrongTimer > 0" viewBox="0 0 1000 1000" class="mx-auto">
+        <wrong />
+      </div>
+      <div v-show="rightTimer > 0" class="mx-auto">
+        <right />
+      </div>
     </v-container>
   </v-app>
 </template>
@@ -76,9 +84,13 @@ import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
+import wrong from "../svg/wrongAnswer.vue";
+import right from "../svg/rightAnswer.vue";
 
 const imgTimer = ref(100);
 const totalTimer = ref(100);
+const rightTimer = ref(0);
+const wrongTimer = ref(0);
 const gameStatus = ref(0);
 const headText = ref("Save Paint!");
 const text = ref("");
@@ -103,6 +115,18 @@ setInterval(() => {
     totalTimer.value = totalTimer.value - 1;
   }
 }, 1800);
+
+setInterval(() => {
+  if (rightTimer.value > 0) {
+    rightTimer.value = rightTimer.value - 1;
+  }
+}, 1000);
+
+setInterval(() => {
+  if (wrongTimer.value > 0) {
+    wrongTimer.value = wrongTimer.value - 1;
+  }
+}, 1000);
 
 function timeStart() {
   loaded.value = 1;
@@ -146,7 +170,16 @@ function startGame() {
 }
 function enter() {
   if (text.value == answer.value[gameStatus.value - 1]) {
+    if (wrongTimer.value > 0) {
+      wrongTimer.value = 0;
+    }
+    rightTimer.value = 2;
     resetImg();
+  } else {
+    if (rightTimer.value > 0) {
+      rightTimer.value = 0;
+    }
+    wrongTimer.value = 2;
   }
   if (gameStatus.value === 10) {
     store.commit("setRank", rank);
@@ -217,5 +250,9 @@ watch(totalTimer, (newVal) => {
 .text {
   margin-left: 300px;
   margin-right: 300px;
+}
+
+.score-space {
+  margin-top: 150px;
 }
 </style>
