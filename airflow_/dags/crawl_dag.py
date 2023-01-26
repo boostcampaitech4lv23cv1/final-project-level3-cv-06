@@ -9,6 +9,7 @@ from airflow import DAG
 # Operators; we need this to operate!
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
+from airflow.providers.google.cloud.operators.gcs import GCSCreateBucketOperator
 from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
 from airflow.providers.google.cloud.transfers.gcs_to_local import (
     GCSToLocalFilesystemOperator,
@@ -19,6 +20,9 @@ from airflow.providers.google.cloud.transfers.local_to_gcs import (
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import (
     PostgresToGCSOperator,
 )
+from airflow.providers.sftp.hooks.sftp import SFTPHook
+from airflow.providers.sftp.sensors.sftp import SFTPSensor
+from airflow.providers.ssh.hooks.ssh import SSHHook
 from airflow.providers.ssh.operators.ssh import SSHOperator
 from airflow.utils.dates import days_ago
 from database.metadata2db import df2db
@@ -27,10 +31,21 @@ from pytz import timezone
 # package for tasks
 
 local_tz = pendulum.timezone("Asia/Seoul")
-now_time = datetime.now(timezone("Asia/Seoul")).strftime("%m-%d_%H:%M:%S")
+scraped_time = datetime.now(timezone("Asia/Seoul")).strftime("%m-%d_%H")
 
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 
+sshHook = SSHHook(
+    remote_host="101.101.208.220",
+    username="root",
+    password="q1w2e3r4",
+    port="2234",
+)
+sftpHook = SFTPHook(ssh_hook=sshHook)
+
+keyword = "animals"
+site = "pixabay"
+bucket = "scraped-img"
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
 default_args = {
@@ -59,41 +74,42 @@ default_args = {
 with DAG("crawling", default_args=default_args, schedule="@once") as dag:
 
     #####################    JOBS    #######################
-    # from pixabay.scrape_img import crawl_img_by_category
-
-    # img_job = PythonOperator(
-    #     task_id="img_crawler", python_callable=crawl_img_by_category
-    # )
     crawl_img = BashOperator(
         task_id="img_crawler",
-        bash_command="python ${AIRFLOW_HOME}/dags/pixabay/scrape_api.py",
+        bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {scraped_time}",
     )
 
     metadata2db = PythonOperator(
         task_id="metadata2db",
         python_callable=df2db,
-        op_kwargs={"keyword": "animals"},
+        op_kwargs={"keyword": keyword, "site": site, "scraped_time": scraped_time},
     )
     img2gcs = LocalFilesystemToGCSOperator(
         task_id="img2gcs",
-        src=f"{AIRFLOW_HOME}/dags/pixabay/crawled_img/animals/*.jpg",
-        dst=f"{now_time}/",
-        bucket="pixabay_animals",
+        src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/*.jpg",
+        dst=f"{keyword}/{site}/{scraped_time}/",
+        bucket=bucket,
         gcp_conn_id="my_gcs_connection",
     )
+    # TODO jpg 2 webp
     metadata2gcs = LocalFilesystemToGCSOperator(
         task_id="metadata2gcs",
-        src=f"{AIRFLOW_HOME}/dags/pixabay/crawled_img/animals/*.feather",
-        dst=f"{now_time}/",
-        bucket="pixabay_animals",
+        src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/metadata.feather",
+        dst=f"{keyword}/{site}/{scraped_time}/",
+        bucket=bucket,
         gcp_conn_id="my_gcs_connection",
     )
-    load_img_from_gcs = GCSToLocalFilesystemOperator(
-        task_id="load_img_from_gcs",
-        bucket="pixabay_animals",
-        object_name=f"{now_time}/*.jpg",
-        filename=f"{AIRFLOW_HOME}/dags/pixabay/crawled_img/animals/",
-        gcp_conn_id="my_gcs_connection",
+    load_img_from_gcs = SSHOperator(
+        ssh_hook=sshHook,
+        task_id="download_img_from_gcs",
+        command=f"python /opt/ml/final-project-level3-cv-06/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
+    )
+    sense_ssh_file = SFTPSensor(
+        task_id="sense_ssh_file",
+        path="",
+        sftp_conn_id="test_sftp_connection",
+        file_pattern="*.jpg",
+        newer_than="2021-01-01",
     )
 
     # check_gcs_file = GCSObjectExistenceSensor(
@@ -113,7 +129,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     # infer_job = PythonOperator(task_id="infer_animal", python_callable=infer_senddb)
 
     #####################    TASKS    #####################
-    crawl_img >> [metadata2db, img2gcs] >> metadata2gcs
+    crawl_img >> [metadata2db, img2gcs] >> metadata2gcs >> load_img_from_gcs
 
 # TODO handling errors
 # TODO configure the retries % failures
@@ -121,3 +137,4 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
 # TODO 새로 올라온 데이터에 대해서만 크롤링 후 db에 저장하도록 수정
 # TODO gcs에 저장된 데이터와 local 데이터 중복 없도록 업로드
 # TODO gcs에 업로드 시 메타 데이터까지 업로드
+# TODO 버킷 안에 있는 폴더명 어떻게 할지 정하기 (datetime을 쓰면 task 실패 시 datetime을 다시 실행하기 때문에 폴더가 여러개 생기는 문제 발생)

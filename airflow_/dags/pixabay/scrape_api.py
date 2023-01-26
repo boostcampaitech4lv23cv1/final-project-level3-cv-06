@@ -1,10 +1,12 @@
-import datetime
 import itertools
 import logging
 import os
+import sys
+from datetime import datetime
 
 import pandas as pd
 import requests
+from pytz import timezone
 
 # request timeout
 TIMEOUT = 60
@@ -14,6 +16,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(AIRFLOW_HOME == "/opt/airflow")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
+SCRAPED_TIME = sys.argv[1]
 
 
 class PixabayCrawler:
@@ -71,13 +74,16 @@ class PixabayCrawler:
                 "label",
             ]
         )
+        site = "pixabay"
         logger.info("Starting")
         for keyword in self.keywords:
             try:
                 self.params["q"] = keyword
 
                 try:
-                    class_path = f"{AIRFLOW_HOME}/dags/pixabay/crawled_img/{keyword}"
+                    class_path = (
+                        f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{SCRAPED_TIME}"
+                    )
                     print(class_path)
                     os.makedirs(class_path, exist_ok=True)
 
@@ -146,7 +152,7 @@ class PixabayCrawler:
                             img_path,
                             img_dict["webformatWidth"],
                             img_dict["webformatHeight"],
-                            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            SCRAPED_TIME,
                             "",
                         ]
                     ],
@@ -186,6 +192,9 @@ class PixabayCrawler:
                 logger.debug(img_path)
                 file.write(img_bytes)
             return img_path
+
+
+# TODO webp
 
 
 class Progressbar:
@@ -239,16 +248,17 @@ class Progressbar:
 
 
 def save_metadata(keyword, df):
+    site = "pixabay"
     print("make_data_dir os.getcwd(): ", os.getcwd())
-    save_path = f"{AIRFLOW_HOME}/dags/crawled_img/pixabay/metadata"
+    save_path = f"{AIRFLOW_HOME}/dags/data/{keyword[0]}/{site}/{SCRAPED_TIME}"
+
     os.makedirs(save_path, exist_ok=True)
     df["img_path"] = df["img_path"].astype(str)
-    df.to_feather(f"{save_path}/{keyword[0]}.feather")
-    print(f"saved metadata for {keyword[0]} at {save_path}/{keyword[0]}.feather")
+    df.to_feather(f"{save_path}/metadata.feather")
+    print(f"saved metadata for {keyword[0]} at {save_path}/metadata.feather")
 
 
 if __name__ == "__main__":
-
     category = [
         "animals",
         "backgrounds",
@@ -291,7 +301,6 @@ if __name__ == "__main__":
     keyword = ["animals"]
     scraper = PixabayCrawler(keyword, params)
     df = scraper.scraper(n_imgs=5)
-
     save_metadata(keyword, df)
     # TODO: width, height min값 정하기 min_width,min_height
     # TODO: 한번 실행할 때 크롤링할 이미지 개수 정하기 n_imgs

@@ -231,3 +231,6 @@ airflow_/webserver_config.py
 airflow_/standalone_admin_password.txt
 
 airflow_/Pipfile
+
+airflow_/dags/data
+# scraped data
