@@ -87,14 +87,14 @@ game_status: 시작 전 0 각 문제 마다 +1(총 9) -> 게임이 끝날 때 10
                this.paintImg=response['paint_img']
                this.answer=response['answer']
                this.result=response['result']
-                
+
                this.$store.commit('setOrigin',response['origin_img'])
                this.$store.commit('setPaint',response['paint_img'])
                this.$store.commit('setAnswer',response['answer'])
                this.$store.commit('setResult',response['result'])
-               
+
             },
-            
+
             enter(){
                 if (this.text===this.answer[this.game_status-1]){
                     this.text=''
@@ -110,7 +110,7 @@ game_status: 시작 전 0 각 문제 마다 +1(총 9) -> 게임이 끝날 때 10
                 this.game_status+=1
                 // this.getGame()
             },
-            
+
         }
     }
 
