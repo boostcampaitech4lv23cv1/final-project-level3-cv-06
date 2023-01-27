@@ -1,9 +1,9 @@
 from sqlalchemy import Boolean, Column, Integer, String, DateTime
 from db import Base
 
-class SavePaint(Base):
+class Animal(Base):
 
-    __tablename__ = 'savepaint'
+    __tablename__ = 'animal'
 
     id = Column(Integer, primary_key=True, index=True)
     created_time = Column(DateTime)
@@ -12,3 +12,6 @@ class SavePaint(Base):
     img_height = Column(Integer)
     img_width = Column(Integer)
     img_path = Column(String(100))
+    correct_cnt = Column(Integer)
+    incorrect_cnt = Column(Integer)
+    

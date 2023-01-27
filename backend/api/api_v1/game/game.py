@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 
 from sqlalchemy.orm import Session
+from typing import List
 
 from utils import get_paint_img, get_result_imgs, get_origin_imgs
 from scheme import *
@@ -16,8 +17,9 @@ router = APIRouter()
 @router.get('/create')
 def create_dummy(db: Session = Depends(get_db)):
     create_dummy_data(db)
+    return {'messege':'success'}
     
-@router.post('/gamestart', response_model=SavePaintOut)
+@router.post('/gamestart', response_model=List[SavePaintOut])
 async def gamestart(game_in: GameIn, db: Session = Depends(get_db)):
     
     img_paths = read_savepaint(db, game_in.category)

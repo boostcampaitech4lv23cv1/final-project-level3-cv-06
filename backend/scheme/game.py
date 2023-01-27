@@ -20,7 +20,7 @@ class GameOut(BaseModel):
     origin_imgs: List[bytes]
     
 class SavePaintOut(BaseModel):
-    label: List[str]
+    label: str
     img_path: str
     class Config:
         orm_mode = True
