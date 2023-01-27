@@ -2,11 +2,8 @@ import itertools
 import logging
 import os
 import sys
-from datetime import datetime
-
 import pandas as pd
 import requests
-from pytz import timezone
 
 # request timeout
 TIMEOUT = 60
@@ -14,9 +11,8 @@ TIMEOUT = 60
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
-print(AIRFLOW_HOME == "/opt/airflow")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
-SCRAPED_TIME = sys.argv[1]
+SCRAPED_TIME, SITE = sys.argv[1:]
 
 
 class PixabayCrawler:
@@ -74,7 +70,6 @@ class PixabayCrawler:
                 "label",
             ]
         )
-        site = "pixabay"
         logger.info("Starting")
         for keyword in self.keywords:
             try:
@@ -82,7 +77,7 @@ class PixabayCrawler:
 
                 try:
                     class_path = (
-                        f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{SCRAPED_TIME}"
+                        f"{AIRFLOW_HOME}/dags/data/{keyword}/{SITE}/{SCRAPED_TIME}"
                     )
                     print(class_path)
                     os.makedirs(class_path, exist_ok=True)
@@ -118,7 +113,7 @@ class PixabayCrawler:
                                     break
 
                                 img_path = self.save_img(class_path, img_dict)
-                                df = self.add_data2df(df, keyword, img_dict, img_path)
+                                df = self.add_data2df(df, keyword, img_dict)
 
                                 imgs_downloaded += 1
                                 Pbar.set(imgs_downloaded)
@@ -141,7 +136,8 @@ class PixabayCrawler:
                 logger.warning(f"an error occured proccesing the class {keyword}")
         return df
 
-    def add_data2df(self, df, keyword, img_dict, img_path):
+    def add_data2df(self, df, keyword, img_dict):
+
         df = pd.concat(
             [
                 pd.DataFrame(
@@ -149,7 +145,8 @@ class PixabayCrawler:
                         [
                             keyword,
                             img_dict["tags"],
-                            img_path,
+                            f"https://storage.googleapis.com/scraped-img/{keyword}/{SITE}/{SCRAPED_TIME}/{img_dict['id']}.jpg",
+                            # TODO jpg 2 webp
                             img_dict["webformatWidth"],
                             img_dict["webformatHeight"],
                             SCRAPED_TIME,
@@ -187,14 +184,13 @@ class PixabayCrawler:
         img_bytes = self.download_img(image["largeImageURL"])
 
         img_path = class_path + f"/{str(image['id'])}.jpg"
-        if not os.path.isfile(img_path):
-            with open(img_path, "wb") as file:
-                logger.debug(img_path)
-                file.write(img_bytes)
-            return img_path
+        # TODO 중복 이미지 체크, jpg 2 webp
+        # if not os.path.isfile(img_path):
+        with open(img_path, "wb") as file:
+            logger.debug(img_path)
+            file.write(img_bytes)
+        return img_path
 
-
-# TODO webp
 
 
 class Progressbar:
@@ -248,9 +244,8 @@ class Progressbar:
 
 
 def save_metadata(keyword, df):
-    site = "pixabay"
     print("make_data_dir os.getcwd(): ", os.getcwd())
-    save_path = f"{AIRFLOW_HOME}/dags/data/{keyword[0]}/{site}/{SCRAPED_TIME}"
+    save_path = f"{AIRFLOW_HOME}/dags/data/{keyword[0]}/{SITE}/{SCRAPED_TIME}"
 
     os.makedirs(save_path, exist_ok=True)
     df["img_path"] = df["img_path"].astype(str)
@@ -305,4 +300,3 @@ if __name__ == "__main__":
     # TODO: width, height min값 정하기 min_width,min_height
     # TODO: 한번 실행할 때 크롤링할 이미지 개수 정하기 n_imgs
     # TODO: 이전에 크롤링했던 사진 이후부터 크롤링
-    # TODO: /opt/*** 설정 (도커)

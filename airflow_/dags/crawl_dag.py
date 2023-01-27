@@ -62,7 +62,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     #####################    JOBS    #######################
     crawl_img = BashOperator(
         task_id="img_crawler",
-        bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {scraped_time}",
+        bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {scraped_time} {site}",
     )
 
     metadata2db = PythonOperator(
@@ -85,15 +85,15 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         bucket=bucket,
         gcp_conn_id="my_gcs_connection",
     )
-    load_img_from_gcs = SSHOperator(
-        task_id="download_img_from_gcs",
+    load_img_from_gcs2ssh = SSHOperator(
+        task_id="download_img_from_gcs2ssh",
         ssh_conn_id="my_ssh_connection",
         command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
     )
     sense_ssh_file = SFTPSensor(
         task_id="sense_ssh_file",
         sftp_conn_id="my_sftp_connection",
-        path=f"python {ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/metadata.feather",
+        path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/metadata.feather",
     )
 
     # check_gcs_file = GCSObjectExistenceSensor(
@@ -117,7 +117,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         crawl_img
         >> [metadata2db, img2gcs]
         >> metadata2gcs
-        >> load_img_from_gcs
+        >> load_img_from_gcs2ssh
         >> sense_ssh_file
     )
 
@@ -126,5 +126,5 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
 # TODO Use Airflow's Sensors to detect external events or conditions before executing tasks
 # TODO 새로 올라온 데이터에 대해서만 크롤링 후 db에 저장하도록 수정
 # TODO gcs에 저장된 데이터와 local 데이터 중복 없도록 업로드
-# TODO gcs에 업로드 시 메타 데이터까지 업로드
 # TODO 버킷 안에 있는 폴더명 어떻게 할지 정하기 (datetime을 쓰면 task 실패 시 datetime을 다시 실행하기 때문에 폴더가 여러개 생기는 문제 발생)
+# TODO slack 알림 설정

@@ -14,4 +14,3 @@ def download_img_from_gcs(scraped_time, bucket, site, keyword):
 if __name__ == "__main__":
     scraped_time, bucket, site, keyword = sys.argv[1:]
     download_img_from_gcs(scraped_time, bucket, site, keyword)
-# TODO args 설정 (datetime 넘겨주는 방식)
