@@ -119,9 +119,10 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         object=f"{keyword}/{site}/{scraped_time}/metadata.feather",
     )
 
-    infer_label_send2db = BashOperator(
+    infer_label_send2db = SSHOperator(
         task_id="infer_label_send2db",
-        bash_command=f"python ${AIRFLOW_HOME}/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
+        ssh_conn_id="ssh_connection",
+        command=f"python {ssh_base}/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
     )
 
     #####################    TASKS    #####################
