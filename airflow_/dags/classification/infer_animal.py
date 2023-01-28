@@ -18,7 +18,7 @@ from torch.utils.data import DataLoader, Dataset
 AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
-# KEYWORD, SITE, SCRAPED_TIME = "animals", "pixabay", "01-27_11"
+# KEYWORD, SITE, SCRAPED_TIME = "animals", "pixabay", "01-28_22"
 
 
 class ClassifyDataset(Dataset):
@@ -110,21 +110,34 @@ def make_img_label() -> pd.DataFrame:
     return df
 
 
-def join_df2db(df):
+def join_df2db(df: pd.DataFrame, host: str = "34.145.38.251"):
+    """join prediction labels to table in gcp docker container PostgreSQL
+    1. read table from PostgreSQL
+    2. merge prediction labels to table
+    3. update table in PostgreSQL
+
+    Args:
+        df (pd.DataFrame): dataframe with prediction labels
+        host (str): host address of gcp docker container PostgreSQL
+    """
+    # PostgreSQL configs
     user = "airflow"
     password = "airflow"
-    host = "34.82.38.106"
     port = 5432
     database = "airflow"
 
+    # connect to PostgreSQL
     engine = create_engine(f"postgresql://{user}:{password}@{host}:{port}/{database}")
 
+    # Read the table from PostgreSQL
     new_df = pd.read_sql_table(KEYWORD, engine)
     new_df["label"] = new_df["label"].fillna("")
-    # Join the DataFrame with another DataFrame or series
-    new_df = pd.merge(new_df, df, on="img_path")
-    new_df["label"] = new_df["label_x"] + new_df["label_y"]
-    new_df = new_df.drop(columns=["label_x", "label_y"])
+
+    # merge prediction labels to table
+    new_df = pd.merge(new_df, df, on="img_path", how="left", suffixes=("", "_y"))
+    new_df["label_y"] = new_df["label_y"].fillna("")
+    new_df["label"] = new_df["label"] + new_df["label_y"]
+    new_df = new_df.filter(regex="^(?!.*_y$).*")
 
     # Update the table in PostgreSQL
     new_df.to_sql(name=KEYWORD, con=engine, if_exists="replace", index=False)
