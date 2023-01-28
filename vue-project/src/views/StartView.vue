@@ -1,15 +1,15 @@
 <template>
   <v-app class="hero">
     <v-container height="100%">
-      <v-row class="justify-center">
-        <logo :style="{ height: '15vh', margin: '5vh 0vw 0vh 0vw' }" />
+      <v-row class="d-flex justify-center">
+        <logo :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
       </v-row>
-      <v-row class="justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
+      <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
         <v-btn rounded variant="plain" @click="infoChange" height="5vh">
           <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
         </v-btn>
       </v-row>
-      <v-row class="justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <v-btn rounded variant="plain" @click="soundChange" height="5vh">
           <v-icon icon="mdi-volume-high" size="5vh" v-show="soundInfo == 0">
           </v-icon>
@@ -18,7 +18,7 @@
         </v-btn>
       </v-row>
 
-      <v-row jutify="space-around" :style="{ margin: '30vh 0vw 0vh 0vw' }">
+      <v-row :style="{ margin: '30vh 0vw 0vh 0vw' }">
         <v-col cols="6">
           <v-btn
             rounded
