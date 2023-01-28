@@ -2,7 +2,7 @@
   <v-app class="hero">
     <v-container height="100%">
       <v-row class="justify-center">
-        <logo :style="{ height: '20vh', width: '35vw' }" />
+        <logo :style="{ height: '15vh', margin: '5vh 0vw 0vh 0vw' }" />
       </v-row>
       <v-row class="justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
         <v-btn rounded variant="plain" @click="infoChange" height="5vh">
