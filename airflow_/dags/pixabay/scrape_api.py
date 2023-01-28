@@ -2,6 +2,7 @@ import itertools
 import logging
 import os
 import sys
+
 import pandas as pd
 import requests
 
@@ -61,7 +62,6 @@ class PixabayCrawler:
         # path = Path(path)
         df = pd.DataFrame(
             columns=[
-                "category",
                 "tag",
                 "img_path",
                 "img_width",
@@ -143,9 +143,8 @@ class PixabayCrawler:
                 pd.DataFrame(
                     [
                         [
-                            keyword,
                             img_dict["tags"],
-                            f"https://storage.googleapis.com/scraped-img/{keyword}/{SITE}/{SCRAPED_TIME}/{img_dict['id']}.jpg",
+                            f"{keyword}/{SITE}/{SCRAPED_TIME}/{img_dict['id']}.jpg",
                             # TODO jpg 2 webp
                             img_dict["webformatWidth"],
                             img_dict["webformatHeight"],
@@ -190,7 +189,6 @@ class PixabayCrawler:
             logger.debug(img_path)
             file.write(img_bytes)
         return img_path
-
 
 
 class Progressbar:
