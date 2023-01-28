@@ -1,57 +1,50 @@
 <template>
   <v-app class="hero">
     <v-container height="100%">
-      <v-row class="justify-center mt-16">
-
-        <logo :style="{ height: '150px', width: '600px' }" />
+      <v-row class="d-flex justify-center">
+        <logo :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
       </v-row>
-      <v-row class="buttons">
-        <v-col cols="6" class="d-flex justify-center align-end">
-          <mode :style="{ height: '50px', width: '150px' }" />
-        </v-col>
-        <v-col cols="6" class="d-flex justify-center align-end">
-          <category :style="{ height: '50px', width: '230px' }" />
-        </v-col>
+      <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
+        <v-btn rounded variant="plain" @click="infoChange" height="5vh">
+          <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
+        </v-btn>
       </v-row>
-      <v-row>
-        <v-col cols="6">
-          <v-radio-group v-model="selectedMode">
-            <v-btn
-              rounded
-              v-for="item in modeItems"
-              :key="item.value"
-              :value="item.value"
-              @click="changeMode(item.value)"
-              :class="{
-                selected: selectedMode === item.value,
-                'mb-4 w-50 mx-auto ': true,
-
-              }"
-            >
-              {{ item.text }}
-            </v-btn>
-          </v-radio-group>
-        </v-col>
-        <v-col cols="6">
-          <v-radio-group v-model="selectedCategory">
-            <v-btn
-              rounded
-              v-for="item in categoryItems"
-              :key="item.value"
-              :value="item.value"
-              @click="changeCategory(item.value)"
-              :class="{
-                selected: selectedCategory === item.value,
-                'mb-4 w-50 mx-auto ': true,
-
-              }"
-            >
-              {{ item.text }}
-            </v-btn>
-          </v-radio-group>
-        </v-col>
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <v-btn rounded variant="plain" @click="soundChange" height="5vh">
+          <v-icon icon="mdi-volume-high" size="5vh" v-show="soundInfo == 0">
+          </v-icon>
+          <v-icon icon="mdi-volume-off" size="5vh" v-show="soundInfo == 1">
+          </v-icon>
+        </v-btn>
       </v-row>
-      <v-col cols="12" class="d-flex justify-center mt-16">
+
+      <v-row class="d-flex justify-center">
+        <category :style="{ height: '7vh', margin: '0vh 0vw 5vh 0vw' }" />
+      </v-row>
+
+      <v-row class="d-flex justify-center">
+        <v-radio-group v-model="selectedCategory">
+          <v-btn
+            rounded
+            v-for="item in categoryItems"
+            :key="item.value"
+            :value="item.value"
+            @click="changeCategory(item.value)"
+            :class="{
+              selected: selectedCategory === item.value,
+              ' mx-auto ': true,
+            }"
+            :style="{ height: '5vh', width: '20vh', margin: '1vh 0vw 0vh 0vw' }"
+          >
+            {{ item.text }}
+          </v-btn>
+        </v-radio-group>
+      </v-row>
+      <v-col
+        cols="12"
+        class="d-flex justify-center"
+        :style="{ margin: '3vh 0vw 0vh 0vw' }"
+      >
         <v-btn :disabled="categoryIsEmpty" color="yellow" @click="startGame"
           >Game start</v-btn
         >
@@ -62,13 +55,11 @@
 
 <script>
 import logo from "../svg/logoView.vue";
-import mode from "../svg/modeView.vue";
 import category from "../svg/categoryView.vue";
 
 export default {
   components: {
     logo,
-    mode,
     category,
   },
   data() {
@@ -79,9 +70,7 @@ export default {
         { text: "Entertainment", value: "entertainer" },
       ],
       selectedCategory: "animal",
-      selectedMode: "painttransformer",
-
-      modeItems: [{ text: "Paint Transformer", value: "painttransformer" }],
+      soundInfo: false,
     };
   },
   computed: {
@@ -96,11 +85,22 @@ export default {
         query: { category: this.selectedCategory, mode: this.selectedMode },
       });
     },
-    changeMode(value) {
-      this.selectedMode = value;
-    },
     changeCategory(value) {
       this.selectedCategory = value;
+    },
+    soundChange() {
+      if (this.soundInfo == true) {
+        this.soundInfo = false;
+      } else {
+        this.soundInfo = true;
+      }
+    },
+    infoChange() {
+      if (this.showInfo == true) {
+        this.showInfo = false;
+      } else {
+        this.showInfo = true;
+      }
     },
   },
 };
@@ -112,22 +112,7 @@ export default {
   background-size: cover;
   height: 100vh;
 }
-
-.darken {
-  filter: brightness(80%);
-}
-
 .selected {
-  background-color: rgb(255, 196, 0);
-
-}
-
-.grey {
-  background-color: #9e9e9e;
-  color: #fff;
-}
-
-.buttons {
-  margin-top: 80px;
+  background-color: rgb(248, 207, 71);
 }
 </style>
