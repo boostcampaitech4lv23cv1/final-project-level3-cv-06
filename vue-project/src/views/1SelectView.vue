@@ -2,24 +2,19 @@
   <v-app class="hero">
     <v-container height="100%">
       <v-row class="justify-center">
-        <logo :style="{ height: '20vh', width: '35vw', margin: '5vh 0vh 0vw 0vw'}" />
+        <logo :style="{ height: '35vh', width: '35vw' }" />
       </v-row>
-         <v-row class="d-flex justify-end">
-        <v-btn rounded variant="plain"  @click="infoChange"  >
-          <v-icon icon="mdi-information-outline" size="x-large" >
-          </v-icon>
-          </v-btn>
-        
-        </v-row>
-         <v-row class="d-flex justify-end">
-        <v-btn variant="text" v-bind="{ icon: soundIcon }" color="gray" @click="soundChange" :style="{margin: '0vh 0.75vh 0vw 0vw'}" ></v-btn>
+         <v-row class="d-flex justify-center align-center buttons mt-16">
+        <v-btn rounded variant="plain" color="transparent" @click="infoChange">
+          <description :style="{ height: '80px', width: '180px' }" />
+        </v-btn>
       </v-row>
-      <v-row class="justify-center" v-show="showInfo == 1">
+      <v-row class="justify-center mt-16" v-show="showInfo == 1">
         <v-col cols="auto">
           <v-card height="250">
             <v-toolbar
               color="black"
-              :style="{ color: 'black' }"
+              :style="{ 'font-size': '30px', color: 'black' }"
             >
               <v-icon>mdi-information-outline</v-icon></v-toolbar
             >
@@ -156,11 +151,11 @@
 import logo from "../svg/logoView.vue";
 import mode from "../svg/modeView.vue";
 import category from "../svg/categoryView.vue";
-// import description from "../svg/descriptionButton.vue"
+
 export default {
   components: {
     logo,
-    // description,
+
   },
   data() {
     return {
@@ -170,7 +165,8 @@ export default {
         { text: "Entertainment", value: "entertainer" },
       ],
       selectedCategory: "animal",
-      soundIcon: "mdi-volume-high",
+      selectedMode: "painttransformer",
+
       modeItems: [{ text: "Paint Transformer", value: "painttransformer" }],
       showInfo: false,
     };
@@ -198,13 +194,6 @@ export default {
         this.showInfo = false;
       } else {
         this.showInfo = true;
-      }
-    },
-    soundChange() {
-      if (this.soundIcon == "mdi-volume-high") {
-        this.soundIcon = "mdi-volume-off";
-      } else {
-        this.soundIcon = "mdi-volume-high";
       }
     },
   },
