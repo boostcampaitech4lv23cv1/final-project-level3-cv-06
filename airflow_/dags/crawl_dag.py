@@ -17,6 +17,7 @@ from airflow.providers.google.cloud.transfers.postgres_to_gcs import (
     PostgresToGCSOperator,
 )
 from airflow.providers.sftp.sensors.sftp import SFTPSensor
+from airflow.providers.slack.hooks.slack_webhook import SlackWebhookHook
 from airflow.providers.ssh.operators.ssh import SSHOperator
 from airflow.utils.dates import days_ago
 from database.metadata2db import df2db
@@ -34,6 +35,21 @@ site = "pixabay"
 bucket = "scraped-img"
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
+
+
+def send_slack_task_failure(context):
+    slack_msg = f"""
+    :red_circle: Airflow Task Failed.
+    *Task*: {context.get('task_instance').task_id}
+    *Dag*: {context.get('task_instance').dag_id}
+    *Execution Time*: {context.get('execution_date')}
+    *Log Url*: {context.get('task_instance').log_url}
+    """
+
+    slack_hook = SlackWebhookHook(slack_webhook_conn_id="slack_connection")
+    slack_hook.send(text=slack_msg)
+
+
 default_args = {
     "owner": "airflow",
     # "depends_on_past": False,
@@ -48,7 +64,7 @@ default_args = {
     # 'dag': dag,
     # 'sla': timedelta(hours=2),
     # 'execution_timeout': timedelta(seconds=300),
-    # 'on_failure_callback': task_fail_slack_alert,
+    "on_failure_callback": send_slack_task_failure,
     # 'on_success_callback': task_success_slack_alert,
     # 'on_retry_callback': another_function,
     # 'sla_miss_callback': yet_another_function,
@@ -75,7 +91,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/*.jpg",
         dst=f"{keyword}/{site}/{scraped_time}/",
         bucket=bucket,
-        gcp_conn_id="my_gcs_connection",
+        gcp_conn_id="gcs_connection",
     )
     # TODO jpg 2 webp
     metadata2gcs = LocalFilesystemToGCSOperator(
@@ -83,48 +99,43 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/metadata.feather",
         dst=f"{keyword}/{site}/{scraped_time}/",
         bucket=bucket,
-        gcp_conn_id="my_gcs_connection",
+        gcp_conn_id="gcs_connection",
     )
     load_img_from_gcs2ssh = SSHOperator(
         task_id="download_img_from_gcs2ssh",
-        ssh_conn_id="my_ssh_connection",
+        ssh_conn_id="ssh_connection",
         command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
     )
     sense_ssh_file = SFTPSensor(
         task_id="sense_ssh_file",
-        sftp_conn_id="my_sftp_connection",
+        sftp_conn_id="sftp_connection",
         path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/metadata.feather",
     )
 
-    # check_gcs_file = GCSObjectExistenceSensor(
-    #     task_id="check_gcs_file",
-    #     google_cloud_conn_id="my_gcs_connection",
-    #     bucket="pixabay_animals",
-    #     object="animals.csv",
-    # )
+    sense_gcs_file = GCSObjectExistenceSensor(
+        task_id="check_metadata_in_gcs",
+        google_cloud_conn_id="gcs_connection",
+        bucket=bucket,
+        object=f"{keyword}/{site}/{scraped_time}/metadata.feather",
+    )
 
-    # infer_job = BashOperator(
-    #     task_id="infer_animal",
-    #     bash_command=f"python ${AIRFLOW_HOME}/dags/classification/infer_animal.py",
-    # )
-
-    # from classification.infer_animal import infer_senddb
-
-    # infer_job = PythonOperator(task_id="infer_animal", python_callable=infer_senddb)
+    infer_label_send2db = BashOperator(
+        task_id="infer_label_send2db",
+        bash_command=f"python ${AIRFLOW_HOME}/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
+    )
 
     #####################    TASKS    #####################
     (
         crawl_img
         >> [metadata2db, img2gcs]
         >> metadata2gcs
+        >> sense_gcs_file
         >> load_img_from_gcs2ssh
         >> sense_ssh_file
+        >> infer_label_send2db
     )
 
 # TODO handling errors
 # TODO configure the retries % failures
-# TODO Use Airflow's Sensors to detect external events or conditions before executing tasks
 # TODO 새로 올라온 데이터에 대해서만 크롤링 후 db에 저장하도록 수정
 # TODO gcs에 저장된 데이터와 local 데이터 중복 없도록 업로드
-# TODO 버킷 안에 있는 폴더명 어떻게 할지 정하기 (datetime을 쓰면 task 실패 시 datetime을 다시 실행하기 때문에 폴더가 여러개 생기는 문제 발생)
-# TODO slack 알림 설정
