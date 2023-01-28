@@ -17,8 +17,9 @@
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuetify": "^3.0.0-beta.0",
-    "vuex": "^4.0.2",
+    "vuex": "^4.1.0",
     "vuex-persistedstate": "^4.1.0",
+    "vuex-persistent": "^0.0.1",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
@@ -47,7 +48,9 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": { "no-unused-vars": "off"}
+    "rules": {
+      "no-unused-vars": "off"
+    }
   },
   "browserslist": [
     "> 1%",
