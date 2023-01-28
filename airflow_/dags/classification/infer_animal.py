@@ -1,4 +1,6 @@
 import os
+import sys
+from glob import glob
 
 import albumentations as A
 import cv2
@@ -13,12 +15,18 @@ from pytorch_lightning import LightningModule, Trainer
 from sqlalchemy import create_engine
 from torch.utils.data import DataLoader, Dataset
 
-AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
+AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
+
+KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
+# KEYWORD, SITE, SCRAPED_TIME = "animals", "pixabay", "01-27_11"
 
 
 class ClassifyDataset(Dataset):
     def __init__(self, df, transform=None):
-        self.img_path = df["img_path"].values
+        base_path = f"{AIRFLOW_HOME}/dags/classification/data"
+        path = os.path.join(base_path, KEYWORD, SITE, SCRAPED_TIME, "*.jpg")
+        self.img_tag = df["tag"]
+        self.img_path = glob(path)
         self.transform = transform
 
     def __len__(self):
@@ -30,7 +38,9 @@ class ClassifyDataset(Dataset):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         if self.transform:
             image = self.transform(image=image)
-        return image["image"]
+
+        image_tag = self.img_tag[idx]
+        return image["image"], image_tag
 
 
 class Model(LightningModule):
@@ -42,7 +52,7 @@ class Model(LightningModule):
         return self.model(x)
 
     def predict_step(self, batch, batch_idx):
-        imgs, img_alts = batch
+        imgs, img_tags = batch
         logits = self.model(imgs)
         preds = logits.argmax(dim=1)
         return preds
@@ -55,15 +65,14 @@ def read_feather(file_path):
         assert os.path.isfile(file_path), f"{file_path} is not found"
 
 
-def inference(df, feather_name="animal"):
+def inference(df) -> np.ndarray:
     transform = Compose([A.Resize(height=224, width=224), A.Normalize(), ToTensorV2()])
     test_set = ClassifyDataset(df, transform)
-    test_loader = DataLoader(test_set, batch_size=32, shuffle=False, num_workers=4)
+    test_loader = DataLoader(test_set, batch_size=1, shuffle=False, num_workers=4)
     model = Model()
-    trainer = Trainer(accelerator="mps")
-    predictions = (
-        torch.concat(trainer.predict(model, test_loader)).cpu().detach().numpy()
-    )
+    trainer = Trainer(accelerator="gpu")
+    predictions = trainer.predict(model, test_loader)
+    predictions = torch.concat(predictions).cpu().detach().numpy()
 
     return predictions
 
@@ -79,60 +88,52 @@ def read_imgnet_labels():
         return np.array(labels)
 
 
-def make_img_label(feather_name: str) -> pd.DataFrame:
+def make_img_label() -> pd.DataFrame:
     """make a label from crawled images
     1. read labels
-    2. read feather file
-    3. inference from crawled images using imagenet pretrained model
-    4. convert prediction to label
-
-    Args:
-        feather_name (str): name of feather file
+    2. inference from crawled images using imagenet pretrained model
+    3. convert prediction to label
 
     Returns:
         Dataframe: df + crawled imgs prediction labels
     """
 
     imagenet_labels = read_imgnet_labels()
-    df = read_feather(
-        f"{AIRFLOW_HOME}/dags/crawled_img/pixabay/metadata/{feather_name}.feather"
-    )
+    base_path = f"{AIRFLOW_HOME}/dags/classification/data"
 
-    predictions = inference(df, feather_name)
+    df = read_feather(
+        os.path.join(base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata.feather")
+    )
+    predictions = inference(df)
     labels = pred2imgnetlabel(predictions, imagenet_labels)
     df["label"] = labels
-    return df[["srcset", "label"]]
+    return df
 
 
 def join_df2db(df):
-    user = "myuser"
-    password = "mypassword"
-    host = "localhost"
+    user = "airflow"
+    password = "airflow"
+    host = "34.82.38.106"
     port = 5432
-    database = "airflow_db"
+    database = "airflow"
+
     engine = create_engine(f"postgresql://{user}:{password}@{host}:{port}/{database}")
 
-    animal_df = pd.read_sql_table("animal", engine)
-    animal_df["label"] = animal_df["label"].fillna("")
+    new_df = pd.read_sql_table(KEYWORD, engine)
+    new_df["label"] = new_df["label"].fillna("")
     # Join the DataFrame with another DataFrame or series
-    animal_df = pd.merge(animal_df, df, on="srcset")
-    animal_df["label"] = animal_df["label_x"] + animal_df["label_y"]
-    animal_df = animal_df.drop(columns=["label_x", "label_y"])
+    new_df = pd.merge(new_df, df, on="img_path")
+    new_df["label"] = new_df["label_x"] + new_df["label_y"]
+    new_df = new_df.drop(columns=["label_x", "label_y"])
 
     # Update the table in PostgreSQL
-    animal_df.to_sql(name="animal", con=engine, if_exists="replace", index=False)
-
-
-def infer_senddb():
-    df = make_img_label(feather_name="animal")
-    print("label: ", df["label"])
-    join_df2db(df)
+    new_df.to_sql(name=KEYWORD, con=engine, if_exists="replace", index=False)
 
 
 if __name__ == "__main__":
-    df = make_img_label(feather_name="animal")
+
+    df = make_img_label()
     print("label: ", df["label"])
     join_df2db(df)
 
-# TODO inference 함수 고치기
-# input이 이미지, output이 label
+# TODO imgnet 레이블 정리 및 간소화
