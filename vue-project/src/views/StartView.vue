@@ -4,9 +4,6 @@
       <v-row class="justify-center">
         <logo :style="{ height: '20vh', width: '35vw' }" />
       </v-row>
-      <!-- <v-row class="d-flex justify-end mt-10">
-        <v-btn variant="text" v-bind="{ icon: soundIcon }" color="white" @click="soundChange"></v-btn>
-      </v-row> -->
       <v-row class="justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
         <v-btn rounded variant="plain" @click="infoChange" height="5vh">
           <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
