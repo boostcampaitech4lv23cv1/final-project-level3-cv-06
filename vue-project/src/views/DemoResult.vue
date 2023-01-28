@@ -1,29 +1,15 @@
 <template>
   <v-app>
-    <v-container>
-      <v-row class="d-flex child -flex mt-10 mb-10">
-        <div :style="{ 'font-size': '30px', color: 'black' }" class="mx-auto">
-          Result
-        </div>
+    <v-container class="fill-height">
+      <v-row class=" justify-center">
+        <result :style="{ height: '15vh', margin: '0vh 0vw 5vh 0vw' }" />
       </v-row>
 
       <v-row>
-        <v-col
-          v-for="n in 9"
-          :key="n"
-          class="d-flex child-flex no-padding"
-          cols="4"
-        >
-          <v-img
-            :width="350"
-            :height="350"
-            :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-            aspect-ratio="1"
-            cover
-            :src="`data:image/gif;base64,${originImg[n - 1]}`"
-            class="grey lighten-2"
-            @click="moveDetail(n)"
-          >
+        <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
+          <v-img :width="'20vw'" :height="'45vh'" :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+            aspect-ratio="1" cover :src="`data:image/gif;base64,${originImg[n - 1]}`" class="grey lighten-2"
+            @click="moveDetail(n)">
           </v-img>
         </v-col>
       </v-row>
@@ -33,7 +19,11 @@
 
 <script>
 import axios from "axios";
+import result from '../svg/resultText.vue'
 export default {
+  components: {
+    result,
+  },
   data() {
     return {
       originImg: "",
@@ -59,6 +49,14 @@ export default {
 </script>
 
 <style scoped>
+.hero {
+  background: url("../assets/test.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100vw;
+}
+
 .no-padding {
   padding: 0;
 }
