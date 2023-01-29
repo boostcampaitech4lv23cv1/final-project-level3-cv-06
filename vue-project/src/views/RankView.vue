@@ -17,89 +17,43 @@
           </v-icon>
         </v-btn>
       </v-row>
-  
-      <v-row class="justify-center  nums" :style="{'margin-top':'10vh'}">
-<v-col cols="1">
-  <profile/>
 
-</v-col>
-        
-         <v-col cols="3">
-
-          Nask
+      <v-row class="justify-center nums" :style="{ 'margin-top': '10vh' }">
+        <v-col cols="1">
+          <profile />
         </v-col>
 
+        <v-col cols="3"> Nask </v-col>
       </v-row>
 
-
-      <v-row class="justify-center"  :style="{'margin-top':'2vh', 'margin-bottom':'0vh'}">
-
-        <v-col cols='1' :style="{'margin-left':'30vw'}">
-
-        
+      <v-row
+        class="justify-center"
+        :style="{ 'margin-top': '2vh', 'margin-bottom': '0vh' }"
+      >
+        <v-col cols="1" :style="{ 'margin-left': '30vw' }">
           <check />
         </v-col>
-        <v-col cols="3" class="nums"  >
-          {{correctAnswers}}/9
-        </v-col>
-        <v-col cols="4" class="text-center" 
-        align-self="center"
+        <v-col cols="3" class="nums"> {{ correctAnswers }}/9 </v-col>
+        <v-col
+          cols="4"
+          class="text-center"
+          align-self="center"
           :style="{
-            'font-size': '20vh',
+            'font-size': '1vh',
             color: 'gold',
             overflow: 'hidden',
-           
-            
-          }">
-        
-            {{rank}}
-  
-          
+          }"
+        >
+          {{ rank }}
         </v-col>
       </v-row>
 
-      <v-row class="justify-center nums" :style="{'margin-top':'0vh'}">
+      <v-row class="justify-center nums" :style="{ 'margin-top': '0vh' }">
         <v-col cols="1">
           <timer />
         </v-col>
         <v-col cols="3">
-          
-          {{clearTime}}
-          
-        </v-col>
- 
-      </v-row>
-
- 
-
-      <v-row
-        class="d-flex justify-center"
-        :style="{ height: '25vh', margin: '0vh 0vw 0vh 0vw' }"
-      >
-        <v-col
-          cols="auto"
-          align-self="start"
-          :style="{
-            'font-size': '25vh',
-            color: 'gold',
-            margin: '0vh 0vw 0vh 0vw',
-       
-          }"
-          >S</v-col
-        >
-
-        <v-col cols="auto" align-self="center">
-          <v-div
-            :style="{
-              'font-size': '3vh',
-              color: 'gray',
-              margin: '0vh 0vw 0vh 0vw',
-            }"
-          >
-            rank 
-
-
-          </v-div>
+          {{ clearTime }}
         </v-col>
       </v-row>
 
@@ -119,9 +73,8 @@
 <script>
 import timer from "../svg/timerView.vue";
 import check from "../svg/rightAnswer.vue";
-import score from '../svg/scoreText.vue'
+import score from "../svg/scoreText.vue";
 import profile from "../svg/profileView.vue";
-
 
 export default {
   components: {
@@ -134,7 +87,7 @@ export default {
     return {
       // rank: this.$store.state.rank
       rank: "A",
-      clearTime: this.$store.state.clearTime,
+      clearTime: this.$store.state.clearTime.toString().substr(0, 5),
       correctAnswers: this.$store.state.correctAnswers,
       soundInfo: false,
       showInfo: false,
@@ -145,7 +98,6 @@ export default {
       this.$router.push({ path: "/demoresult" });
     },
     soundChange() {
-      
       if (this.soundInfo == true) {
         this.soundInfo = false;
       } else {
@@ -185,14 +137,13 @@ export default {
   margin-top: 150px;
 }
 
-
 @font-face {
-    font-family: 'num';
-    src:url('../fonts/Lobster-Regular.ttf')
+  font-family: "num";
+  src: url("../fonts/Lobster-Regular.ttf");
 }
 
-.nums{
-    font-family: 'num';
-    font-size: 2.3rem;
+.nums {
+  font-family: "num";
+  font-size: 2.3rem;
 }
 </style>
