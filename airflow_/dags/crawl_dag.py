@@ -33,6 +33,9 @@ ssh_base = "/opt/ml/final-project-level3-cv-06"
 keyword = "animals"
 site = "pixabay"
 bucket = "scraped-img"
+instance_name = "airflow-server"
+zone_name = "us-west1-b"
+
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
 
@@ -48,7 +51,7 @@ def send_slack_task_failure(context):
 
     slack_hook = SlackWebhookHook(slack_webhook_conn_id="slack_connection")
     slack_hook.send(text=slack_msg)
-
+    
 
 default_args = {
     "owner": "airflow",
@@ -88,12 +91,11 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     )
     img2gcs = LocalFilesystemToGCSOperator(
         task_id="img2gcs",
-        src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/*.jpg",
+        src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/*.webp",
         dst=f"{keyword}/{site}/{scraped_time}/",
         bucket=bucket,
         gcp_conn_id="gcs_connection",
     )
-    # TODO jpg 2 webp
     metadata2gcs = LocalFilesystemToGCSOperator(
         task_id="metadata2gcs",
         src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/metadata.feather",
@@ -123,6 +125,11 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         task_id="infer_label_send2db",
         ssh_conn_id="ssh_connection",
         command=f"python {ssh_base}/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
+    )
+
+    get_gcs_ip = BashOperator(
+        task_id="get_gcs_ip",
+        bash_command=f"python {AIRFLOW_HOME}/dags/database/get_gcs_ip.py {instance_name} {zone_name}",
     )
 
     #####################    TASKS    #####################
