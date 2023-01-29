@@ -17,15 +17,60 @@
           </v-icon>
         </v-btn>
       </v-row>
-      <v-row class="justify-center nums">
-          <check />
-          9/9
+  
+      <v-row class="justify-center  nums" :style="{'margin-top':'10vh'}">
+<v-col cols="1">
+  <profile/>
+
+</v-col>
+        
+         <v-col cols="3">
+
+          Nask
+        </v-col>
+
       </v-row>
 
-      <v-row class="justify-center nums" :style="{'margin-top':'3vh'}">
-          <timer />
-          01:47
+
+      <v-row class="justify-center"  :style="{'margin-top':'2vh', 'margin-bottom':'0vh'}">
+
+        <v-col cols='1' :style="{'margin-left':'30vw'}">
+
+        
+          <check />
+        </v-col>
+        <v-col cols="3" class="nums"  >
+          {{correctAnswers}}/9
+        </v-col>
+        <v-col cols="4" class="text-center" 
+        align-self="center"
+          :style="{
+            'font-size': '20vh',
+            color: 'gold',
+            overflow: 'hidden',
+           
+            
+          }">
+        
+            {{rank}}
+  
+          
+        </v-col>
       </v-row>
+
+      <v-row class="justify-center nums" :style="{'margin-top':'0vh'}">
+        <v-col cols="1">
+          <timer />
+        </v-col>
+        <v-col cols="3">
+          
+          {{clearTime}}
+          
+        </v-col>
+ 
+      </v-row>
+
+ 
 
       <v-row
         class="d-flex justify-center"
@@ -38,6 +83,7 @@
             'font-size': '25vh',
             color: 'gold',
             margin: '0vh 0vw 0vh 0vw',
+       
           }"
           >S</v-col
         >
@@ -50,7 +96,9 @@
               margin: '0vh 0vw 0vh 0vw',
             }"
           >
-            rank
+            rank 
+
+
           </v-div>
         </v-col>
       </v-row>
@@ -72,17 +120,22 @@
 import timer from "../svg/timerView.vue";
 import check from "../svg/rightAnswer.vue";
 import score from '../svg/scoreText.vue'
+import profile from "../svg/profileView.vue";
+
 
 export default {
   components: {
     score,
     timer,
     check,
+    profile,
   },
   data() {
     return {
       // rank: this.$store.state.rank
       rank: "A",
+      clearTime: this.$store.state.clearTime,
+      correctAnswers: this.$store.state.correctAnswers,
       soundInfo: false,
       showInfo: false,
     };
@@ -92,6 +145,7 @@ export default {
       this.$router.push({ path: "/demoresult" });
     },
     soundChange() {
+      
       if (this.soundInfo == true) {
         this.soundInfo = false;
       } else {
@@ -113,6 +167,9 @@ export default {
 .s-rank {
   color: gold;
   align-self: "start";
+  font-size: "5em";
+  width: "10vh";
+  height: "10vh";
 }
 .result {
   background: url("../assets/test.jpg");

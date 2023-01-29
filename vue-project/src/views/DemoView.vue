@@ -66,6 +66,7 @@ const store = useStore();
 const loaded = ref(0);
 const rank = "A";
 const imgList = ref([]);
+const correctAnswers = ref(0);
 setInterval(() => {
     if (loaded.value == 1) {
         imgTimer.value = imgTimer.value + 1;
@@ -126,9 +127,13 @@ function startGame() {
 function enter() {
     if (gameStatus.value === 9) {
         store.commit("setRank", rank);
+        store.commit("setCleartime", totalTimer);
+        store.commit("setCorrectanswers", correctAnswers);
         router.push({ path: "/rank" });
+
     }
     if (text.value == answer.value[gameStatus.value - 1]) {
+        correctAnswers.value = correctAnswers.value + 1;
         if (wrongTimer.value > 0) {
             wrongTimer.value = 0;
         }
