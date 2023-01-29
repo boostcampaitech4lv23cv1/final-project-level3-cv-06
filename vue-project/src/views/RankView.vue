@@ -88,15 +88,9 @@
 </template>
 
 <script>
-import score from "../svg/scoreView.vue";
 import timer from "../svg/timerView.vue";
 import check from "../svg/rightAnswer.vue";
-import F from "../svg/fRank.vue";
-import S from "../svg/sRank1.vue";
-import A from "../svg/aRank.vue";
-import B from "../svg/bRank.vue";
-import C from "../svg/cRank.vue";
-import { VHover } from "vuetify/lib/components";
+import score from '../svg/scoreText.vue'
 
 export default {
   components: {

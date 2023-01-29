@@ -2,7 +2,8 @@
     <v-app class="hero">
         <v-container>
             <v-row class="justify-center">
-                <logo :style="{ height: '20vh', width: '40vw' }" />
+                <logo v-if='gameStatus===0' :style="{ height: '20vh', width: '40vw' }" />
+                <div v-if="gameStatus!=0" class="nums" >{{ headText }}</div>
             </v-row>
             <v-row class="d-flex mt-8">
                 <v-col cols="4"></v-col>
@@ -74,7 +75,7 @@ setInterval(() => {
     if (loaded.value == 1) {
         totalTimer.value = totalTimer.value + 0.1;
     }
-}, 180);
+}, 90);
 setInterval(() => {
     if (rightTimer.value > 0) {
         rightTimer.value = rightTimer.value - 1;
@@ -179,7 +180,7 @@ watch(imgTimer, (newVal) => {
     }
 });
 watch(totalTimer, (newVal) => {
-    if (newVal == 100) {
+    if (Math.floor(newVal) == 100) {
         router.push({ path: "/rank", props: { rank: "A" } });
     }
 });
@@ -203,5 +204,15 @@ watch(totalTimer, (newVal) => {
     margin-top: 17vh;
     background: linear-gradient(to right, #E54040 0%, #FFA63A 16%, #DCFF3F 32%, #6CFF3F 48%, #3FA2FF 64%, #A53FFF 80%, #FF3FC9 100%);
     border-radius: 30px;
+}
+
+@font-face {
+    font-family: 'num';
+    src:url('../fonts/Lobster-Regular.ttf')
+}
+
+.nums{
+    font-family: 'num';
+    font-size: 4rem;
 }
 </style>

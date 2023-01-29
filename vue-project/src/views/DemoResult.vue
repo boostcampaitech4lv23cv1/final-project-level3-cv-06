@@ -1,6 +1,6 @@
 <template>
-  <v-app>
-    <v-container class="fill-height">
+  <v-app class="fill-height hero">
+    <v-container>
       <v-row class=" justify-center">
         <result :style="{ height: '15vh', margin: '0vh 0vw 5vh 0vw' }" />
       </v-row>
