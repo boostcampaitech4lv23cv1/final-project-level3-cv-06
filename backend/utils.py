@@ -134,58 +134,42 @@ def from_image_to_str(img, extend):
     return decoded
 
     
-def set_game_imgs(category: str) -> List[str]:
+def save_user_img(img, file_name):
+    # PIL image 받아서 WEBP로 저장
+    img.save(f"{file_name}.webp", format="WEBP")
     
-    category_path = os.path.join(DATA_PATH, 'original', f'{category}')
-    path_lst = glob(f'{category_path}/*/*')
-    
-    origin_paths = random.sample(path_lst, 9)
-    
-    return origin_paths
 
-
-async def get_paint_img(img_path: str):
-    paint_img_path = img_path.replace('original', 'paint').replace('jpg', 'gif')
-    with open(paint_img_path, 'rb') as f: # 비동기 처리
-        while True:
-            chunk = f.read(1024)
-            if not chunk:
-                break
-            else:
-                yield chunk
+def create_dummy_data(db):
+    data_lst = []
+    
+    categories = [
+        ""
+    ]
+    
+    labels = [
+        
+    ]
+    
+    paths = [
+        
+    ]
+    
+    for category, label, path in zip(categories, labels, paths):
+        if category == "animal":
+            pass
             
+        elif category == "landmark":
+            pass
+        
+        elif category == "celebrity":
+            pass
+        else:
+            raise ValueError('non exist category')
             
-def get_result_imgs(img_paths: List[str]) -> list:
-
-    result_imgs = []
-    
-    result_img_paths = [path.replace('original', 'result') for path in img_paths]
-    for path in result_img_paths:
-        with open(f'{path}', 'rb') as f:
-            data = f.read()
-            encoded = base64.b64encode(data)
-            result_imgs.append(encoded)
-    
-    return result_imgs
-    
-
-def get_origin_imgs(img_paths: List[str]) -> list:
-    
-    origin_imgs = []
-    for path in img_paths:
-        with open(f'{path}', 'rb') as f:
-            data = f.read()
-            encoded = base64.b64encode(data)
-            origin_imgs.append(encoded)
-    
-    return origin_imgs
+     
     
     
-def save_user_img(img, file_name, extend):
-    img.save(f"{file_name}.webp", "WEBP")
-        
-    
-        
-        
+    db.add_all(data_lst)
+    db.commit()
 # gcs에 있는 폴더 구조 가져와서 db업데이트 하기(?)
         

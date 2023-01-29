@@ -5,6 +5,7 @@ backend/.env (DB연결 및 백엔드 관련 설정)
 backend/env/key.json (GCP연결)
 config/db/.env
 
+
 ```bash
 # clone our porject
 # put frontend build file to config/nginx (rename folder name "build")

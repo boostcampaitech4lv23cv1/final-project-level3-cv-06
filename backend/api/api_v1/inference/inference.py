@@ -24,7 +24,7 @@ async def inference(
     bytes_data = BytesIO(content)
     img = Image.open(bytes_data)
 
-    background_tasks.add_task(save_user_img, img, file_name, extend)
+    background_tasks.add_task(save_user_img, img, file_name)
     # gcs로 보내는 백그라운드 task 추가하기
 
     paint_img = predict_by_img(img)
