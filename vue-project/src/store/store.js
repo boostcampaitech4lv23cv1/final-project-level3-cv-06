@@ -30,7 +30,15 @@ const store = createStore({
         },
         setPath(state,path){
             state.imgList=path
-        }
+        },
+        setCleartime(state,cleartime){
+            state.clearTime=cleartime
+        },
+        setCorrectanswers(state,correctanswers){
+            state.correctAnswers=correctanswers
+        },
+
+
     },
     plugins : [ createPersistedState() ],
 });
