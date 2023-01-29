@@ -17,11 +17,12 @@
           </v-icon>
         </v-btn>
       </v-row>
-      <v-row class="justify-center">
+      <v-row class="justify-center nums">
           <check />
           9/9
       </v-row>
-      <v-row class="justify-center">
+
+      <v-row class="justify-center nums" :style="{'margin-top':'3vh'}">
           <timer />
           01:47
       </v-row>
@@ -125,5 +126,16 @@ export default {
 
 .score-space {
   margin-top: 150px;
+}
+
+
+@font-face {
+    font-family: 'num';
+    src:url('../fonts/Lobster-Regular.ttf')
+}
+
+.nums{
+    font-family: 'num';
+    font-size: 2.3rem;
 }
 </style>
