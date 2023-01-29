@@ -1,3 +1,4 @@
+import io
 import itertools
 import logging
 import os
@@ -5,6 +6,7 @@ import sys
 
 import pandas as pd
 import requests
+from PIL import Image
 
 # request timeout
 TIMEOUT = 60
@@ -14,6 +16,8 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
 SCRAPED_TIME, SITE = sys.argv[1:]
+# AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
+# SCRAPED_TIME, SITE = "01-29_22", "pixabay"
 
 
 class PixabayCrawler:
@@ -144,8 +148,7 @@ class PixabayCrawler:
                     [
                         [
                             img_dict["tags"],
-                            f"{keyword}/{SITE}/{SCRAPED_TIME}/{img_dict['id']}.jpg",
-                            # TODO jpg 2 webp
+                            f"{keyword}/{SITE}/{SCRAPED_TIME}/{img_dict['id']}.webp",
                             img_dict["webformatWidth"],
                             img_dict["webformatHeight"],
                             SCRAPED_TIME,
@@ -180,14 +183,12 @@ class PixabayCrawler:
         return n_imgs
 
     def save_img(self, class_path, image):
-        img_bytes = self.download_img(image["largeImageURL"])
 
-        img_path = class_path + f"/{str(image['id'])}.jpg"
-        # TODO 중복 이미지 체크, jpg 2 webp
-        # if not os.path.isfile(img_path):
-        with open(img_path, "wb") as file:
-            logger.debug(img_path)
-            file.write(img_bytes)
+        img_bytes = self.download_img(image["largeImageURL"])
+        img_PIL = Image.open(io.BytesIO(img_bytes))
+
+        img_path = os.path.join(class_path, f"{str(image['id'])}.webp")
+        img_PIL.save(img_path, format="WEBP", quality=80)
         return img_path
 
 
