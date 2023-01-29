@@ -75,7 +75,7 @@ export default {
   },
   computed: {
     categoryIsEmpty() {
-      return this.selectedCategory === "" || this.selectedMode === "";
+      return this.selectedCategory === "";
     },
   },
   methods: {
