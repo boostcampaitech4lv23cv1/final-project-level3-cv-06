@@ -9,8 +9,15 @@ from scheme import *
 
 def read_savepaint(db: Session, category: str):
     # 없는 테이블 가져올 경우 예외 처리
-    # 테이블 이름(=카테고리 이름)으로 전체 row 가져오는 방법 찾기
-    img_paths = db.query(Animal).all()
+    if category == "animal":
+        img_paths = db.query(Animal).all()
+    elif category == "lanmark":
+        img_paths = db.query(Landmark).all()
+    elif category == "celebrity":
+        img_paths = db.query(Celebrity).all()
+    else:
+        raise ValueError('없는 카테고리')
+    
     return img_paths
 
 def create_dummy_data(db):

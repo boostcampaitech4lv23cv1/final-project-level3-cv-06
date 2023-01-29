@@ -24,7 +24,7 @@ def create_dummy(db: Session = Depends(get_db)):
 @router.post('/gamestart', response_model=List[SavePaintOut])
 async def gamestart(game_start: GameStart, db: Session = Depends(get_db)) -> List:
     img_paths = read_savepaint(db, game_start.category)
-    return random.choice(img_paths, 9)
+    return random.sample(img_paths, 9)
 
 
 @router.post('/gameover', response_model=List[SavePaintOut])
