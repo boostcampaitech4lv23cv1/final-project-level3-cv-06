@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import StreamingResponse, FileResponse
-
+from fastapi.responses import FileResponse, StreamingResponse
 
 router = APIRouter()
 

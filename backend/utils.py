@@ -1,16 +1,15 @@
-import os
-import cv2
-import time
-import random
 import base64
-import aiofiles
 import io
-from PIL import Image
+import os
+import random
+import time
+
+import aiofiles
+import cv2
 import numpy as np
-
-from PaintTransformer.inference import init, inference
+from PaintTransformer.inference import inference, init
 from PaintTransformer.inference_only_final import inference as inference_by_img
-
+from PIL import Image
 
 model_path = "PaintTransformer/model.pth"  # main.py 기준으로 경로 설정해야 함
 

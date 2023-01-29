@@ -1,12 +1,12 @@
-import aiofiles
 from io import BytesIO
-from PIL import Image
 
-from utils import predict_by_img, from_image_to_bytes, from_image_to_str, save_img
-from fastapi import APIRouter, HTTPException, BackgroundTasks
-from fastapi import FastAPI, File, UploadFile, Response
+import aiofiles
+from fastapi import (APIRouter, BackgroundTasks, FastAPI, File, HTTPException,
+                     Response, UploadFile)
 from fastapi.responses import FileResponse
-
+from PIL import Image
+from utils import (from_image_to_bytes, from_image_to_str, predict_by_img,
+                   save_img)
 
 router = APIRouter()
 

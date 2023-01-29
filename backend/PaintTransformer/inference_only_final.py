@@ -1,14 +1,14 @@
 import math
 import os
+from argparse import ArgumentParser
 
 import numpy as np
 import PaintTransformer.morphology as morphology
 import PaintTransformer.network as network
+import PIL
 import torch
 import torch.nn.functional as F
 from PIL import Image
-import PIL
-from argparse import ArgumentParser
 
 idx = 0
 

@@ -1,9 +1,10 @@
+import os
 import time
-import psycopg2
 from argparse import ArgumentParser
 from glob import glob
-import os
+
 import pandas as pd
+import psycopg2
 from PIL import Image
 
 
