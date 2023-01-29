@@ -17,33 +17,13 @@
           </v-icon>
         </v-btn>
       </v-row>
-      <v-row>
-        <v-col cols="auto" :style="{ margin: '0vh 0vw 0vh 20vw' }">
+      <v-row class="justify-center">
           <check />
-        </v-col>
-        <v-col
-          :style="{
-            'font-size': '4vh',
-            color: 'gray',
-            margin: '0vh 0vw 0vh 0vw',
-          }"
-        >
           9/9
-        </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="auto" :style="{ margin: '0vh 0vw 0vh 20vw' }">
+      <v-row class="justify-center">
           <timer />
-        </v-col>
-        <v-col
-          :style="{
-            'font-size': '4vh',
-            color: 'gray',
-            margin: '0vh 0vw 0vh 0vw',
-          }"
-        >
           01:47
-        </v-col>
       </v-row>
 
       <v-row
