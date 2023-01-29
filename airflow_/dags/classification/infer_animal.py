@@ -6,6 +6,7 @@ import albumentations as A
 import cv2
 import numpy as np
 import pandas as pd
+import requests
 import timm
 import torch
 import yaml
@@ -24,7 +25,7 @@ KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
 class ClassifyDataset(Dataset):
     def __init__(self, df, transform=None):
         base_path = f"{AIRFLOW_HOME}/dags/classification/data"
-        path = os.path.join(base_path, KEYWORD, SITE, SCRAPED_TIME, "*.jpg")
+        path = os.path.join(base_path, KEYWORD, SITE, SCRAPED_TIME, "*.webp")
         self.img_tag = df["tag"]
         self.img_path = glob(path)
         self.transform = transform
@@ -143,10 +144,40 @@ def join_df2db(df: pd.DataFrame, host: str = "34.145.38.251"):
     new_df.to_sql(name=KEYWORD, con=engine, if_exists="replace", index=False)
 
 
+def metadata2fastapi():
+    base_path = f"{AIRFLOW_HOME}/dags/classification/data"
+    file_path = os.path.join(
+        base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata_with_label.feather"
+    )
+
+    file = {"file": open(file_path, "rb")}
+    url = "http://localhost:8000/upload"  # TODO fastapi url
+    res = requests.post(url, files=file)
+    print(res.json())
+    print(res.status_code)
+
+
+def save_metadata(df):
+    base_path = f"{AIRFLOW_HOME}/dags/classification/data"
+    file_path = os.path.join(
+        base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata_with_label.feather"
+    )
+    df.to_feather(file_path)
+
+
+def remove_dirs():
+    base_path = f"{AIRFLOW_HOME}/dags/classification/data"
+    path = os.path.join(base_path, KEYWORD, SITE, SCRAPED_TIME)
+    os.rmdir(path)
+
+
 if __name__ == "__main__":
 
     df = make_img_label()
+    save_metadata(df)
     print("label: ", df["label"])
-    join_df2db(df)
+    # join_df2db(df)
+    metadata2fastapi()
+    remove_dirs()
 
 # TODO imgnet 레이블 정리 및 간소화
