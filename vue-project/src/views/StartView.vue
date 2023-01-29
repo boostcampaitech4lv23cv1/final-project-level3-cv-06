@@ -26,7 +26,7 @@
             color="transparent"
             @click="movePage('/select')"
           >
-            <game :style="{ height: '10vh' }" />
+            <game :style="{ height: '7vh' }" />
           </v-btn>
         </v-col>
         <v-col cols="6">
