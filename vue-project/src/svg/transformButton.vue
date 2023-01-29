@@ -1,6 +1,6 @@
 <template>
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
-                xmlns:svgjs="http://svgjs.dev/svgjs" width="1000" height="176" viewBox="0 0 1000 176">
+                xmlns:svgjs="http://svgjs.dev/svgjs" width="30vw" height="176" viewBox="0 0 1000 176">
                 <g transform="matrix(1,0,0,1,-0.6060606060606233,-0.38752751293411336)"><svg viewBox="0 0 396 70"
                                 data-background-color="#ffffff" preserveAspectRatio="xMidYMid meet" height="176"
                                 width="1000" xmlns="http://www.w3.org/2000/svg"
