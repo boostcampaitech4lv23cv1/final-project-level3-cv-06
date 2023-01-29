@@ -221,6 +221,7 @@ model.pth
 Pipfile
 Pipfile.lock
 dataset/
+raw_image/
 
 env/
 .env
