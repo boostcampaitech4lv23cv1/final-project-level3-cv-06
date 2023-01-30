@@ -9,27 +9,7 @@ export default {
     mainview,
   },
   data() {
-    return {
-      overlay: true,
-    };
+    return {};
   },
 };
 </script>
-
-<style scoped>
-.hero {
-  background: url("../assets/2.jpg");
-  background-size: cover;
-  height: 100vh;
-}
-
-.no-overlay-container {
-  position: relative;
-  z-index: 1;
-  background-color: blue;
-}
-
-.overlay-container {
-  background-color: blue;
-}
-</style>

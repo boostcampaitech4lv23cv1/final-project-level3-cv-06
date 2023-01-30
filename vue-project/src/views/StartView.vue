@@ -5,7 +5,11 @@
         <logo :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
-        <v-btn rounded variant="plain" @click="infoChange" height="5vh">
+        <v-btn
+          rounded
+          variant="plain"
+          @click="movePage('/description', { page: 1 })"
+        >
           <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
         </v-btn>
       </v-row>
@@ -57,11 +61,7 @@ export default {
   },
   data() {
     return {
-      absolute: true,
-      overlay: false,
       soundInfo: false,
-      currentPage: "page1",
-      showInfo: false,
     };
   },
   methods: {
@@ -78,13 +78,6 @@ export default {
         this.soundInfo = true;
       }
     },
-    infoChange() {
-      if (this.showInfo == true) {
-        this.showInfo = false;
-      } else {
-        this.showInfo = true;
-      }
-    },
   },
 };
 </script>
@@ -93,9 +86,5 @@ export default {
 .hero {
   background: url("../assets/test.jpg");
   background-size: cover;
-}
-
-.buttons {
-  margin-top: 17vh;
 }
 </style>
