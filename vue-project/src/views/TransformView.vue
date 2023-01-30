@@ -30,27 +30,16 @@
             class="mx-auto"
             v-show="uploaded == false"
           />
-          <!-- <v-img
+          <v-img
             max-height="25vh"
             class="mx-auto"
             max-width="25vw"
-            :src="../backend/raw_image"
+            :src="imageUrl"
             v-show="uploaded == true"
-          /> -->
+          />
         </v-col>
         <v-col cols="auto" class="d-flex align-center">
-          <v-icon
-            icon="mdi-arrow-right-bold"
-            size="5vh"
-            v-if="uploaded == false"
-          >
-          </v-icon>
-          <v-progress-circular
-            v-if="transform == true"
-            class="loading mx-auto"
-            color="grey-lighten-4"
-            indeterminate
-          ></v-progress-circular>
+          <v-icon icon="mdi-arrow-right-bold" size="5vh"> </v-icon>
         </v-col>
         <v-col cols="5">
           <v-img
@@ -60,17 +49,24 @@
             class="mx-auto"
             v-show="uploaded == false"
           />
+
           <v-img
             max-height="25vh"
             class="mx-auto"
             max-width="25vw"
             :src="`data:image/gif;base64,${returnImg}`"
           >
+            <v-progress-circular
+              v-if="transform == true"
+              class="loading"
+              color="grey-lighten-4"
+              indeterminate
+            ></v-progress-circular>
           </v-img>
         </v-col>
       </v-row>
       <v-row :style="{ margin: '5vh 0vw 0vh 0vw' }">
-        <v-col cols="8" class="mx-auto">
+        <v-col cols="6" class="mx-auto">
           <v-file-input
             clearable
             label="Upload your own image!"
@@ -105,6 +101,7 @@ export default {
       img_loaded: false,
       soundInfo: false,
       uploaded: false,
+      imageUrl: "",
     };
   },
   computed: {},
@@ -112,6 +109,7 @@ export default {
     setImg(event) {
       this.image = event.target.files[0];
       this.uploaded = true;
+      this.imageUrl = URL.createObjectURL(this.image);
     },
 
     async transformImg() {
