@@ -30,7 +30,7 @@
         <v-col cols="4" class="mx-auto">
           <v-progress-linear
             v-show="gameStatus > 0"
-            class="rotate bar"
+            class="bar"
             height="20vh"
             color="white"
             v-model="totalTimer"

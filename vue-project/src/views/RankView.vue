@@ -165,18 +165,13 @@ export default {
 }
 
 @font-face {
-  <<<<<<< HEAD font-family: 'num';
+  font-family: 'num';
   src: url('../fonts/Lobster-Regular.ttf')
 }
 
 .nums {
   font-family: 'num';
-  =======font-family: "num";
-  src: url("../fonts/Lobster-Regular.ttf");
+  font-size: 2.3rem;
 }
 
-.nums {
-  font-family: "num";
-  >>>>>>>65e7282dfb11b56bd491603e38de99c28995f77c font-size: 2.3rem;
-}
 </style>

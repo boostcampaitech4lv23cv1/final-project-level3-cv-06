@@ -5,7 +5,6 @@
         <v-overlay v-model="overlay" width="100%" height="100%" persistent>
           <v-container
             class="fill-height fill-width"
-            fluid
             @click.stop
             :style="{ position: 'relative' }"
           >
@@ -31,30 +30,28 @@
                 2/9
               </div>
             </v-row>
-            <v-row justify="space-between">
-              <v-spacer></v-spacer>
+            <v-row class="d-flex mt-8">
+              <v-col cols="4"></v-col>
               <v-col cols="4">
-                <div v-if="page == 3" class="text-center">
                   <v-img
+                    v-if="page == 3"
                     class="mx-auto"
                     src="../assets/bird.gif"
                     height="40vh"
                     width="40vw"
                   />
-                </div>
-                <div v-else>
                   <v-img
+                    v-if="page != 3"
                     class="mx-auto"
                     src="../assets/bird_overlayed.jpg"
                     height="40vh"
                     width="40vw"
                   />
-                </div>
               </v-col>
-              <v-col cols="4">
+              <v-col cols="4" class="mx-auto">
                 <div v-if="page == 6">
                   <v-progress-linear
-                    class="rotate bar"
+                  class="overlayedbar"
                     height="20vh"
                     color="white"
                     v-model="totalTimer"
@@ -64,7 +61,7 @@
 
                 <div v-if="page != 6">
                   <v-progress-linear
-                    class="rotate overlayedbar"
+                    class="overlayedbar"
                     height="20vh"
                     color="grey"
                     v-model="totalTimer"
@@ -80,14 +77,14 @@
                   <v-img
                     class="mx-auto"
                     src="../assets/img_timer.jpg"
-                    width="500"
+                    width="25vw"
                   />
                 </div>
                 <div v-else class="mx-auto">
                   <v-img
                     class="mx-auto"
                     src="../assets/img_timer_overlayed.jpg"
-                    width="500"
+                    width="25vw"
                   />
                 </div>
               </v-col>
@@ -270,7 +267,7 @@ export default {
 }
 .overlayedbar {
   transform: rotate(90deg);
-  margin-top: 17vh;
+  margin-top: 20vh;
   background: linear-gradient(
     to right,
     #e5404023 0%,

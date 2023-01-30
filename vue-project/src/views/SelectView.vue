@@ -2,12 +2,11 @@
   <v-app class="hero">
     <v-container height="100%">
       <v-row class="d-flex justify-center">
-        {{ prevs }}
         <logo :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
         <v-btn rounded variant="plain" @click="infoChange" height="5vh">
-          <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
+          <v-icon icon="mdi-information-outline" size="5vh"  @click="movePage('/description', { page: 1 })"> </v-icon>
         </v-btn>
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
@@ -59,7 +58,6 @@ export default {
       ],
       selectedCategory: "animal",
       soundInfo: false,
-      prevs: this.$router.history
     };
   },
   computed: {
@@ -67,14 +65,17 @@ export default {
       return this.selectedCategory === "";
     },
   },
-  mounted() {
-    console.log(this.prevs)
-  },
   methods: {
     startGame() {
       this.$router.push({
-        path: "/game",
+        path: "/demo",
         query: { category: this.selectedCategory, mode: this.selectedMode },
+      });
+    },
+    movePage(route, query) {
+      this.$router.push({
+        path: route,
+        query: query,
       });
     },
     changeCategory(value) {
