@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 import random
 
-from datetime import datetime
+from datetime import datetime, date
 
 from model import *
 from scheme import *
@@ -83,7 +83,7 @@ def create_dummy_data(db):
         if category == "animal":
             data.append(
                 Animal(
-                    created_time=datetime.now(),
+                    created_time=date.today(),
                     label=label,
                     img_path=path
                 )
@@ -91,7 +91,7 @@ def create_dummy_data(db):
         elif category == "landmark":
             data.append(
                 Landmark(
-                    created_time=datetime.now(),
+                    created_time=date.today(),
                     label=label,
                     img_path=path
                 )
@@ -99,7 +99,7 @@ def create_dummy_data(db):
         elif category == "celebrity":
             data.append(
                 Celebrity(
-                    created_time=datetime.now(),
+                    created_time=date.today(),
                     label=label,
                     img_path=path
                 )

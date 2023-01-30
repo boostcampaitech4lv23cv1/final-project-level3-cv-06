@@ -137,39 +137,3 @@ def from_image_to_str(img, extend):
 def save_user_img(img, file_name):
     # PIL image 받아서 WEBP로 저장
     img.save(f"{file_name}.webp", format="WEBP")
-    
-
-def create_dummy_data(db):
-    data_lst = []
-    
-    categories = [
-        ""
-    ]
-    
-    labels = [
-        
-    ]
-    
-    paths = [
-        
-    ]
-    
-    for category, label, path in zip(categories, labels, paths):
-        if category == "animal":
-            pass
-            
-        elif category == "landmark":
-            pass
-        
-        elif category == "celebrity":
-            pass
-        else:
-            raise ValueError('non exist category')
-            
-     
-    
-    
-    db.add_all(data_lst)
-    db.commit()
-# gcs에 있는 폴더 구조 가져와서 db업데이트 하기(?)
-        

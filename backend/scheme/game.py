@@ -12,6 +12,7 @@ class GameOver(BaseModel):
     
 
 class SavePaintOut(BaseModel):
+    base_url: str = "https://storage.googleapis.com/image_cloud_demo/"
     label: str
     img_path: str
     class Config:

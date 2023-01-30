@@ -10,15 +10,7 @@ from crud import *
 from db import *
 
 
-Base.metadata.create_all(bind=engine)
-
 router = APIRouter()
-
-@router.get('/create')
-def create_dummy(db: Session = Depends(get_db)):
-    # dummy data 생성 추후 삭제 필요
-    create_dummy_data(db)
-    return {'messege':'success'}
     
     
 @router.post('/gamestart', response_model=List[SavePaintOut])

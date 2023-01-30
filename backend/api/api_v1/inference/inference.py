@@ -14,6 +14,7 @@ router = APIRouter()
 async def inference(
     file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks()
 ):
+    # 사진 하나만 가능
     # print(uf.filename)
     file_name = file.filename
     extend = file_name.split('.')[-1]
