@@ -18,49 +18,35 @@
         </v-btn>
       </v-row>
       <v-row class="justify-center nums">
-          <check />
-          9/9
+        <check />
+        9/9
       </v-row>
 
-      <v-row class="justify-center nums" :style="{'margin-top':'3vh'}">
-          <timer />
-          01:47
+      <v-row class="justify-center nums" :style="{ 'margin-top': '3vh' }">
+        <timer />
+        01:47
       </v-row>
 
-      <v-row
-        class="d-flex justify-center"
-        :style="{ height: '25vh', margin: '0vh 0vw 0vh 0vw' }"
-      >
-        <v-col
-          cols="auto"
-          align-self="start"
-          :style="{
-            'font-size': '25vh',
-            color: 'gold',
-            margin: '0vh 0vw 0vh 0vw',
-          }"
-          >S</v-col
-        >
+      <v-row class="d-flex justify-center" :style="{ height: '25vh', margin: '0vh 0vw 0vh 0vw' }">
+        <v-col cols="auto" align-self="start" :style="{
+          'font-size': '25vh',
+          color: 'gold',
+          margin: '0vh 0vw 0vh 0vw',
+        }">S</v-col>
 
         <v-col cols="auto" align-self="center">
-          <v-div
-            :style="{
-              'font-size': '3vh',
-              color: 'gray',
-              margin: '0vh 0vw 0vh 0vw',
-            }"
-          >
+          <v-div :style="{
+            'font-size': '3vh',
+            color: 'gray',
+            margin: '0vh 0vw 0vh 0vw',
+          }">
             rank
           </v-div>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-btn
-          class="mx-auto"
-          :style="{ margin: '10vh 0vw 0vh 0vw' }"
-          @click="goResult"
-        >
+        <v-btn class="mx-auto" :style="{ margin: '10vh 0vw 0vh 0vw' }" @click="goResult">
           Show Result!
         </v-btn>
       </v-row>
@@ -85,6 +71,7 @@ export default {
       rank: "A",
       soundInfo: false,
       showInfo: false,
+      correctNum: 0,
     };
   },
   methods: {
@@ -106,6 +93,22 @@ export default {
       }
     },
   },
+  async mounted() {
+    let correctList = this.$store.state.correctList
+    let imgPath = this.$store.state.imgPath
+
+    let response = await this.$api(
+      "http://34.64.169.197/api/v1/game/gameover",
+      "POST",
+      { img_paths: imgPath, correct_list: correctList }
+    );
+
+    for (let i = 0; i < 9; i++) {
+      if (correctList[i] == 1) {
+        this.correctNum += 1
+      }
+    }
+  }
 };
 </script>
 
@@ -114,11 +117,13 @@ export default {
   color: gold;
   align-self: "start";
 }
+
 .result {
   background: url("../assets/test.jpg");
   background-size: cover;
   height: 100vh;
 }
+
 .hero {
   background: url("../assets/test.jpg");
   background-size: cover;
@@ -130,12 +135,12 @@ export default {
 
 
 @font-face {
-    font-family: 'num';
-    src:url('../fonts/Lobster-Regular.ttf')
+  font-family: 'num';
+  src: url('../fonts/Lobster-Regular.ttf')
 }
 
-.nums{
-    font-family: 'num';
-    font-size: 2.3rem;
+.nums {
+  font-family: 'num';
+  font-size: 2.3rem;
 }
 </style>

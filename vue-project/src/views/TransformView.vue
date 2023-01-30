@@ -18,18 +18,10 @@
         </v-btn>
       </v-row>
 
-      <v-row
-        class="d-flex justify-center"
-        :style="{ margin: '3vh 0vw 0vh 0vw' }"
-      >
+      <v-row class="d-flex justify-center" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <v-col cols="5">
-          <v-img
-            src="../assets/tower-bridge.jpg"
-            height="25vh"
-            width="25vw"
-            class="mx-auto"
-            v-show="uploaded == false"
-          />
+          <v-img src="../assets/tower-bridge.jpg" height="25vh" width="25vw" class="mx-auto"
+            v-show="uploaded == false" />
           <!-- <v-img
             max-height="25vh"
             class="mx-auto"
@@ -39,52 +31,27 @@
           /> -->
         </v-col>
         <v-col cols="auto" class="d-flex align-center">
-          <v-icon
-            icon="mdi-arrow-right-bold"
-            size="5vh"
-            v-if="uploaded == false"
-          >
+          <v-icon icon="mdi-arrow-right-bold" size="5vh" v-if="uploaded == false">
           </v-icon>
-          <v-progress-circular
-            v-if="transform == true"
-            class="loading mx-auto"
-            color="grey-lighten-4"
-            indeterminate
-          ></v-progress-circular>
+          <v-progress-circular v-if="transform == true" class="loading mx-auto" color="grey-lighten-4"
+            indeterminate></v-progress-circular>
         </v-col>
         <v-col cols="5">
-          <v-img
-            src="../assets/tower-bridge-paint.jpg"
-            height="25vh"
-            width="25vw"
-            class="mx-auto"
-            v-show="uploaded == false"
-          />
-          <v-img
-            max-height="25vh"
-            class="mx-auto"
-            max-width="25vw"
-            :src="`data:image/gif;base64,${returnImg}`"
-          >
+          <v-img src="../assets/tower-bridge-paint.jpg" height="25vh" width="25vw" class="mx-auto"
+            v-show="uploaded == false" />
+          <v-img max-height="25vh" class="mx-auto" max-width="25vw" :src="`data:image/gif;base64,${returnImg}`">
           </v-img>
         </v-col>
       </v-row>
       <v-row :style="{ margin: '5vh 0vw 0vh 0vw' }">
         <v-col cols="8" class="mx-auto">
-          <v-file-input
-            clearable
-            label="Upload your own image!"
-            variant="solo"
-            v-on:change="setImg"
-          ></v-file-input>
+          <v-file-input clearable label="Upload your own image!" variant="solo" v-on:change="setImg"></v-file-input>
           <!-- <input type="file" v-on:change="setImg" /> -->
         </v-col>
       </v-row>
       <v-row class="d-flex justify-center">
         <v-col cols="auto">
-          <v-btn @click="transformImg" :disabled="image == null"
-            >Transform!</v-btn
-          >
+          <v-btn @click="transformImg" :disabled="image == null">Transform!</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -122,10 +89,15 @@ export default {
       formData.append("file", this.image);
 
       let response = await this.$api2(
-        "http://127.0.0.1:8000/api/v1/infer",
+        "http://34.64.169.197/api/v1/infer",
         "POST",
         formData
       );
+      // let response = await this.$api2(
+      //   "http://127.0.0.1:8000/api/v1/infer",
+      //   "POST",
+      //   formData
+      // );
       this.returnImg = response["image"];
       this.transform = false;
     },

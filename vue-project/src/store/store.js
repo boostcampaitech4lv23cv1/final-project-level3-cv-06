@@ -6,31 +6,30 @@ const store = createStore({
         return{
             originImg:[],
             paintImg:[],
-            answer:[],
-            result:[],
+            answerList:[],
+            imgPath:[],
             rank:'S',
-            imgList:[],
+            corrrectList:[],
         }
     },
     mutations:{
         setOrigin(state,img){
             state.originImg=img
+            state.imgPath=img
         },
         setPaint(state,gif){
             state.paintImg=gif
         },
         setAnswer(state,answer){
-            state.answer=answer
-        },
-        setResult(state,result){
-            state.result=result
+            state.answerList=answer
         },
         setRank(state,rank){
             state.rank=rank
         },
-        setPath(state,path){
-            state.imgList=path
+        setCorrect(state,correct){
+            state.corrrectList=correct
         }
+
     },
     plugins : [ createPersistedState() ],
 });
