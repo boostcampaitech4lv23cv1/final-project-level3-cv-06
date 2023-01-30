@@ -16,7 +16,7 @@ from pytorch_lightning import LightningModule, Trainer
 from sqlalchemy import create_engine
 from torch.utils.data import DataLoader, Dataset
 
-AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
+AIRFLOW_HOME = "/opt/ml/final-project/airflow_"
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
 # KEYWORD, SITE, SCRAPED_TIME = "animals", "pixabay", "01-27_11"
@@ -92,7 +92,9 @@ def pred2imgnetlabel(predictions: np.array, imagenet_labels: pd.DataFrame) -> li
         list: korean labels that match with prediction
     """
     df = imagenet_labels.loc[predictions]
-    return list(df.drop(df[df["use"] == 0].index)["korean"])
+    for i in df[df["use"] == 0].index:
+        df.loc[i, "korean"] = "NaN"
+    return list(df['korean'])
 
 
 # def read_imgnet_labels():
@@ -126,7 +128,8 @@ def make_img_label() -> pd.DataFrame:
     predictions = inference(df)
     labels = pred2imgnetlabel(predictions, imagenet_labels)
     df["label"] = labels
-    return df
+    df = df.drop(df[df["label"]=="NaN"].index)
+    return df.reset_index(drop=True)
 
 
 def join_df2db(df: pd.DataFrame, host: str = "34.145.38.251"):
