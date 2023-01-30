@@ -77,9 +77,7 @@
         <v-btn
           class="mx-auto text-center"
           :style="{
-            height: '3vh',
             margin: '15vh 0vw 0vh 0vw',
-            'font-size': '3vh',
           }"
           @click="goResult"
         >
