@@ -97,7 +97,6 @@ const answer = ref([]);
 const router = useRouter();
 const store = useStore();
 const loaded = ref(0);
-const rank = "A";
 const imgList = ref([]);
 const correctAnswers = ref(0);
 
@@ -168,7 +167,6 @@ function enter() {
     rightTimer.value = 2;
 
     if (gameStatus.value === 9) {
-      store.commit("setRank", rank);
       store.commit("setCleartime", totalTimer);
       store.commit("setCorrectanswers", correctAnswers);
       router.push({ path: "/rank" });
@@ -224,10 +222,9 @@ watch(imgTimer, (newVal) => {
 });
 watch(totalTimer, (newVal) => {
   if (Math.floor(newVal) == 100) {
-    store.commit("setRank", rank);
     store.commit("setCleartime", 100);
     store.commit("setCorrectanswers", correctAnswers);
-    router.push({ path: "/rank", props: { rank: "A" } });
+    router.push({ path: "/rank" });
   }
 });
 </script>
