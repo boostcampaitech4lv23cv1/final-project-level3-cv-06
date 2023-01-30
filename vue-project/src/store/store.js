@@ -37,14 +37,21 @@ const store = createStore({
         },
         setRefresh(state,refresh){
             state.refresh=refresh
-        }
+        },
+        setCleartime(state,cleartime){
+            state.clearTime=cleartime
+        },
+        setCorrectanswers(state,correctanswers){
+            state.correctAnswers=correctanswers
+        },
 
     },
     actions: {
         async POPULATE_FROM_CACHE({ state }) {
             let [keyss, values] = await Promise.all([keys(), getAll()])
             state.translations = keyss.map((key, index) => ({ id: key, name: values[index] }))
-        }
+        },
+
     },
     plugins : [ 
         createPersistedState({

@@ -17,36 +17,51 @@
           </v-icon>
         </v-btn>
       </v-row>
-      <v-row class="justify-center nums">
-        <check />
-        9/9
-      </v-row>
 
-      <v-row class="justify-center nums" :style="{ 'margin-top': '3vh' }">
-        <timer />
-        01:47
-      </v-row>
+      <v-row class="d-flex nums" :style="{ height: '30vh', 'margin-top': '3vh' }">
+        <v-col cols="6" class="align-self-center">
+          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+            <v-col cols="2" class="justify">
+              <profile />
+            </v-col>
+            <v-col cols="3" class="justify"> Nask </v-col>
+          </v-row>
 
-      <v-row class="d-flex justify-center" :style="{ height: '25vh', margin: '0vh 0vw 0vh 0vw' }">
-        <v-col cols="auto" align-self="start" :style="{
-          'font-size': '25vh',
-          color: 'gold',
-          margin: '0vh 0vw 0vh 0vw',
-        }">S</v-col>
+          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+            <v-col cols="2">
+              <check />
+            </v-col>
+            <v-col cols="3"> {{ correctAnswers }}/9 </v-col>
+          </v-row>
 
-        <v-col cols="auto" align-self="center">
-          <v-div :style="{
-            'font-size': '3vh',
-            color: 'gray',
-            margin: '0vh 0vw 0vh 0vw',
-          }">
-            rank
-          </v-div>
+          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+            <v-col cols="2">
+              <timer />
+            </v-col>
+            <v-col cols="3">
+              {{ clearTime }}
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <v-col cols="6">
+          <v-row>
+            <v-col cols="auto" :style="{
+              'margin-left': '4vh',
+              'margin-top': '5vh',
+              'font-size': '23vh',
+              color: 'gold',
+            }">
+              {{ rank }}
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-btn class="mx-auto" :style="{ margin: '10vh 0vw 0vh 0vw' }" @click="goResult">
+      <v-row class="d-flex">
+        <v-btn class="mx-auto text-center" :style="{
+          margin: '15vh 0vw 0vh 0vw',
+        }" @click="goResult">
           Show Result!
         </v-btn>
       </v-row>
@@ -57,23 +72,27 @@
 <script>
 import timer from "../svg/timerView.vue";
 import check from "../svg/rightAnswer.vue";
-import score from '../svg/scoreText.vue'
+import score from "../svg/scoreText.vue";
+import profile from "../svg/profileView.vue";
 
 export default {
   components: {
     score,
     timer,
     check,
+    profile,
   },
   data() {
     return {
-      // rank: this.$store.state.rank
-      rank: "A",
+      rank: "",
+      clearTime: this.$store.state.clearTime.toString().substr(0, 5),
+      correctAnswers: this.$store.state.correctAnswers,
       soundInfo: false,
       showInfo: false,
       correctNum: 0,
     };
   },
+
   methods: {
     goResult() {
       this.$router.push({ path: "/result" });
@@ -108,6 +127,15 @@ export default {
         this.correctNum += 1
       }
     }
+    if (Number(this.clearTime) <= 60) {
+      this.rank = "S";
+    } else if (Number(this.clearTime) <= 70) {
+      this.rank = "A";
+    } else if (Number(this.clearTime) <= 80) {
+      this.rank = "B";
+    } else if (Number(this.clearTime) <= 90) {
+      this.rank = "C";
+    }
   }
 };
 </script>
@@ -116,6 +144,9 @@ export default {
 .s-rank {
   color: gold;
   align-self: "start";
+  font-size: "5em";
+  width: "10vh";
+  height: "10vh";
 }
 
 .result {
@@ -133,14 +164,19 @@ export default {
   margin-top: 150px;
 }
 
-
 @font-face {
-  font-family: 'num';
+  <<<<<<< HEAD font-family: 'num';
   src: url('../fonts/Lobster-Regular.ttf')
 }
 
 .nums {
   font-family: 'num';
-  font-size: 2.3rem;
+  =======font-family: "num";
+  src: url("../fonts/Lobster-Regular.ttf");
+}
+
+.nums {
+  font-family: "num";
+  >>>>>>>65e7282dfb11b56bd491603e38de99c28995f77c font-size: 2.3rem;
 }
 </style>
