@@ -78,9 +78,21 @@ def inference(df) -> np.ndarray:
     return predictions
 
 
-def pred2imgnetlabel(predictions, imagenet_labels):
+def pred2imgnetlabel(predictions: np.array, imagenet_labels: pd.DataFrame) -> list:
+    """prediction to imagenet label
+    
+    remove label that is not for usage
+    ("use" column value is 0)
 
-    return imagenet_labels[predictions]
+    Args:
+        predictions (np.array): prediction from model (imgnet class)
+        imagenet_labels (pd.DataFrame): imagenet korean labels
+
+    Returns:
+        list: korean labels that match with prediction
+    """
+    df = imagenet_labels.loc[predictions]
+    return list(df.drop(df[df["use"] == 0].index)["korean"])
 
 
 # def read_imgnet_labels():
@@ -88,7 +100,9 @@ def pred2imgnetlabel(predictions, imagenet_labels):
 #         labels = yaml.load(f, Loader=yaml.FullLoader)
 #         return np.array(labels)
 def read_imgnet_labels():
-    df = pd.read_csv("imagenet_class.csv")
+    df = pd.read_csv(
+        f"{AIRFLOW_HOME}/dags/classification/imagenet_class.csv"
+    )
     df.drop("english", axis=1, inplace=True)
     return df
 
@@ -155,7 +169,7 @@ def metadata2fastapi():
     )
 
     file = {"file": open(file_path, "rb")}
-    url = "http://localhost:8000/upload"  # TODO fastapi url
+    url = "http://34.64.169.197:/api/v1/meta/create"  # TODO fastapi url
     res = requests.post(url, files=file)
     print(res.json())
     print(res.status_code)
