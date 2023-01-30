@@ -1,7 +1,8 @@
 import os
-from PIL import Image
-import torch
+
 import numpy as np
+import torch
+from PIL import Image
 
 
 def set_image(img, img_type="RGB", l=None):

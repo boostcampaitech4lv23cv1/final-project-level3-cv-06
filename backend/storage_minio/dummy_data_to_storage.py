@@ -1,6 +1,7 @@
-from minio import Minio
-from glob import glob
 import os
+from glob import glob
+
+from minio import Minio
 
 BUCKET_NAME = "savepaint-bucket"
 

@@ -1,9 +1,7 @@
 # main.py
+from api.api_v1 import api_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from api.api_v1 import api_router
-
 
 app = FastAPI(
     docs_url="/api/docs", redoc_url="/api/redoc", openapi_url="/api/openapi.json"

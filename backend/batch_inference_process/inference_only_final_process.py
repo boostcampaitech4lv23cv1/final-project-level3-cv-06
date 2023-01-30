@@ -1,7 +1,8 @@
-from PIL import Image
-import requests
 import base64
 import io
+
+import requests
+from PIL import Image
 
 
 def from_image_to_bytes(img):

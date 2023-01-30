@@ -28,7 +28,7 @@
         </v-row>
         <v-col cols=12 class="d-flex justify-center mt-16">
             <v-btn :disabled="categoryIsEmpty" color="primary" @click="startGame">Game start</v-btn>
-        </v-col>    
+        </v-col>
 </v-container>
 
 
@@ -37,7 +37,7 @@
 
 <script>
 export default{
-    data(){ 
+    data(){
         return{
             categoryItems:[
                 { text: 'Random', value: 'Raondom' },

@@ -1,7 +1,7 @@
 <template>
 
     <v-overlay v-model="overlay" z-index="500" width="100%" height="100%">
-    
+
         <v-container @click.stop style="position: relative">
             <v-row>
                 <v-col cols=12></v-col>
@@ -69,7 +69,7 @@
                         ></v-text-field>
                 </v-col>
             </v-row>
-        </v-container> 
+        </v-container>
     </v-overlay>
 </template>
 

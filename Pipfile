@@ -13,14 +13,12 @@ scikit-learn = "*"
 torchvision = "*"
 pandas = "*"
 psycopg2-binary = "*"
-<<<<<<< HEAD
 aiofiles = "*"
-=======
 minio = "*"
 ipywidgets = "*"
->>>>>>> 2a36b7d23d3e3f03ad041b5f0381232a0aff7e99
 
 [dev-packages]
+pre-commit = "*"
 
 [requires]
 python_version = "3.9"

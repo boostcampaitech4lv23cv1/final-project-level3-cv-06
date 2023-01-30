@@ -1,11 +1,10 @@
 # app.py
-from fastapi import FastAPI
-from fastapi import File
-from fastapi import FastAPI
-from PaintTransformer.inference_only_final import init, inference
-from PIL import Image
 import base64
 import io
+
+from fastapi import FastAPI, File
+from PaintTransformer.inference_only_final import inference, init
+from PIL import Image
 
 # Create a FastAPI instance
 app = FastAPI()

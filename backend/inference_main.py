@@ -1,9 +1,8 @@
+import os
 import sys
 
 from PaintTransformer.inference import *
 from PIL import Image
-
-import os
 
 resize_l = 1024
 K = 5

@@ -1,13 +1,14 @@
-import numpy as np
 import math
-import torch.nn.functional as F
-import torch
-from PIL import Image
 import os
 
+import numpy as np
+import torch
+import torch.nn.functional as F
+from PIL import Image
+
+from .utils.miscellaneous import *
 from .utils.morphology import *
 from .utils.network import *
-from .utils.miscellaneous import *
 
 
 def get_path_from_current_file(path):
