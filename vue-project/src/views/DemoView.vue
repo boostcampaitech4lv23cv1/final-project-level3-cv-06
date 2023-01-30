@@ -45,9 +45,20 @@
             v-model="imgTimer"
             height="20vh"
             rounded
-            color="white"
+            color="primary"
           ></v-progress-linear>
         </v-col>
+      </v-row>
+      <v-row class="d-flex justify-center mt-8" v-if="gameStatus!=0 & gameStatus!=10">
+        <v-sheet
+          v-for="(i) in answer[gameStatus-1].length" :key="{i}"
+          color="white"
+          elevation="1"
+          height="30"
+          width="30"
+          rounded
+        ></v-sheet>
+
       </v-row>
       <v-row class="d-flex justify-center mt-10">
         <v-col cols="4"></v-col>
