@@ -34,18 +34,12 @@
             max-height="25vh"
             class="mx-auto"
             max-width="25vw"
-           :src=imageUrl
+            :src="imageUrl"
             v-show="uploaded == true"
           />
         </v-col>
         <v-col cols="auto" class="d-flex align-center">
-          <v-icon
-            icon="mdi-arrow-right-bold"
-            size="5vh"
-
-          >
-          </v-icon>
-          
+          <v-icon icon="mdi-arrow-right-bold" size="5vh"> </v-icon>
         </v-col>
         <v-col cols="5">
           <v-img
@@ -55,22 +49,20 @@
             class="mx-auto"
             v-show="uploaded == false"
           />
-        
+
           <v-img
             max-height="25vh"
             class="mx-auto"
             max-width="25vw"
             :src="`data:image/gif;base64,${returnImg}`"
-
           >
-          <v-progress-circular
-            v-if="transform == true"
-            class="loading "
-            color="grey-lighten-4"
-            indeterminate
-          ></v-progress-circular>
+            <v-progress-circular
+              v-if="transform == true"
+              class="loading"
+              color="grey-lighten-4"
+              indeterminate
+            ></v-progress-circular>
           </v-img>
-          
         </v-col>
       </v-row>
       <v-row :style="{ margin: '5vh 0vw 0vh 0vw' }">
@@ -109,6 +101,7 @@ export default {
       img_loaded: false,
       soundInfo: false,
       uploaded: false,
+      imageUrl: "",
     };
   },
   computed: {},
