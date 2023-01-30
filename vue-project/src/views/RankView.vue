@@ -76,7 +76,7 @@ export default {
   },
   methods: {
     goResult() {
-      this.$router.push({ path: "/demoresult" });
+      this.$router.push({ path: "/result" });
     },
     soundChange() {
       if (this.soundInfo == true) {

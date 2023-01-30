@@ -25,15 +25,36 @@ export default {
   },
   data() {
     return {
-      originImg: "",
+      originImg: [],
     };
   },
   methods: {
     moveDetail(index) {
-      this.$router.push({ path: "/demodetail", query: { index: index } });
+      this.$router.push({ path: "/detail", query: { index: index } });
+    },
+    async readImage(url) {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return blob;
     },
   },
   async mounted() {
+    if (this.$store.state.refresh === true) {
+      this.$store.commit('setRefresh', false)
+      let originList = this.$store.state.originImg
+
+      for (let i = 0; i < 9; i++) {
+        let blob = this.readImage(originList[i])
+        this.$store.commit("addTranslation", {
+          id: i,
+          image: blob,
+        });
+      }
+    }
+
+    this.$store.dispatch("POPULATE_FROM_CACHE");
+    let test = this.$store.translations
+    console.log(test)
 
   }
 };

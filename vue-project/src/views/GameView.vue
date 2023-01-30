@@ -63,7 +63,7 @@ const router = useRouter();
 const store = useStore();
 const loaded = ref(0);
 const rank = "A";
-const correctList = []
+const correctList = ref([])
 
 
 setInterval(() => {
@@ -136,16 +136,18 @@ onMounted(async () => {
   for (let i = 0; i < 9; i++) {
     answerList.value.push(response.data[i]['label'])
 
-    originImg.push(response.data[i]['img_path'])
+    originImg.push('https://storage.googleapis.com/image_cloud_demo/' + response.data[i]['img_path'])
 
     let tmp = response.data[i]['img_path'].split('_')
-    tmp[1] = 'paint.webp'
-    paintImg.value.push(tmp.join('_'))
+    tmp[1] = 'ani.webp'
+    paintImg.value.push('https://storage.googleapis.com/image_cloud_demo/' + tmp.join('_'))
   }
+  console.log(answerList.value)
 
   store.commit("setOrigin", originImg);
   store.commit("setPaint", paintImg.value);
   store.commit("setAnswer", answerList.value);
+  store.commit("setRefresh", true)
 
 });
 watch(imgTimer, (newVal) => {

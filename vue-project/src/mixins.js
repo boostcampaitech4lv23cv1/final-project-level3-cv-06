@@ -6,7 +6,7 @@ export default{
                 method: method,
                 url,
                 headers: { 'Content-Type': 'application/json' },
-                data: JSON.stringify(data)
+                data: JSON.stringify(data),
             }).catch(e=>{
                 console.log(e);
             })

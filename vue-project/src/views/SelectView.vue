@@ -2,6 +2,7 @@
   <v-app class="hero">
     <v-container height="100%">
       <v-row class="d-flex justify-center">
+        {{ prevs }}
         <logo :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
@@ -58,12 +59,16 @@ export default {
       ],
       selectedCategory: "animal",
       soundInfo: false,
+      prevs: this.$router.history
     };
   },
   computed: {
     categoryIsEmpty() {
       return this.selectedCategory === "";
     },
+  },
+  mounted() {
+    console.log(this.prevs)
   },
   methods: {
     startGame() {

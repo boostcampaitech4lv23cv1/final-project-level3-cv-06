@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
+import { set, keys, getAll } from "../store/idb.js";
 
 const store = createStore({
     state (){
@@ -9,10 +10,15 @@ const store = createStore({
             answerList:[],
             imgPath:[],
             rank:'S',
-            corrrectList:[],
+            correctList:[],
+            refresh:false,
+            translations:[],
         }
     },
     mutations:{
+        addTranslation(state, translation) {
+            set(translation.id, translation.image)
+        },
         setOrigin(state,img){
             state.originImg=img
             state.imgPath=img
@@ -27,11 +33,24 @@ const store = createStore({
             state.rank=rank
         },
         setCorrect(state,correct){
-            state.corrrectList=correct
+            state.correctList=correct
+        },
+        setRefresh(state,refresh){
+            state.refresh=refresh
         }
 
     },
-    plugins : [ createPersistedState() ],
+    actions: {
+        async POPULATE_FROM_CACHE({ state }) {
+            let [keyss, values] = await Promise.all([keys(), getAll()])
+            state.translations = keyss.map((key, index) => ({ id: key, name: values[index] }))
+        }
+    },
+    plugins : [ 
+        createPersistedState({
+            paths: ['originImg', 'paintImg', 'answerList', 'imgPath', 'rank', 'corrrectList', 'refresh']
+        })
+    ],
 });
 
 
