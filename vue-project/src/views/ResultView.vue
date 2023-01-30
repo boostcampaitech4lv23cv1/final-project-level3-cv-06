@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import result from '../svg/resultText.vue'
 export default {
   components: {
@@ -27,7 +26,6 @@ export default {
   data() {
     return {
       originImg: "",
-      imgList: this.$store.state.imgList,
     };
   },
   methods: {
@@ -36,6 +34,7 @@ export default {
     },
   },
   async mounted() {
+
   }
 };
 </script>
