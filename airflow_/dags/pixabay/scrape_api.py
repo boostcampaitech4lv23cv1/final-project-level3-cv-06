@@ -15,7 +15,9 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
-SCRAPED_TIME, SITE = sys.argv[1:]
+# SCRAPED_TIME, SITE = sys.argv[1:]
+KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
+
 # AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
 # SCRAPED_TIME, SITE = "01-29_22", "pixabay"
 
@@ -292,7 +294,7 @@ if __name__ == "__main__":
         "order": "latest",
     }
 
-    keyword = ["animals"]
+    keyword = [KEYWORD]
     scraper = PixabayCrawler(keyword, params)
     df = scraper.scraper(n_imgs=5)
     save_metadata(keyword, df)

@@ -30,7 +30,7 @@ scraped_time = datetime.now(timezone("Asia/Seoul")).strftime("%m-%d_%H")
 
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 ssh_base = "/opt/ml/final-project-level3-cv-06"
-keyword = "animals"
+keyword = "animal"
 site = "pixabay"
 bucket = "scraped-img"
 instance_name = "airflow-server"
@@ -81,7 +81,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     #####################    JOBS    #######################
     crawl_img = BashOperator(
         task_id="img_crawler",
-        bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {scraped_time} {site}",
+        bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {keyword} {site} {scraped_time}",
     )
 
     metadata2db = PythonOperator(
@@ -124,12 +124,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     infer_label_send2db = SSHOperator(
         task_id="infer_label_send2db",
         ssh_conn_id="ssh_connection",
-        command=f"python {ssh_base}/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
-    )
-
-    get_gcs_ip = BashOperator(
-        task_id="get_gcs_ip",
-        bash_command=f"python {AIRFLOW_HOME}/dags/database/get_gcs_ip.py {instance_name} {zone_name}",
+        command=f"python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
     )
 
     #####################    TASKS    #####################
