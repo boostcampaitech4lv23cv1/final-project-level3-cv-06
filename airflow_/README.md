@@ -5,35 +5,21 @@
 ```bash
 docker-compose up
 ```
+## airflow webserver 접속
 
-## postgres 컨테이너 접속
+    1. http://localhost:8080 접속.
+    2. 아이디:airflow 비번:airflow 입력.
+    3. crawling dag 실행
+---
+
+## postgres 컨테이너 접속하는 방법
 
 ```bash
-docker exec -it $(docker ps -aqf name=airflow_reproduct-postgres-1) /bin/sh
+docker exec -it $(docker ps -aqf name=postgres-1) /bin/sh
 ```
 
-## postgres db 접속
+## postgres db 접속하는 방법
 
 ```bash
 PGPASSWORD=airflow psql -h postgres -p 5432 -U airflow -d airflow
 ```
-
-### SQL 테이블 생성
-
-```sql
-create table animal(
-    category varchar(10),
-    alt varchar(1000) null,
-    srcset varchar(1000) null,
-    img_path varchar(1000) null,
-    img_width smallint null,
-    img_height smallint null,
-    label varchar(20),
-    time Time null
-);
-update animal
-set label = '';
-```
-## airflow webserver 접속
-
-    http://localhost:8080 접속 후, crawling dag 실행
