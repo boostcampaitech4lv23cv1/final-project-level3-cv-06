@@ -68,6 +68,7 @@ class PixabayCrawler:
         # path = Path(path)
         df = pd.DataFrame(
             columns=[
+                "category",
                 "tag",
                 "img_path",
                 "img_width",
@@ -149,6 +150,7 @@ class PixabayCrawler:
                 pd.DataFrame(
                     [
                         [
+                            keyword,
                             img_dict["tags"],
                             f"{keyword}/{SITE}/{SCRAPED_TIME}/{img_dict['id']}.webp",
                             img_dict["webformatWidth"],
