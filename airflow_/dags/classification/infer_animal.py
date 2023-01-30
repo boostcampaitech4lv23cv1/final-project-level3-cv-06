@@ -19,7 +19,7 @@ from torch.utils.data import DataLoader, Dataset
 AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
-# KEYWORD, SITE, SCRAPED_TIME = "animals", "pixabay", "01-28_22"
+# KEYWORD, SITE, SCRAPED_TIME = "animals", "pixabay", "01-27_11"
 
 
 class ClassifyDataset(Dataset):
@@ -83,10 +83,14 @@ def pred2imgnetlabel(predictions, imagenet_labels):
     return imagenet_labels[predictions]
 
 
+# def read_imgnet_labels():
+#     with open(f"{AIRFLOW_HOME}/dags/classification/imagenet_class.yaml", "r") as f:
+#         labels = yaml.load(f, Loader=yaml.FullLoader)
+#         return np.array(labels)
 def read_imgnet_labels():
-    with open(f"{AIRFLOW_HOME}/dags/classification/imagenet_class.yaml", "r") as f:
-        labels = yaml.load(f, Loader=yaml.FullLoader)
-        return np.array(labels)
+    df = pd.read_csv("imagenet_class.csv")
+    df.drop("english", axis=1, inplace=True)
+    return df
 
 
 def make_img_label() -> pd.DataFrame:

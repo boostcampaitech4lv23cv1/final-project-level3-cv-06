@@ -70,7 +70,7 @@ class PixabayCrawler:
                 "img_path",
                 "img_width",
                 "img_height",
-                "time",
+                "crawled_time",
                 "label",
             ]
         )
@@ -296,6 +296,5 @@ if __name__ == "__main__":
     scraper = PixabayCrawler(keyword, params)
     df = scraper.scraper(n_imgs=5)
     save_metadata(keyword, df)
-    # TODO: width, height min값 정하기 min_width,min_height
     # TODO: 한번 실행할 때 크롤링할 이미지 개수 정하기 n_imgs
     # TODO: 이전에 크롤링했던 사진 이후부터 크롤링
