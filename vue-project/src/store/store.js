@@ -13,6 +13,7 @@ const store = createStore({
             correctList:[],
             refresh:false,
             translations:[],
+            clearTime:null,
         }
     },
     mutations:{
@@ -44,6 +45,9 @@ const store = createStore({
         setCorrectanswers(state,correctanswers){
             state.correctAnswers=correctanswers
         },
+        setPath(state,path){
+            state.imgPath=path
+        }
 
     },
     actions: {
