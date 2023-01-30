@@ -16,7 +16,8 @@ from pytorch_lightning import LightningModule, Trainer
 from sqlalchemy import create_engine
 from torch.utils.data import DataLoader, Dataset
 
-AIRFLOW_HOME = "/opt/ml/final-project/airflow_"
+AIRFLOW_HOME = os.path.dirname(os.path.abspath(__file__))
+
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
 # KEYWORD, SITE, SCRAPED_TIME = "animals", "pixabay", "01-27_11"
@@ -24,7 +25,7 @@ KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
 
 class ClassifyDataset(Dataset):
     def __init__(self, df, transform=None):
-        base_path = f"{AIRFLOW_HOME}/dags/classification/data"
+        base_path = f"{AIRFLOW_HOME}/data"
         path = os.path.join(base_path, KEYWORD, SITE, SCRAPED_TIME, "*.webp")
         self.img_tag = df["tag"]
         self.img_path = glob(path)
@@ -80,7 +81,7 @@ def inference(df) -> np.ndarray:
 
 def pred2imgnetlabel(predictions: np.array, imagenet_labels: pd.DataFrame) -> list:
     """prediction to imagenet label
-    
+
     remove label that is not for usage
     ("use" column value is 0)
 
@@ -94,17 +95,15 @@ def pred2imgnetlabel(predictions: np.array, imagenet_labels: pd.DataFrame) -> li
     df = imagenet_labels.loc[predictions]
     for i in df[df["use"] == 0].index:
         df.loc[i, "korean"] = "NaN"
-    return list(df['korean'])
+    return list(df["korean"])
 
 
 # def read_imgnet_labels():
-#     with open(f"{AIRFLOW_HOME}/dags/classification/imagenet_class.yaml", "r") as f:
+#     with open(f"{AIRFLOW_HOME}/imagenet_class.yaml", "r") as f:
 #         labels = yaml.load(f, Loader=yaml.FullLoader)
 #         return np.array(labels)
 def read_imgnet_labels():
-    df = pd.read_csv(
-        f"{AIRFLOW_HOME}/dags/classification/imagenet_class.csv"
-    )
+    df = pd.read_csv(f"{AIRFLOW_HOME}/imagenet_class.csv")
     df.drop("english", axis=1, inplace=True)
     return df
 
@@ -120,7 +119,7 @@ def make_img_label() -> pd.DataFrame:
     """
 
     imagenet_labels = read_imgnet_labels()
-    base_path = f"{AIRFLOW_HOME}/dags/classification/data"
+    base_path = f"{AIRFLOW_HOME}/data"
 
     df = read_feather(
         os.path.join(base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata.feather")
@@ -128,7 +127,7 @@ def make_img_label() -> pd.DataFrame:
     predictions = inference(df)
     labels = pred2imgnetlabel(predictions, imagenet_labels)
     df["label"] = labels
-    df = df.drop(df[df["label"]=="NaN"].index)
+    df = df.drop(df[df["label"] == "NaN"].index)
     return df.reset_index(drop=True)
 
 
@@ -166,7 +165,7 @@ def join_df2db(df: pd.DataFrame, host: str = "34.145.38.251"):
 
 
 def metadata2fastapi():
-    base_path = f"{AIRFLOW_HOME}/dags/classification/data"
+    base_path = f"{AIRFLOW_HOME}/data"
     file_path = os.path.join(
         base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata_with_label.feather"
     )
@@ -179,7 +178,7 @@ def metadata2fastapi():
 
 
 def save_metadata(df):
-    base_path = f"{AIRFLOW_HOME}/dags/classification/data"
+    base_path = f"{AIRFLOW_HOME}/data"
     file_path = os.path.join(
         base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata_with_label.feather"
     )
@@ -187,7 +186,7 @@ def save_metadata(df):
 
 
 def remove_dirs():
-    base_path = f"{AIRFLOW_HOME}/dags/classification/data"
+    base_path = f"{AIRFLOW_HOME}/data"
     path = os.path.join(base_path, KEYWORD, SITE, SCRAPED_TIME)
     os.rmdir(path)
 
