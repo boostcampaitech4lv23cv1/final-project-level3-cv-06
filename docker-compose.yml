@@ -41,8 +41,7 @@ services:
       context: .
       dockerfile: ./docker/backend.dockerfile
 
-    volumes: # 사용자 한테 받은 이미지 저장 필요
-      - ./raw_image:/app/raw_image
+    volumes:
       - ./app.log:/app/app.log
 
     environment:

@@ -22,10 +22,10 @@ from fastapi import Depends, HTTPException
 from PaintTransformer.inference import init, inference
 from PaintTransformer.inference_only_final import inference as inference_by_img
 
-KEY_PATH = 'env/key.json'
+KEY_PATH = 'env/key_v1.json'
 DATA_PATH = 'dataset'
 model_path = "PaintTransformer/model.pth" # main.py 기준으로 경로 설정해야 함
-bucket_name = "image_cloud_demo"
+bucket_name = "scraped-img"
 
 credentials = service_account.Credentials.from_service_account_file(KEY_PATH)
 client = storage.Client(credentials = credentials, project = credentials.project_id)
@@ -142,7 +142,11 @@ def from_image_to_str(img, extend):
     
 def save_user_img(img, file_name):
     # PIL image 받아서 WEBP로 저장
-    img.save(f"{file_name}.webp", format="WEBP")
+    webp_io = io.BytesIO()
+    img.save(webp_io, format="WEBP")
+    blob = bucket.blob(f'/user_img/{file_name}.webp')
+    blob.upload_from_string(webp_io)
+    LOGGER.info('save user image to GCS')
     
 
 def set_logger(name):
