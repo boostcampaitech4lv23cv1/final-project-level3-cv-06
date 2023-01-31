@@ -12,6 +12,7 @@ const store = createStore({
             correctList:[],
             refresh:false,
             clearTime:100,
+            naem:'',
         }
     },
     mutations:{
@@ -42,6 +43,9 @@ const store = createStore({
         },
         setPath(state,path){
             state.imgPath=path
+        },
+        setName(state,name){
+            state.name=name
         }
 
     },

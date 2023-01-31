@@ -17,14 +17,24 @@
           </v-icon>
         </v-btn>
       </v-row>
+      <v-row>
+        <v-col cols="6" class="d-flex justify-end">
+          <v-alert v-show="alert == true" density="compact" type="warning" style="position: absolute;" width=17vw>
+            Enter your <strong>Name</strong>
+          </v-alert>
+        </v-col>
+      </v-row>
 
-      <v-row class="d-flex nums" :style="{ height: '30vh', 'margin-top': '3vh' }">
+      <v-row class=" d-flex nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
         <v-col cols="6" class="align-self-center">
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
             <v-col cols="2" class="justify">
               <profile />
             </v-col>
-            <v-col cols="3" class="justify"> Nask </v-col>
+            <!-- <v-col cols="3" class="justify"> Nask </v-col> -->
+            <v-col cols="3" class="justfy">
+              <v-text-field label="Enter your name here!" v-model="name" single-line></v-text-field>
+            </v-col>
           </v-row>
 
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
@@ -47,7 +57,7 @@
         <v-col cols="6">
           <v-row>
             <v-col cols="auto" :style="{
-              'margin-left': '4vh',
+              'margin-left': '7vh',
               'margin-top': '5vh',
               'font-size': '23vh',
               color: 'gold',
@@ -58,13 +68,23 @@
         </v-col>
       </v-row>
 
-      <v-row class="d-flex">
-        <v-btn class="mx-auto text-center" :style="{
-          margin: '15vh 0vw 0vh 0vw',
-        }" @click="goResult">
-          Show Result!
-        </v-btn>
+      <v-row class="d-flex justify-center">
+        <v-col cols="6" class="d-flex justify-cnter">
+          <v-btn class="mx-auto text-center" :style="{
+            margin: '15vh 0vw 0vh 0vw',
+          }" @click="goResult">
+            Show Result!
+          </v-btn>
+          <v-btn class="mx-auto text-center" :style="{
+            margin: '15vh 0vw 0vh 0vw',
+          }" @click="registerScore">
+            Register Score!
+          </v-btn>
+        </v-col>
       </v-row>
+
+
+
     </v-container>
   </v-app>
 </template>
@@ -90,6 +110,8 @@ export default {
       soundInfo: false,
       showInfo: false,
       correctNum: 0,
+      name: this.$store.state.name,
+      alert: false,
     };
   },
 
@@ -111,6 +133,16 @@ export default {
         this.showInfo = true;
       }
     },
+    registerScore() {
+      if (this.name === "") {
+        this.alert = true
+      }
+      else {
+        this.$store.commit('setName', this.name)
+
+        this.$router.push({ path: 'leaderboard' })
+      }
+    }
   },
   async mounted() {
     let correctList = this.$store.state.correctList
