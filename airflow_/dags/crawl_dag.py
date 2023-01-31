@@ -20,6 +20,11 @@ from airflow.providers.sftp.sensors.sftp import SFTPSensor
 from airflow.providers.slack.hooks.slack_webhook import SlackWebhookHook
 from airflow.providers.ssh.operators.ssh import SSHOperator
 from airflow.utils.dates import days_ago
+from callback.slack_noti import (
+    send_slack_dag_success,
+    send_slack_task_failure,
+    send_slack_task_retry,
+)
 from database.metadata2db import df2db
 from pytz import timezone
 
@@ -68,9 +73,8 @@ default_args = {
     # 'sla': timedelta(hours=2),
     # 'execution_timeout': timedelta(seconds=300),
     "on_failure_callback": send_slack_task_failure,
-    # 'on_success_callback': task_success_slack_alert,
-    # 'on_retry_callback': another_function,
-    # 'sla_miss_callback': yet_another_function,
+    "on_success_callback": send_slack_dag_success,
+    "on_retry_callback": send_slack_task_retry,
     # 'trigger_rule': 'all_success'
     "description": "A job for crawling img in pixabay",
     "tags": ["img", "crawler"],
