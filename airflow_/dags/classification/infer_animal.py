@@ -20,15 +20,14 @@ AIRFLOW_HOME = os.path.dirname(os.path.abspath(__file__))
 
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
-# KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "01-31_12"
+# KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "01-31_16"
 
 
 class ClassifyDataset(Dataset):
     def __init__(self, df, transform=None):
-        base_path = f"{AIRFLOW_HOME}/data"
-        path = os.path.join(base_path, KEYWORD, SITE, SCRAPED_TIME, "*.webp")
+        base_path = f"{AIRFLOW_HOME}/data/"
         self.img_tag = df["tag"]
-        self.img_path = glob(path)
+        self.img_path = base_path + df["img_path"]
         self.transform = transform
 
     def __len__(self):
@@ -98,10 +97,6 @@ def pred2imgnetlabel(predictions: np.array, imagenet_labels: pd.DataFrame) -> li
     return list(df["korean"])
 
 
-# def read_imgnet_labels():
-#     with open(f"{AIRFLOW_HOME}/imagenet_class.yaml", "r") as f:
-#         labels = yaml.load(f, Loader=yaml.FullLoader)
-#         return np.array(labels)
 def read_imgnet_labels():
     df = pd.read_csv(f"{AIRFLOW_HOME}/imagenet_class.csv")
     df.drop("english", axis=1, inplace=True)
