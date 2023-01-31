@@ -51,7 +51,7 @@ def send_slack_task_failure(context):
 
     slack_hook = SlackWebhookHook(slack_webhook_conn_id="slack_connection")
     slack_hook.send(text=slack_msg)
-    
+
 
 default_args = {
     "owner": "airflow",
@@ -121,10 +121,17 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         object=f"{keyword}/{site}/{scraped_time}/metadata.feather",
     )
 
-    infer_label_send2db = SSHOperator(
-        task_id="infer_label_send2db",
+    infer_label = SSHOperator(
+        task_id="infer_label",
         ssh_conn_id="ssh_connection",
-        command=f"python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
+        command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
+            && python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
+    )
+    df2api_remove_dir = SSHOperator(
+        task_id="df2api_remove_dir",
+        ssh_conn_id="ssh_connection",
+        command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
+            && python {ssh_base}/airflow_/dags/classification/df2api_remove_dir.py {keyword} {site} {scraped_time}",
     )
 
     #####################    TASKS    #####################
@@ -135,7 +142,8 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         >> sense_gcs_file
         >> load_img_from_gcs2ssh
         >> sense_ssh_file
-        >> infer_label_send2db
+        >> infer_label
+        >> df2api_remove_dir
     )
 
 # TODO handling errors
