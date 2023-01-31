@@ -16,6 +16,7 @@ from airflow.providers.google.cloud.transfers.local_to_gcs import (
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import (
     PostgresToGCSOperator,
 )
+from airflow.providers.google.cloud.transfers.sftp_to_gcs import SFTPToGCSOperator
 from airflow.providers.sftp.sensors.sftp import SFTPSensor
 from airflow.providers.slack.hooks.slack_webhook import SlackWebhookHook
 from airflow.providers.ssh.operators.ssh import SSHOperator
@@ -131,11 +132,24 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
     )
-    df2api_remove_dir = SSHOperator(
+    df2api = SSHOperator(
         task_id="df2api_remove_dir",
         ssh_conn_id="ssh_connection",
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/classification/df2api.py {keyword} {site} {scraped_time}",
+    )
+    ani2gcs = SFTPToGCSOperator(
+        task_id="ani2gcs",
+        source_path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/*_ani.webp",
+        destination_bucket=bucket,
+        destination_path=f"{keyword}/{site}/{scraped_time}/",
+        gcp_conn_id="gcs_connection",
+        sftp_conn_id="sftp_connection",
+    )
+    remove_dir = SSHOperator(
+        task_id="remove_dir",
+        ssh_conn_id="ssh_connection",
+        command=f"rm -rf {ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}",
     )
 
     #####################    TASKS    #####################
@@ -147,7 +161,9 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         >> load_img_from_gcs2ssh
         >> sense_ssh_file
         >> infer_label
-        >> df2api_remove_dir
+        >> df2api
+        >> ani2gcs
+        >> remove_dir
     )
 
 # TODO handling errors
