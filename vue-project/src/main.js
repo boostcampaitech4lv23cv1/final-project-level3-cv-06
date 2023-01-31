@@ -15,9 +15,7 @@ loadFonts();
 //   .mount('#app')
 
 const app = createApp(App);
-app.config.globalProperties.audio = new Audio(
-  "https://cdn.pixabay.com/download/audio/2021/07/28/audio_81a4a9bc2a.mp3?filename=bossa-nova-piano-instrumental-brasil-5732.mp3"
-);
+app.config.globalProperties.audio = new Audio(require("@/assets/BGM.mp3"));
 app.use(router);
 app.use(store);
 app.use(vuetify, {
