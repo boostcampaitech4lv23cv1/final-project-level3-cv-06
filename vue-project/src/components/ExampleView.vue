@@ -30,28 +30,49 @@
                 2/9
               </div>
             </v-row>
+            <v-row
+              class="d-flex justify-end"
+              :style="{ margin: '3vh 0vw 0vh 0vw' }"
+            >
+              <v-btn rounded variant="plain" @click="audioChange" height="5vh">
+                <v-icon
+                  icon="mdi-volume-high"
+                  size="5vh"
+                  v-show="audioInfo == false"
+                  color="white"
+                >
+                </v-icon>
+                <v-icon
+                  icon="mdi-volume-off"
+                  size="5vh"
+                  v-show="audioInfo == true"
+                  color="white"
+                >
+                </v-icon>
+              </v-btn>
+            </v-row>
             <v-row class="d-flex mt-8">
               <v-col cols="4"></v-col>
               <v-col cols="4">
-                  <v-img
-                    v-if="page == 3"
-                    class="mx-auto"
-                    src="../assets/bird.gif"
-                    height="40vh"
-                    width="40vw"
-                  />
-                  <v-img
-                    v-if="page != 3"
-                    class="mx-auto"
-                    src="../assets/bird_overlayed.jpg"
-                    height="40vh"
-                    width="40vw"
-                  />
+                <v-img
+                  v-if="page == 3"
+                  class="mx-auto"
+                  src="../assets/bird.gif"
+                  height="40vh"
+                  width="40vw"
+                />
+                <v-img
+                  v-if="page != 3"
+                  class="mx-auto"
+                  src="../assets/bird_overlayed.jpg"
+                  height="40vh"
+                  width="40vw"
+                />
               </v-col>
               <v-col cols="4" class="mx-auto">
                 <div v-if="page == 6">
                   <v-progress-linear
-                  class="overlayedbar"
+                    class="overlayedbar"
                     height="20vh"
                     color="white"
                     v-model="totalTimer"
@@ -238,11 +259,13 @@
 <script>
 export default {
   props: ["page"],
-
-  data: () => ({
-    overlay: false,
-    totalTimer: 25,
-  }),
+  data() {
+    return {
+      audioInfo: !this.$root.audio.muted,
+      overlay: false,
+      totalTimer: 25,
+    };
+  },
 
   mounted() {
     this.overlay = true;
@@ -253,6 +276,14 @@ export default {
     },
     moveHome() {
       this.$router.push({ path: "/" });
+    },
+    audioChange() {
+      this.$root.audio.muted = !this.$root.audio.muted;
+      if (this.audioInfo == true) {
+        this.audioInfo = false;
+      } else {
+        this.audioInfo = true;
+      }
     },
   },
 };
