@@ -15,11 +15,15 @@ def metadata2fastapi():
         base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata_with_label.feather"
     )
 
-    file = {"file": open(file_path, "rb")}
+    file = {"file": open(file_path, "rb"), "category": KEYWORD}
     url = "http://34.64.169.197:/api/v1/meta/create"
     res = requests.post(url, files=file)
-    print(res.json())
-    print(res.status_code)
+
+    # Check the status code of the response
+    if res.status_code == 200:
+        print("Data sent successfully")
+    else:
+        print("Failed to send data")
 
 
 def remove_dirs():
@@ -31,3 +35,4 @@ def remove_dirs():
 if __name__ == "__main__":
     metadata2fastapi()
     remove_dirs()
+# TODO category 칼럼 지우기
