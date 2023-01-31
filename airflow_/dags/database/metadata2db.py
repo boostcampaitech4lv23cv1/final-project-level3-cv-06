@@ -24,5 +24,5 @@ def df2db(scraped_time,keyword, site):
 
 
 if __name__ == "__main__":
-    df2db(keyword="animals", site="pixabay")
+    df2db(keyword="animal", site="pixabay")
 # TODO airflow로 여러번 실행되었을때도 DB에 중복값이 없도록
