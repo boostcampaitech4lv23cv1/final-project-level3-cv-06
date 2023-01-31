@@ -10,6 +10,7 @@ import rankview from '../views/RankView'
 import demoview from '../views/DemoView'
 import demoresult from '../views/DemoResult'
 import demodetail from '../views/DemoDetail'
+import leaderboard from '../views/LeaderBoard'
 
 
 const routes = [
@@ -69,6 +70,11 @@ const routes = [
     name: "demodetail",
     component: demodetail,
   },
+  {
+    path: "/leaderboard",
+    name: "leaderboard",
+    component: leaderboard
+  }
 ];
 
 const router = createRouter({

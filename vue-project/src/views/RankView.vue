@@ -95,7 +95,7 @@ export default {
 
   methods: {
     goResult() {
-      this.$router.push({ path: "/result" });
+      this.$router.push({ path: "/demoresult" });
     },
     soundChange() {
       if (this.soundInfo == true) {
@@ -116,19 +116,6 @@ export default {
     let correctList = this.$store.state.correctList
     let imgPath = this.$store.state.imgPath
 
-    // let response = await this.$api(
-    //   "http://34.64.169.197/api/v1/game/gameover",
-    //   "POST",
-    //   { img_paths: imgPath, score_list: correctList }
-    // );
-
-
-    let response = await this.$api(
-      'http://127.0.0.1:8000/api/v1/game/gameover',
-      "POST",
-      { img_paths: imgPath, score_list: correctList }
-    )
-
     for (let i = 0; i < 9; i++) {
       if (correctList[i] == 1) {
         this.correctNum += 1
@@ -143,6 +130,20 @@ export default {
     } else if (Number(this.clearTime) <= 90) {
       this.rank = "C";
     }
+
+    // let response = await this.$api(
+    //   "http://34.64.169.197/api/v1/game/gameover",
+    //   "POST",
+    //   { img_paths: imgPath, score_list: correctList }
+    // );
+
+
+    let response = await this.$api(
+      'http://127.0.0.1:8000/api/v1/game/gameover',
+      "POST",
+      { img_paths: imgPath, score_list: correctList }
+    )
+
   }
 };
 </script>
