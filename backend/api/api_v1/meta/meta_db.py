@@ -29,17 +29,12 @@ async def crawling_data(
     category: str = Body(),
     db: Session = Depends(get_db),
     bg_task: BackgroundTasks = BackgroundTasks()):
-    print(file.filename)
-    print(category)
-    extend = file.filename.split('.')[-1]
-    if extend == "feather":
+    
+    try:
         file_content = await file.read()
         data = pd.read_feather(BytesIO(file_content))
-    elif extend == "csv":
-        file_content = await file.read()
-        data = pd.read_csv(BytesIO(file_content), encoding="utf-8")
-    else:
-        return {"error": "feather or csv file이 아닙니다"}
+    except:
+        return HTTPException(status_code=400, detail="check your extend(you need use feather)")
     
     datas = []
     for idx, row in data.iterrows():
@@ -55,7 +50,6 @@ async def crawling_data(
                     img_path=row.img_path
                 )
             )
-            print(idx)
         elif category == "landmark":
             pass
         elif category == "celebrity":
