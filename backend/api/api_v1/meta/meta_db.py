@@ -63,7 +63,6 @@ async def crawling_data(
     return {"messege": "success"}
     
 
-
 @router.post('/update')
 async def crawling_data(file: UploadFile = File(), db: Session = Depends(get_db)):
     extend = file.filename.split('.')[-1]

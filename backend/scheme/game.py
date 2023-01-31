@@ -7,8 +7,9 @@ class GameStart(BaseModel):
 
 
 class GameOver(BaseModel):
+    category: str
     img_paths: List[str]
-    score_list: List[int] 
+    correct_list: List[bool]
     
 
 class SavePaintOut(BaseModel):

@@ -14,6 +14,10 @@ from google.cloud import storage
 from google.oauth2 import service_account
 
 from typing import List
+from sqlalchemy.orm import Session
+from db import get_db
+from model import Score
+from fastapi import Depends, HTTPException
 
 from PaintTransformer.inference import init, inference
 from PaintTransformer.inference_only_final import inference as inference_by_img
@@ -151,3 +155,21 @@ def set_logger(name):
     return logger
 
 LOGGER = set_logger('app')
+
+
+def get_tabel_name(category):
+    category_dict = {
+        "animal": "Aniaml",
+        "landmark": "Landmark",
+        "celebrity": "Celebrity"
+    }
+    
+    
+def user_name_check(name, db: Session = Depends(get_db)):
+    exist = db.query(Score).filter(Score.user_name == name).first()
+    if exist:
+        return False
+    else:
+        return True
+    
+    
