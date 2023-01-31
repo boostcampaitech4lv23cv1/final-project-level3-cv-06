@@ -1,22 +1,18 @@
-import numpy as np
 import math
-import torch.nn.functional as F
-import torch
-from PIL import Image
 import os
 
+import numpy as np
+import torch
+import torch.nn.functional as F
+from PIL import Image
+
+from .utils.miscellaneous import *
 from .utils.morphology import *
 from .utils.network import *
-from .utils.miscellaneous import *
-
-import deepspeed
 
 
 def get_path_from_current_file(path):
-    path_from_current_file = os.path.join(
-        os.path.split(os.path.realpath(__file__))[0], path
-    )
-    return path_from_current_file
+    return os.path.join(os.path.split(os.path.realpath(__file__))[0], path)
 
 
 def pad(img, H, W):
@@ -420,29 +416,15 @@ def param2stroke(param, H, W, meta_brushes):
     return foreground, alphas
 
 
-
-
-
-
-
-
 def prepare_infer_model(model_path, stroke_num, device):
 
-    model = Painter(5, stroke_num, 256, 8, 3, 3)
-    # model = Painter(5, stroke_num, 256, 8, 3, 3).to(device)
-    ds_engine = deepspeed.init_inference(model,
-                                mp_size=3,
-                                dtype=torch.half,
-                                checkpoint=None,
-                                replace_method='auto',
-                                replace_with_kernel_inject=True)
+    model = Painter(5, stroke_num, 256, 8, 3, 3).to(device)
 
     model.load_state_dict(torch.load(model_path))
     model.eval()
 
     for param in model.parameters():
         param.requires_grad = False
-
 
     # model = ds_engine.module
     return model
@@ -477,10 +459,10 @@ def inference(
     device,
     model,
     meta_brushes,
-    resize_l: int=1024,
-    K: int=5,
-    stroke_num: int=8,
-    patch_size: int=32,
+    resize_l: int = 1024,
+    K: int = 5,
+    stroke_num: int = 8,
+    patch_size: int = 32,
 ):
     """PaintTransformer로 inference
     input args: image, device, model, meta_brushes, resize_l=1024, K=5, stroke_num=8, patch_size=32
