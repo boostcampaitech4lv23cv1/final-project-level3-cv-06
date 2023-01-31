@@ -13,11 +13,6 @@
           </v-icon>
         </v-btn>
       </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
-        <v-btn rounded variant="plain" @click="infoChange" height="5vh">
-          <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
-        </v-btn>
-      </v-row>
 
       <v-row
         class="d-flex nums"
@@ -123,13 +118,6 @@ export default {
         this.audioInfo = false;
       } else {
         this.audioInfo = true;
-      }
-    },
-    infoChange() {
-      if (this.showInfo == true) {
-        this.showInfo = false;
-      } else {
-        this.showInfo = true;
       }
     },
   },

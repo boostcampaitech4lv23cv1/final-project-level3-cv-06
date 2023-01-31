@@ -12,7 +12,7 @@
           </v-icon>
         </v-btn>
       </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <v-btn
           rounded
           variant="plain"

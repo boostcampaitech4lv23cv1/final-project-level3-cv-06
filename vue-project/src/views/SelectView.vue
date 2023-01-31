@@ -13,7 +13,7 @@
           </v-icon>
         </v-btn>
       </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <v-btn variant="plain" @click="movePage('/description', { page: 1 })">
           <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
         </v-btn>
