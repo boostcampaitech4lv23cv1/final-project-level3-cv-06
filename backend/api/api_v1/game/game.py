@@ -33,3 +33,8 @@ async def result(paths: ImagePaths):
     origin_imgs = get_origin_imgs(paths.paths)
 
     return {"result_imgs": result_imgs, "origin_imgs": origin_imgs}
+
+
+@router.post("/gameover")
+async def gameover(gameover: GameOver):
+    print(gameover)

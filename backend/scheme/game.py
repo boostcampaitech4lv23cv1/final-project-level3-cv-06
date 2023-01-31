@@ -19,3 +19,8 @@ class ImagePaths(BaseModel):
 class GameOut(BaseModel):
     result_imgs: List[bytes]
     origin_imgs: List[bytes]
+
+
+class GameOver(BaseModel):
+    img_paths: List[str]
+    score_list: List[int]

@@ -116,11 +116,18 @@ export default {
     let correctList = this.$store.state.correctList
     let imgPath = this.$store.state.imgPath
 
+    // let response = await this.$api(
+    //   "http://34.64.169.197/api/v1/game/gameover",
+    //   "POST",
+    //   { img_paths: imgPath, score_list: correctList }
+    // );
+
+
     let response = await this.$api(
-      "http://34.64.169.197/api/v1/game/gameover",
+      'http://127.0.0.1:8000/api/v1/game/gameover',
       "POST",
-      { img_paths: imgPath, correct_list: correctList }
-    );
+      { img_paths: imgPath, score_list: correctList }
+    )
 
     for (let i = 0; i < 9; i++) {
       if (correctList[i] == 1) {
@@ -173,5 +180,4 @@ export default {
   font-family: 'num';
   font-size: 2.3rem;
 }
-
 </style>

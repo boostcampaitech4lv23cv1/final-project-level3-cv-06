@@ -13,7 +13,7 @@ const store = createStore({
             correctList:[],
             refresh:false,
             translations:[],
-            clearTime:null,
+            clearTime:100,
         }
     },
     mutations:{
