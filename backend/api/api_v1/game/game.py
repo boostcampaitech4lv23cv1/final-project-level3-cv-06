@@ -16,6 +16,7 @@ router = APIRouter()
 @router.post('/gamestart', response_model=List[SavePaintOut])
 async def gamestart(game_start: GameStart, db: Session = Depends(get_db)) -> List:
     img_paths = read_savepaint(db, game_start.category)
+    LOGGER.info('someone start game')
     return random.sample(img_paths, 9)
 
 

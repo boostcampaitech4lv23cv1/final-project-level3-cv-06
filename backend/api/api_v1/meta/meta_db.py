@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, File, UploadFile
+from fastapi import APIRouter, HTTPException, Depends, File, UploadFile, BackgroundTasks
 from fastapi.responses import StreamingResponse
 
 
@@ -24,9 +24,11 @@ def create_dummy(db: Session = Depends(get_db)):
 
 
 @router.post('/create')
-async def crawling_data(file: UploadFile = File(), db: Session = Depends(get_db)):
-    # TODO
-    # feather 확장자 받아서 db에 넣기
+async def crawling_data(
+    file: UploadFile = File(),
+    db: Session = Depends(get_db),
+    bg_task: BackgroundTasks = BackgroundTasks()):
+    
     extend = file.filename.split('.')[-1]
     if extend == "feather":
         file_content = await file.read()
@@ -43,7 +45,7 @@ async def crawling_data(file: UploadFile = File(), db: Session = Depends(get_db)
             # crawling_time = datetime.strptime(row.time, "%Y-%m-%d").date()
             datas.append(
                 Animal(
-                    created_time=row.time,
+                    created_time=row.crawled_time,
                     tag=row.tag,
                     label=row.label,
                     img_height=row.img_height,
@@ -85,3 +87,8 @@ async def crawling_data(file: UploadFile = File(), db: Session = Depends(get_db)
             pass
         
     return {"messege": "success"}
+
+
+@router.post('/delete')
+async def delete():
+    pass

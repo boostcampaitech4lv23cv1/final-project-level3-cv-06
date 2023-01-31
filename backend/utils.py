@@ -7,6 +7,8 @@ import io
 from glob import glob
 from PIL import Image
 import numpy as np
+import logging
+
 
 from google.cloud import storage
 from google.oauth2 import service_account
@@ -31,7 +33,7 @@ stroke_num = 8
 patch_size = 32
 
 model, meta_brushes, device = init(stroke_num, model_path=model_path)
-
+ 
 
 def predict(category):
 
@@ -137,3 +139,15 @@ def from_image_to_str(img, extend):
 def save_user_img(img, file_name):
     # PIL image 받아서 WEBP로 저장
     img.save(f"{file_name}.webp", format="WEBP")
+    
+
+def set_logger(name):
+    logger = logging.getLogger(name)
+    formatter = logging.Formatter('%(asctime)s - %(filename)s:%(lineno)s - %(funcName)s - %(levelname)s - %(message)s')
+    logger.setLevel(logging.INFO)
+    file_handler = logging.FileHandler(name + ".log", encoding='utf-8')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    return logger
+
+LOGGER = set_logger('app')

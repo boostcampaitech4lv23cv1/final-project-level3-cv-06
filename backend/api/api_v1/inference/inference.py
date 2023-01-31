@@ -2,7 +2,7 @@ from io import BytesIO
 import base64
 from PIL import Image
 
-from utils import predict_by_img, save_user_img
+from utils import predict_by_img, save_user_img, LOGGER
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from fastapi import FastAPI, File, UploadFile, Response
 from fastapi.responses import FileResponse, JSONResponse
@@ -25,9 +25,10 @@ async def inference(
     bytes_data = BytesIO(content)
     img = Image.open(bytes_data)
 
+    # gcs로 보내는 task로 변경할 것
     background_tasks.add_task(save_user_img, img, file_name)
-    # gcs로 보내는 백그라운드 task 추가하기
-
+    LOGGER.info("Inference")
+    
     paint_img = predict_by_img(img)
     img_byte = BytesIO()
     paint_img.save(img_byte, format=extend)

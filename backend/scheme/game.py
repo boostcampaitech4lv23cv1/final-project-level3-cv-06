@@ -8,7 +8,7 @@ class GameStart(BaseModel):
 
 class GameOver(BaseModel):
     img_paths: List[str]
-    socore_list: List[int] 
+    score_list: List[int] 
     
 
 class SavePaintOut(BaseModel):

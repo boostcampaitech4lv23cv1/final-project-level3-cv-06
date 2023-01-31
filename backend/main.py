@@ -1,9 +1,10 @@
-# main.py
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.api_v1 import api_router
-
+from utils import LOGGER
 
 app = FastAPI(
     docs_url='/api/docs',
@@ -22,13 +23,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.on_event("startup")
 async def startup():
-    pass
+    LOGGER.info("Server Start")
 
 @app.on_event("shutdown")
 async def shutdown():
-    pass
+    LOGGER.info('Server Down')
+
+
 app.include_router(api_router, prefix='/api/v1')
 
 
