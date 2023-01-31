@@ -12,12 +12,13 @@ const store = createStore({
             correctList:[],
             refresh:false,
             clearTime:100,
+            naem:'',
         }
     },
     mutations:{
         setOrigin(state,img){
             state.originImg=img
-            state.imgPath=img
+            // state.imgPath=img
         },
         setPaint(state,gif){
             state.paintImg=gif
@@ -42,6 +43,9 @@ const store = createStore({
         },
         setPath(state,path){
             state.imgPath=path
+        },
+        setName(state,name){
+            state.name=name
         }
 
     },

@@ -22,8 +22,8 @@
         </v-btn>
       </v-row>
 
-      <v-row :style="{ margin: '30vh 0vw 0vh 0vw' }">
-        <v-col cols="6">
+      <v-row :style="{ margin: '15vh 0vw 0vh 0vw' }">
+        <v-col cols="6" class="d-flex justify-center">
           <v-btn
             rounded
             variant="plain"
@@ -33,7 +33,7 @@
             <game :style="{ height: '7vh' }" />
           </v-btn>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="6" class="d-flex justify-center">
           <v-btn
             rounded
             variant="plain"
@@ -41,6 +41,22 @@
             @click="movePage('/transform')"
           >
             <transform :style="{ height: '7vh' }" />
+          </v-btn>
+        </v-col>
+      </v-row>
+
+      <v-row
+        :style="{ margin: '15vh 0vw 0vh 0vw' }"
+        class="d-flex justify-center"
+      >
+        <v-col cols="6" class="d-flex justify-center">
+          <v-btn
+            rounded
+            variant="plain"
+            color="transparent"
+            @click="movePage('/leaderboard')"
+          >
+            <ranking :style="{ height: '7vh' }" />
           </v-btn>
         </v-col>
       </v-row>
@@ -52,6 +68,7 @@
 import logo from "../svg/logoView.vue";
 import transform from "../svg/transformButton.vue";
 import game from "../svg/GameButton.vue";
+import ranking from "../svg/RankingLogo.vue";
 
 export default {
   data() {
@@ -63,6 +80,7 @@ export default {
     logo,
     transform,
     game,
+    ranking,
   },
 
   methods: {
