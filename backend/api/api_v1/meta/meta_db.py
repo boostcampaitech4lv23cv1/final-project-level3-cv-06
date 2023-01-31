@@ -25,24 +25,23 @@ def create_dummy(db: Session = Depends(get_db)):
 
 @router.post('/create')
 async def crawling_data(
-    file: UploadFile = File(),
-    category: str = ...,
+    crawling_in: Crawling,
     db: Session = Depends(get_db),
     bg_task: BackgroundTasks = BackgroundTasks()):
     
-    extend = file.filename.split('.')[-1]
+    extend = crawling_in.file.filename.split('.')[-1]
     if extend == "feather":
-        file_content = await file.read()
+        file_content = await crawling_in.file.read()
         data = pd.read_feather(BytesIO(file_content))
     elif extend == "csv":
-        file_content = await file.read()
+        file_content = await crawling_in.file.read()
         data = pd.read_csv(BytesIO(file_content), encoding="utf-8")
     else:
         return {"error": "feather or csv file이 아닙니다"}
     
     datas = []
     for idx, row in data.iterrows():
-        if category == "animal": # 카테고리 이름 및 테이블 명 통일하기
+        if crawling_in.category == "animal": # 카테고리 이름 및 테이블 명 통일하기
             # crawling_time = datetime.strptime(row.time, "%Y-%m-%d").date()
             datas.append(
                 Animal(
@@ -54,9 +53,9 @@ async def crawling_data(
                     img_path=row.img_path
                 )
             )
-        elif category == "landmark":
+        elif crawling_in.category == "landmark":
             pass
-        elif category == "celebrity":
+        elif crawling_in.category == "celebrity":
             pass
     db.add_all(datas)
     db.commit()

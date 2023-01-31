@@ -20,9 +20,9 @@ router = APIRouter()
 @router.post('/')
 async def create_score(score_in: ScoreIn, db: Session = Depends(get_db)):
     # validation check
-    valid = user_name_check(score_in.user_name, db)
-    if not valid:
-        return HTTPException(status_code=400, detail="user name already exists")
+    # valid = user_name_check(score_in.user_name, db)
+    # if not valid:
+    #     return HTTPException(status_code=400, detail="user name already exists")
     now = datetime.now()
     db.query(
         Score(
