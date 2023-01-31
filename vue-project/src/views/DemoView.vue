@@ -2,78 +2,37 @@
   <v-app class="hero">
     <v-container>
       <v-row class="justify-center">
-        <logo
-          v-if="gameStatus === 0"
-          :style="{ height: '20vh', width: '40vw' }"
-        />
+        <logo v-if="gameStatus === 0" :style="{ height: '20vh', width: '40vw' }" />
         <div v-if="gameStatus != 0" class="nums">{{ headText }}</div>
+      </v-row>
+      <v-row class="d-flex justify-center mt-8" v-if="gameStatus != 0 & gameStatus != 10">
+        <v-sheet v-for="(i) in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="30"
+          width="30" rounded></v-sheet>
+
       </v-row>
       <v-row class="d-flex mt-8">
         <v-col cols="4"></v-col>
         <v-col cols="4">
-          <v-img
-            src="../assets/example.jpg"
-            height="40vh"
-            width="40vw"
-            class="mx-auto"
-            v-show="gameStatus === 0"
-          />
-          <v-img
-            v-show="gameStatus != 0"
-            v-bind:src="currentImg"
-            class="mx-auto"
-            height="40vh"
-            width="40vw"
-            @load="timeStart"
-          />
+          <v-img src="../assets/example.jpg" height="40vh" width="40vw" class="mx-auto" v-show="gameStatus === 0" />
+          <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="40vh" width="40vw"
+            @load="timeStart" />
         </v-col>
         <v-col cols="4" class="mx-auto">
-          <v-progress-linear
-            v-show="gameStatus > 0"
-            class="bar"
-            height="20vh"
-            color="white"
-            v-model="totalTimer"
-          >
+          <v-progress-linear v-show="gameStatus > 0" class="bar" height="20vh" color="white" v-model="totalTimer">
           </v-progress-linear>
         </v-col>
       </v-row>
       <v-row class="d-flex justify-center mt-8">
         <v-col cols="4">
-          <v-progress-linear
-            v-show="gameStatus > 0"
-            v-model="imgTimer"
-            height="20vh"
-            rounded
-            color="primary"
-          ></v-progress-linear>
+          <v-progress-linear v-show="gameStatus > 0" v-model="imgTimer" height="20vh" rounded
+            color="primary"></v-progress-linear>
         </v-col>
-      </v-row>
-      <v-row class="d-flex justify-center mt-8" v-if="gameStatus!=0 & gameStatus!=10">
-        <v-sheet
-          v-for="(i) in answer[gameStatus-1].length" :key="{i}"
-          color="white"
-          elevation="1"
-          height="30"
-          width="30"
-          rounded
-        ></v-sheet>
-
       </v-row>
       <v-row class="d-flex justify-center mt-10">
         <v-col cols="4"></v-col>
-        <v-text-field
-          v-show="gameStatus > 0"
-          width="10px"
-          label="Enter the answer"
-          single-line
-          density="compact"
-          v-model="text"
-          @keydown.enter="enter"
-        ></v-text-field>
-        <v-btn v-show="gameStatus == 0 && nextImg != ''" @click="startGame"
-          >Game Start!</v-btn
-        >
+        <v-text-field v-show="gameStatus > 0" width="10px" label="Enter the answer" single-line density="compact"
+          v-model="text" @keydown.enter="enter"></v-text-field>
+        <v-btn v-show="gameStatus == 0 && nextImg != ''" @click="startGame">Game Start!</v-btn>
         <v-col cols="4"></v-col>
       </v-row>
       <v-row calss="d-flex justify-center">
@@ -207,6 +166,8 @@ onMounted(async () => {
   answer.value = response1.data.answer_list;
   store.commit("setPath", response1.data.img_list);
   console.log(answer.value);
+  store.commit("setAnswer", answer.value)
+
   const response = await axios.post(
     "http://127.0.0.1:8000/api/v1/game/paint",
     { path: imgList.value[0] },
@@ -256,16 +217,14 @@ watch(totalTimer, (newVal) => {
 .bar {
   transform: rotate(90deg);
   margin-top: 17vh;
-  background: linear-gradient(
-    to right,
-    #e54040 0%,
-    #ffa63a 16%,
-    #dcff3f 32%,
-    #6cff3f 48%,
-    #3fa2ff 64%,
-    #a53fff 80%,
-    #ff3fc9 100%
-  );
+  background: linear-gradient(to right,
+      #e54040 0%,
+      #ffa63a 16%,
+      #dcff3f 32%,
+      #6cff3f 48%,
+      #3fa2ff 64%,
+      #a53fff 80%,
+      #ff3fc9 100%);
   border-radius: 30px;
 }
 

@@ -1,15 +1,6 @@
 <template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    enable-background="new 0 0 165 165"
-    height="6vh"
-    overflow="visible"
-    version="1.1"
-    viewBox="0 0 165 165"
-    width="6vw"
-    xml:space="preserve"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 165 165"
+    height="6vh" overflow="visible" version="1.1" viewBox="0 0 165 165" width="6vw" xml:space="preserve">
 
     <defs />
     <circle cx="82.5" cy="82.5" fill="#39B54A" r="82.5" />
