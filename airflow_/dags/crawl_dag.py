@@ -131,7 +131,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         task_id="df2api_remove_dir",
         ssh_conn_id="ssh_connection",
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
-            && python {ssh_base}/airflow_/dags/classification/df2api_remove_dir.py {keyword} {site} {scraped_time}",
+            && python {ssh_base}/airflow_/dags/classification/df2api.py {keyword} {site} {scraped_time}",
     )
 
     #####################    TASKS    #####################
