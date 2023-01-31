@@ -11,7 +11,7 @@ services:
     restart: always
 
     environment:
-      - TZ: "Asia/Seoul"
+      TZ: "Asia/Seoul"
     
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -45,7 +45,7 @@ services:
       - ./app.log:/app/app.log
 
     environment:
-      - TZ: "Asia/Seoul"
+      TZ: "Asia/Seoul"
 
 
     command: sh -c "cd /app && uvicorn main:app --host 0.0.0.0 --port 8000"
