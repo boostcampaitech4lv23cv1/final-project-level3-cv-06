@@ -17,7 +17,7 @@ const store = createStore({
     mutations:{
         setOrigin(state,img){
             state.originImg=img
-            state.imgPath=img
+            // state.imgPath=img
         },
         setPaint(state,gif){
             state.paintImg=gif

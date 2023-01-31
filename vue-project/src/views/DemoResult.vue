@@ -7,18 +7,36 @@
 
       <v-row>
         <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
-          <v-img :width="'20vw'" :height="'45vh'" :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+          <v-img :width="'45vw'" :height="'60vh'" :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
             aspect-ratio="1" cover :src="`data:image/gif;base64,${originImg[n - 1]}`" class="grey lighten-2"
-            @click="moveDetail(n)">
+            @click="moveDetail(n - 1)">
           </v-img>
         </v-col>
       </v-row>
+
+
+      <v-dialog v-model="showDialog" max-height="75vh" max-width="100vw">
+        <v-row>
+          <v-col cols="4" class='mx-auto text-center nums'>
+            {{ answer[dialogNum] }}
+          </v-col>
+        </v-row>
+        <v-row class="d-flex justify-center align-center">
+          <v-col cols=4 class='d-flex justify-center align-center'>
+            <v-img :src="`data:image/gif;base64,${resultImg[dialogNum]}`" max-height="50vh" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="1" class="mx-auto">
+            <v-btn color="primary" block @click="showDialog = false">Close</v-btn>
+          </v-col>
+        </v-row>
+      </v-dialog>
     </v-container>
   </v-app>
 </template>
 
 <script>
-import axios from "axios";
 import result from '../svg/resultText.vue'
 export default {
   components: {
@@ -26,25 +44,32 @@ export default {
   },
   data() {
     return {
-      originImg: "",
-      imgList: this.$store.state.imgList,
+      originImg: [],
+      resultImg: [],
+      showDialog: false,
+      dialogNum: false,
+      path: this.$store.state.imgPath,
+      answer: this.$store.state.answerList
     };
   },
   methods: {
     moveDetail(index) {
-      this.$router.push({ path: "/demodetail", query: { index: index } });
+      this.dialogNum = index
+      this.showDialog = true
     },
   },
   async mounted() {
-    let response = await axios.post(
-      "http://127.0.0.1:8000/api/v1/game/result",
-      { paths: this.imgList },
-      { "Content-Type": "application/json" }
+    console.log(this.answer)
+    console.log(this.path)
+    let response = await this.$api(
+      'http://127.0.0.1:8000/api/v1/game/result',
+      "POST",
+      { paths: this.path }
     );
-    this.originImg = response.data.origin_imgs;
-    this.$store.commit("setOrigin", response.data.origin_imgs);
-    this.$store.commit("setResult", response.data.result_imgs);
-  },
+
+    this.originImg = response.origin_imgs;
+    this.resultImg = response.result_imgs;
+  }
 };
 </script>
 
@@ -59,5 +84,16 @@ export default {
 
 .no-padding {
   padding: 0;
+}
+
+@font-face {
+  font-family: 'answer';
+  src: url('../fonts/Lobster-Regular.ttf')
+}
+
+.nums {
+  font-family: 'answer';
+  font-size: 2.3rem;
+  color: white
 }
 </style>
