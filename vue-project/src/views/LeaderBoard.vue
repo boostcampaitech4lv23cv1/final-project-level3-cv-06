@@ -4,7 +4,7 @@
             <ranking :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
         </v-row>
         <v-row class="d-flex justify-center font">
-            <v-col cols=4>
+            <v-col cols=6>
                 <v-table class="table">
                     <thead>
                         <tr>
@@ -14,12 +14,16 @@
                             <th class="text-center">
                                 Score
                             </th>
+                            <th class="text-center">
+                                Time
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="item in ranking" :key="item.name">
                             <td class="text-center">{{ item.name }}</td>
                             <td class="text-center">{{ item.score }}</td>
+                            <td class="text-center">{{ item.time }}</td>
                         </tr>
                     </tbody>
                 </v-table>
@@ -38,16 +42,16 @@ export default {
     data() {
         return {
             ranking: [
-                { name: 'a', score: '1' },
-                { name: 'b', score: '2' },
-                { name: 'c', score: '3' },
-                { name: 'd', score: '4' },
-                { name: 'e', score: '5' },
-                { name: 'f', score: '6' },
-                { name: 'g', score: '7' },
-                { name: 'h', score: '8' },
-                { name: 'i', score: '9' },
-                { name: 'j', score: '10' }
+                { name: 'a', score: '1', time: '1' },
+                { name: 'b', score: '2', time: '2' },
+                { name: 'c', score: '3', time: '3' },
+                { name: 'd', score: '4', time: '4' },
+                { name: 'e', score: '5', time: '5' },
+                { name: 'f', score: '6', time: '6' },
+                { name: 'g', score: '7', time: '7' },
+                { name: 'h', score: '8', time: '8' },
+                { name: 'i', score: '9', time: '9' },
+                { name: 'j', score: '10', time: '10' },
 
             ]
         }
@@ -58,6 +62,7 @@ export default {
     //         'http://127.0.0.1:8000/api/v1/game/gameover',
     //         "POST",
     //     )
+    //     rank=response.rank
     // }
 
 

@@ -6,9 +6,8 @@
         <div v-if="gameStatus != 0" class="nums">{{ headText }}</div>
       </v-row>
       <v-row class="d-flex justify-center mt-8" v-if="gameStatus != 0 & gameStatus != 10">
-        <v-sheet v-for="(i) in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="30"
-          width="30" rounded></v-sheet>
-
+        <v-sheet v-for="(i) in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="7vh"
+          width="6vh" rounded :style="{ 'margin-left': '0.2vw' }"></v-sheet>
       </v-row>
       <v-row class="d-flex mt-8">
         <v-col cols="4"></v-col>
@@ -154,8 +153,7 @@ function enter() {
 }
 
 onMounted(async () => {
-  const query = router.currentRoute.value.query;
-  const params = { category: query.category, mode: query.mode };
+  const params = { category: store._state.data.category, mode: store._state.data.mode };
   const headers = { "Content-Type": "application/json" };
   const response1 = await axios.post(
     "http://127.0.0.1:8000/api/v1/game/gamestart",

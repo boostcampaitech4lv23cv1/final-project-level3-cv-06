@@ -28,7 +28,7 @@
             @click="changeCategory(item.value)" :class="{
               selected: selectedCategory === item.value,
               ' mx-auto ': true,
-            }" :style="{ height: '5vh', width: '20vh', margin: '1vh 0vw 0vh 0vw' }">
+            }" :style="{ height: '5vh', margin: '1vh 0vw 0vh 0vw' }" :width=170>
             {{ item.text }}
           </v-btn>
         </v-radio-group>
@@ -67,9 +67,10 @@ export default {
   },
   methods: {
     startGame() {
+      this.$store.commit('setCategory', this.selectedCategory),
+        this.$store.commit('setMode', this.selectedMode)
       this.$router.push({
         path: "/demo",
-        query: { category: this.selectedCategory, mode: this.selectedMode },
       });
     },
     movePage(route, query) {
