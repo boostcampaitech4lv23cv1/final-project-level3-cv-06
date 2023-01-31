@@ -5,6 +5,7 @@
         </v-row>
         <v-row class="d-flex justify-center font">
             <v-col cols=4>
+                <div class="scroll">
                 <v-table class="table">
                     <thead>
                         <tr>
@@ -23,6 +24,7 @@
                         </tr>
                     </tbody>
                 </v-table>
+            </div>
             </v-col>
         </v-row>
     </v-app>
@@ -83,5 +85,10 @@ export default {
     font-family: 'default';
     font-size: 2.3rem;
     color: white
+}
+
+.scroll{
+    max-height: calc(60vh);
+    overflow-y: scroll;
 }
 </style>
