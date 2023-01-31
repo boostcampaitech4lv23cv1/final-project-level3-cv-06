@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, File, UploadFile, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Depends, File, UploadFile, BackgroundTasks, Body
 from fastapi.responses import StreamingResponse
 
 
@@ -26,7 +26,7 @@ def create_dummy(db: Session = Depends(get_db)):
 @router.post('/create')
 async def crawling_data(
     file: UploadFile = File(),
-    category: str = ...,
+    category: str = Body(),
     db: Session = Depends(get_db),
     bg_task: BackgroundTasks = BackgroundTasks()):
     
