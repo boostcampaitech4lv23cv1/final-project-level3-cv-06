@@ -4,5 +4,5 @@ from db import Base
 from fastapi import UploadFile, File
 
 class Crawling(Base):
-    file: UploadFile = File(),
+    file: UploadFile = File()
     category: str
