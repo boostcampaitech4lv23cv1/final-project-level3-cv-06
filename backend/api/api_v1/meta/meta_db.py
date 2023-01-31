@@ -29,7 +29,8 @@ async def crawling_data(
     category: str = Body(),
     db: Session = Depends(get_db),
     bg_task: BackgroundTasks = BackgroundTasks()):
-    
+    print(file.filename)
+    print(category)
     extend = file.filename.split('.')[-1]
     if extend == "feather":
         file_content = await file.read()
@@ -54,18 +55,24 @@ async def crawling_data(
                     img_path=row.img_path
                 )
             )
+            print(idx)
         elif category == "landmark":
             pass
         elif category == "celebrity":
             pass
     db.add_all(datas)
     db.commit()
+    LOGGER.debug("add crawling data to DB")
     
     return {"messege": "success"}
     
 
 @router.post('/update')
-async def crawling_data(file: UploadFile = File(), db: Session = Depends(get_db)):
+async def crawling_data(
+    file: UploadFile = File(), 
+    category: str = Body(),
+    db: Session = Depends(get_db)):
+    
     extend = file.filename.split('.')[-1]
     if extend == "feather":
         file_content = await file.read()
