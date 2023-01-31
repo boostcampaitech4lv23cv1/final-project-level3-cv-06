@@ -5,6 +5,11 @@
         <logo v-if="gameStatus === 0" :style="{ height: '20vh', width: '40vw' }" />
         <div v-if="gameStatus != 0" class="nums">{{ headText }}</div>
       </v-row>
+      <v-row class="d-flex justify-center mt-8" v-if="gameStatus != 0 & gameStatus != 10">
+        <v-sheet v-for="(i) in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="30"
+          width="30" rounded></v-sheet>
+
+      </v-row>
       <v-row class="d-flex mt-8">
         <v-col cols="4"></v-col>
         <v-col cols="4">
@@ -22,11 +27,6 @@
           <v-progress-linear v-show="gameStatus > 0" v-model="imgTimer" height="20vh" rounded
             color="primary"></v-progress-linear>
         </v-col>
-      </v-row>
-      <v-row class="d-flex justify-center mt-8" v-if="gameStatus != 0 & gameStatus != 10">
-        <v-sheet v-for="(i) in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="30"
-          width="30" rounded></v-sheet>
-
       </v-row>
       <v-row class="d-flex justify-center mt-10">
         <v-col cols="4"></v-col>
