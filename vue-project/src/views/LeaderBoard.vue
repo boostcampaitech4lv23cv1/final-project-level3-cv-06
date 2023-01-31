@@ -3,7 +3,7 @@
         <v-row class="d-flex justify-center">
             <ranking :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
         </v-row>
-        <v-row class="d-flex justify-center">
+        <v-row class="d-flex justify-center font">
             <v-col cols=4>
                 <v-table class="table">
                     <thead>
@@ -53,11 +53,18 @@ export default {
         }
     },
 
+    // async mounted() {
+    //     let response = await this.$api(
+    //         'http://127.0.0.1:8000/api/v1/game/gameover',
+    //         "POST",
+    //     )
+    // }
+
 
 }
 </script>
 
-<style>
+<style scoped>
 .hero {
     background: url("../assets/test.jpg");
     background-size: cover;
@@ -65,5 +72,16 @@ export default {
 
 .table {
     background-color: transparent;
+}
+
+@font-face {
+    font-family: 'default';
+    src: url('../fonts/Lobster-Regular.ttf')
+}
+
+.font {
+    font-family: 'default';
+    font-size: 2.3rem;
+    color: white
 }
 </style>
