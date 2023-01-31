@@ -1,15 +1,34 @@
 <template>
   <v-app class="fill-height hero">
     <v-container>
-      <v-row class=" justify-center">
-        <result :style="{ height: '15vh', margin: '0vh 0vw 5vh 0vw' }" />
+      <v-row class="justify-center">
+        <result :style="{ height: '15vh', margin: '0vh 0vw 0vh 0vw' }" />
       </v-row>
-
+      <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 5vh 0vw' }">
+        <v-btn rounded variant="plain" @click="audioChange" height="5vh">
+          <v-icon icon="mdi-volume-high" size="5vh" v-if="audioInfo == false">
+          </v-icon>
+          <v-icon icon="mdi-volume-off" size="5vh" v-if="audioInfo == true">
+          </v-icon>
+        </v-btn>
+      </v-row>
       <v-row>
-        <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
-          <v-img :width="'20vw'" :height="'45vh'" :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-            aspect-ratio="1" cover :src="`data:image/gif;base64,${originImg[n - 1]}`" class="grey lighten-2"
-            @click="moveDetail(n)">
+        <v-col
+          v-for="n in 9"
+          :key="n"
+          class="d-flex child-flex no-padding"
+          cols="4"
+        >
+          <v-img
+            :width="'20vw'"
+            :height="'45vh'"
+            :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+            aspect-ratio="1"
+            cover
+            :src="`data:image/gif;base64,${originImg[n - 1]}`"
+            class="grey lighten-2"
+            @click="moveDetail(n)"
+          >
           </v-img>
         </v-col>
       </v-row>
@@ -18,7 +37,7 @@
 </template>
 
 <script>
-import result from '../svg/resultText.vue'
+import result from "../svg/resultText.vue";
 export default {
   components: {
     result,
@@ -26,11 +45,20 @@ export default {
   data() {
     return {
       originImg: [],
+      audioInfo: true,
     };
   },
   methods: {
     moveDetail(index) {
       this.$router.push({ path: "/detail", query: { index: index } });
+    },
+    audioChange() {
+      this.$root.audio.muted = !this.$root.audio.muted;
+      if (this.audioInfo == true) {
+        this.audioInfo = false;
+      } else {
+        this.audioInfo = true;
+      }
     },
     async readImage(url) {
       const response = await fetch(url);
@@ -40,11 +68,11 @@ export default {
   },
   async mounted() {
     if (this.$store.state.refresh === true) {
-      this.$store.commit('setRefresh', false)
-      let originList = this.$store.state.originImg
+      this.$store.commit("setRefresh", false);
+      let originList = this.$store.state.originImg;
 
       for (let i = 0; i < 9; i++) {
-        let blob = this.readImage(originList[i])
+        let blob = this.readImage(originList[i]);
         this.$store.commit("addTranslation", {
           id: i,
           image: blob,
@@ -53,10 +81,9 @@ export default {
     }
 
     this.$store.dispatch("POPULATE_FROM_CACHE");
-    let test = this.$store.translations
-    console.log(test)
-
-  }
+    let test = this.$store.translations;
+    console.log(test);
+  },
 };
 </script>
 

@@ -4,17 +4,18 @@
       <v-row class="d-flex justify-center">
         <logo :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
       </v-row>
+
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <v-btn rounded variant="plain" @click="audioChange" height="5vh">
+          <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == false">
+          </v-icon>
+          <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == true">
+          </v-icon>
+        </v-btn>
+      </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
         <v-btn variant="plain" @click="movePage('/description', { page: 1 })">
           <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
-        </v-btn>
-      </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <v-btn rounded variant="plain" @click="soundChange" height="5vh">
-          <v-icon icon="mdi-volume-high" size="5vh" v-show="soundInfo == 0">
-          </v-icon>
-          <v-icon icon="mdi-volume-off" size="5vh" v-show="soundInfo == 1">
-          </v-icon>
         </v-btn>
       </v-row>
 
@@ -24,17 +25,30 @@
 
       <v-row class="d-flex justify-center">
         <v-radio-group v-model="selectedCategory">
-          <v-btn rounded v-for="item in categoryItems" :key="item.value" :value="item.value"
-            @click="changeCategory(item.value)" :class="{
+          <v-btn
+            rounded
+            v-for="item in categoryItems"
+            :key="item.value"
+            :value="item.value"
+            @click="changeCategory(item.value)"
+            :class="{
               selected: selectedCategory === item.value,
               ' mx-auto ': true,
-            }" :style="{ height: '5vh', width: '20vh', margin: '1vh 0vw 0vh 0vw' }">
+            }"
+            :style="{ height: '5vh', width: '20vh', margin: '1vh 0vw 0vh 0vw' }"
+          >
             {{ item.text }}
           </v-btn>
         </v-radio-group>
       </v-row>
-      <v-col cols="12" class="d-flex justify-center" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <v-btn :disabled="categoryIsEmpty" color="yellow" @click="startGame">Game start</v-btn>
+      <v-col
+        cols="12"
+        class="d-flex justify-center"
+        :style="{ margin: '3vh 0vw 0vh 0vw' }"
+      >
+        <v-btn :disabled="categoryIsEmpty" color="yellow" @click="startGame"
+          >Game start</v-btn
+        >
       </v-col>
     </v-container>
   </v-app>
@@ -57,7 +71,7 @@ export default {
         { text: "Entertainment", value: "entertainer" },
       ],
       selectedCategory: "animal",
-      soundInfo: false,
+      audioInfo: !this.$root.audio.muted,
     };
   },
   computed: {
@@ -81,14 +95,14 @@ export default {
     changeCategory(value) {
       this.selectedCategory = value;
     },
-    soundChange() {
-      if (this.soundInfo == true) {
-        this.soundInfo = false;
+    audioChange() {
+      this.$root.audio.muted = !this.$root.audio.muted;
+      if (this.audioInfo == true) {
+        this.audioInfo = false;
       } else {
-        this.soundInfo = true;
+        this.audioInfo = true;
       }
     },
-
   },
 };
 </script>
