@@ -72,7 +72,7 @@
               <v-col cols="4" class="mx-auto">
                 <div v-if="page == 6">
                   <v-progress-linear
-                    class="overlayedbar"
+                    class="bar"
                     height="20vh"
                     color="white"
                     v-model="totalTimer"
@@ -298,7 +298,7 @@ export default {
 }
 .overlayedbar {
   transform: rotate(90deg);
-  margin-top: 20vh;
+  margin-top: 17vh;
   background: linear-gradient(
     to right,
     #e5404023 0%,
