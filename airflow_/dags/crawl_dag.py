@@ -138,6 +138,12 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/classification/df2api.py {keyword} {site} {scraped_time}",
     )
+    img2ani = SSHOperator(
+        task_id="img2ani",
+        ssh_conn_id="ssh_connection",
+        command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
+            && python {ssh_base}/airflow_/dags/paint_transformer/img2ani.py {keyword} {site} {scraped_time}",
+    )
     ani2gcs = SFTPToGCSOperator(
         task_id="ani2gcs",
         source_path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/*_ani.webp",
@@ -162,6 +168,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         >> sense_ssh_file
         >> infer_label
         >> df2api
+        >> img2ani
         >> ani2gcs
         >> remove_dir
     )
