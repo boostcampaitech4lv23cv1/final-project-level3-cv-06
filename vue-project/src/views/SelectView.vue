@@ -71,7 +71,7 @@ export default {
         { text: "Entertainment", value: "entertainer" },
       ],
       selectedCategory: "animal",
-      audioInfo: !this.$root.audio.muted,
+      audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
     };
   },
   computed: {

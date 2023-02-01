@@ -1,6 +1,6 @@
 <template>
   <v-app class="hero">
-    <v-container>
+    <v-container height="100%">
       <v-row class="d-flex justify-center">
         <score :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
       </v-row>
@@ -133,7 +133,7 @@ export default {
       rank: "",
       clearTime: this.$store.state.clearTime.toString().substr(0, 5),
       correctAnswers: this.$store.state.correctAnswers,
-      audioInfo: !this.$root.audio.muted,
+      audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
       showInfo: false,
       correctNum: 0,
       name: this.$store.state.name,

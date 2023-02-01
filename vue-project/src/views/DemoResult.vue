@@ -74,7 +74,7 @@ export default {
       dialogNum: false,
       path: this.$store.state.imgPath,
       answer: this.$store.state.answerList,
-      audioInfo: !this.$root.audio.muted,
+      audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
     };
   },
   methods: {

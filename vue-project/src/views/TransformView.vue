@@ -107,7 +107,7 @@ export default {
       soundInfo: false,
       uploaded: false,
       imageUrl: "",
-      audioInfo: !this.$root.audio.muted,
+      audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
     };
   },
   computed: {},
