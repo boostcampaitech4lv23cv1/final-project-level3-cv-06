@@ -25,20 +25,19 @@ app.add_middleware(
 )
 
 @app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
+async def check_ip(request: Request, call_next):
+    print(request.headers)
+    ip_addr1 = request.headers.get("X-Forwarded-For")
+    ip_addr2 = request.headers.get('X-X-Real-IP')
+    LOGGER.info(f"1: {ip_addr1}, 2: {ip_addr2}")
     response = await call_next(request)
-    x = 'x-forwarded-for'.encode('utf-8')
-    response = await call_next(request)
-    for header in request.headers.raw:
-        if header[0] == x:
-            origin_ip, forward_ip = re.split(', ', header[1].decode('utf-8'))
-            LOGGER.info(f"origin_ip: {origin_ip}\tforward_ip: {forward_ip}")
     return response
 
 
 @app.on_event("startup")
 async def startup():
     LOGGER.info("Server Start")
+
 
 @app.on_event("shutdown")
 async def shutdown():
