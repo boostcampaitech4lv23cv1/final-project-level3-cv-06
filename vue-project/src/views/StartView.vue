@@ -66,7 +66,7 @@
 
 <script>
 import logo from "../svg/logoView.vue";
-import transform from "../svg/transformButton.vue";
+import transform from "../svg/transformButton2.vue";
 import game from "../svg/GameButton.vue";
 import ranking from "../svg/RankingLogo.vue";
 
