@@ -76,11 +76,11 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {keyword} {site} {scraped_time} {n_imgs}",
     )
 
-    metadata2db = PythonOperator(
-        task_id="metadata2db",
-        python_callable=df2db,
-        op_kwargs={"keyword": keyword, "site": site, "scraped_time": scraped_time},
-    )
+    # metadata2db = PythonOperator(
+    #     task_id="metadata2db",
+    #     python_callable=df2db,
+    #     op_kwargs={"keyword": keyword, "site": site, "scraped_time": scraped_time},
+    # )
     data2gcs = LocalFilesystemToGCSOperator(
         task_id="data2gcs",
         src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/*",
@@ -147,7 +147,8 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     #####################    TASKS    #####################
     (
         crawl_img
-        >> [metadata2db, data2gcs]
+        # >> [metadata2db, data2gcs]
+        >> data2gcs
         >> sense_gcs_file
         >> load_data_from_gcs2ssh
         >> sense_ssh_file
