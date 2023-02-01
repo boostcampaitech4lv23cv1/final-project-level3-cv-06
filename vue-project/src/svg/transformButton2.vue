@@ -4,8 +4,8 @@
     version="1.1"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:svgjs="http://svgjs.dev/svgjs"
-    width="2000"
-    height="388"
+    width="30vw"
+    height="20vh"
     viewBox="0 0 2000 388"
   >
     <g transform="matrix(1,0,0,1,-1.2121212121212466,1.0015524733744883)">
