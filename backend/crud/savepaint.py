@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from fastapi import HTTPException
 import random
 
 from datetime import datetime, date
@@ -11,12 +11,14 @@ def read_savepaint(db: Session, category: str):
     # 없는 테이블 가져올 경우 예외 처리
     if category == "animal":
         img_paths = db.query(Animal).all()
+    elif category == "poster":
+        img_paths = db.query(Poster).all()
     elif category == "lanmark":
         img_paths = db.query(Landmark).all()
     elif category == "celebrity":
         img_paths = db.query(Celebrity).all()
     else:
-        raise ValueError('없는 카테고리')
+        raise HTTPException(status_code=400, detail="존재하지 않는 카테고리입니다")
     
     return img_paths
 

@@ -50,6 +50,8 @@ async def crawling_data(
                     img_path=row.img_path
                 )
             )
+        elif category == "poster":
+            pass
         elif category == "landmark":
             pass
         elif category == "celebrity":
@@ -67,26 +69,22 @@ async def crawling_data(
     category: str = Body(),
     db: Session = Depends(get_db)):
     
-    extend = file.filename.split('.')[-1]
-    if extend == "feather":
+    try:
         file_content = await file.read()
         data = pd.read_feather(BytesIO(file_content))
-    elif extend == "csv":
-        file_content = await file.read()
-        data = pd.read_csv(BytesIO(file_content), encoding="utf-8")
-    else:
-        return {"error": "feather or csv file이 아닙니다"}
+    except:
+        return HTTPException(status_code=400, detail="check your extend(you need use feather)")
     
     for idx, row in data.iterrows():
-        if row.category == "animal": # 카테고리 이름 및 테이블 명 통일하기
+        if category == "animal": # 카테고리 이름 및 테이블 명 통일하기
             db_item = db.query(Animal.img_path == row.img_path).first()
             db_item.label = row.label
             db.commit()
-        elif row.category == "poster":
+        elif category == "poster":
             pass
-        elif row.category == "landmark":
+        elif category == "landmark":
             pass
-        elif row.category == "celebrity":
+        elif category == "celebrity":
             pass
         
     return {"messege": "success"}
