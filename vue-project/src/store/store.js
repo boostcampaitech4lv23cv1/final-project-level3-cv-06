@@ -10,9 +10,11 @@ const store = createStore({
             imgPath:[],
             rank:'S',
             correctList:[],
-            refresh:false,
             clearTime:100,
-            naem:'',
+            name:'',
+            correctAnswer:0,
+            mode:'',
+            category:'',
         }
     },
     mutations:{
@@ -32,20 +34,27 @@ const store = createStore({
         setCorrect(state,correct){
             state.correctList=correct
         },
-        setRefresh(state,refresh){
-            state.refresh=refresh
-        },
         setCleartime(state,cleartime){
             state.clearTime=cleartime
         },
         setCorrectanswers(state,correctanswers){
             state.correctAnswers=correctanswers
+            state.correctAnswer=0
+            for(let i=0; i<9; i++){
+                state.correctAnswer+=1
+            }
         },
         setPath(state,path){
             state.imgPath=path
         },
         setName(state,name){
             state.name=name
+        },
+        setMode(state,mode){
+            state.mode=mode
+        },
+        setCategory(state,category){
+            state.category=category
         }
 
     },
