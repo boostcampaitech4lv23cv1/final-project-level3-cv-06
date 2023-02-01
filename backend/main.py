@@ -1,4 +1,5 @@
 import logging
+import re
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,9 +26,13 @@ app.add_middleware(
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    client_host = request.client.host
-    LOGGER.info(f"request by {client_host}")
     response = await call_next(request)
+    x = 'x-forwarded-for'.encode('utf-8')
+    response = await call_next(request)
+    for header in request.headers.raw:
+        if header[0] == x:
+            origin_ip, forward_ip = re.split(', ', header[1].decode('utf-8'))
+            LOGGER.info(f"origin_ip: {origin_ip}\tforward_ip: {forward_ip}")
     return response
 
 
