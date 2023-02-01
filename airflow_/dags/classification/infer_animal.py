@@ -177,10 +177,10 @@ def send_metadata2api(df):
     res = requests.post(url, files=file, data=category)
 
     # Check the status code of the response
-    if res.status_code == 200:
-        print("metadata sent successfully")
-    else:
-        print("Failed to send data")
+    try:
+        res.raise_for_status()
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":

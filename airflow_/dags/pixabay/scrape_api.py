@@ -13,9 +13,9 @@ import requests
 from google.cloud import storage
 from PIL import Image
 
-os.environ[
-    "GOOGLE_APPLICATION_CREDENTIALS"
-] = "/Users/juheon/Desktop/jh/final-project-level3-cv-06/airflow_/m2-key.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "m2-key.json")
+)
 # request timeout
 TIMEOUT = 60
 
@@ -126,9 +126,9 @@ class PixabayCrawler:
                                     run = False
                                     break
                                     # TODO check db 중복
-                                # if self.is_duplicate(img_dict["id"]):
-                                #     continue
-                                # self.send_img2gcs(img_dict, bucket)
+                                if self.is_duplicate(img_dict["id"]):
+                                    continue
+                                self.send_img2gcs(img_dict, bucket)
                                 df = self.add_data2df(df, keyword, img_dict)
 
                                 imgs_downloaded += 1
@@ -196,12 +196,16 @@ class PixabayCrawler:
 
     def is_duplicate(self, img_id):
         url = "http://34.64.169.197/api/v1/meta/duplicate_check"
-        data = {"id": img_id, "category": keyword}
+        data = {"id": str(img_id), "category": keyword[0]}
+
         try:
-            r = requests.post(url, data=data)
-            logger.info(r)
+            res = requests.post(url, json=data)
+            res.raise_for_status()
+            # TODO 리턴값 처리
+            p = res.content
         except Exception as err:
             logger.warning(err)
+            logger.warning("an error occured requesting duplicate check")
 
     def send_img2gcs(self, img_dict):
         file_name = f"{KEYWORD}/{SITE}/{SCRAPED_TIME}/{str(img_dict['id'])}.webp"
@@ -297,7 +301,12 @@ def send_metadata2api(df):
 
     file = {"file": buffer.getvalue().to_pybytes()}
     category = {"category": KEYWORD}
-    res = requests.post(url, files=file, data=category)
+
+    try:
+        res = requests.post(url, files=file, data=category)
+    except Exception as err:
+        logger.warning(err)
+        logger.warning("an error occured sending feather file to api")
 
     # Check the status code of the response
     if res.status_code == 200:

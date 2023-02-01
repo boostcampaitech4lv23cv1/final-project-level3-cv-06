@@ -18,13 +18,11 @@ def metadata2fastapi():
         feather = f.read()
     file = {"file": feather}
     category = {"category": KEYWORD}
-    res = requests.post(url, files=file, data=category)
-
-    # Check the status code of the response
-    if res.status_code == 200:
-        print("Data sent successfully")
-    else:
-        print("Failed to send data")
+    try:
+        res = requests.post(url, files=file, data=category)
+        res.raise_for_status()
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
