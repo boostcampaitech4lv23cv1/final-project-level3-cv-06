@@ -19,14 +19,10 @@ from airflow.providers.google.cloud.transfers.postgres_to_gcs import (
 )
 from airflow.providers.google.cloud.transfers.sftp_to_gcs import SFTPToGCSOperator
 from airflow.providers.sftp.sensors.sftp import SFTPSensor
-from airflow.providers.slack.hooks.slack_webhook import SlackWebhookHook
+from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
 from airflow.providers.ssh.operators.ssh import SSHOperator
 from airflow.utils.dates import days_ago
-from callback.slack_noti import (
-    send_slack_dag_success,
-    send_slack_task_failure,
-    send_slack_task_retry,
-)
+from callback.slack_noti import send_slack_task_failure, send_slack_task_retry
 from database.metadata2db import df2db
 from pytz import timezone
 
@@ -158,9 +154,9 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     #     ssh_conn_id="ssh_connection",
     #     command=f"rm -rf {ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}",
     # )
-    slack_success_noti = SlackWebhookHook(
+    slack_success_noti = SlackWebhookOperator(
         task_id="slack_success_noti",
-        http_conn_id="slack_connection",
+        slack_webhook_conn_id="slack_connection",
         message=""":large_green_circle: Airflow Dag Succeeded.""",
     )
     #####################    TASKS    #####################
