@@ -225,3 +225,5 @@ Pipfile.lock
 backend/PaintTransformer/model.pth
 model.pth
 dataset/
+
+backend/raw_image/
