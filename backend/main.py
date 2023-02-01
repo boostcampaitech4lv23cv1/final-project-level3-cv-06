@@ -26,10 +26,9 @@ app.add_middleware(
 
 @app.middleware("http")
 async def check_ip(request: Request, call_next):
-    print(request.headers)
-    ip_addr1 = request.headers.get("X-Forwarded-For")
-    ip_addr2 = request.headers.get('X-X-Real-IP')
-    LOGGER.info(f"1: {ip_addr1}, 2: {ip_addr2}")
+    # ip_addr = request.headers.get("X-Forwarded-For")
+    ip_addr = request.headers.get('X-Real-IP')
+    LOGGER.info(f"request addr: {ip_addr}")
     response = await call_next(request)
     return response
 
