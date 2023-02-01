@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
-# KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
-# N_IMGS = int(N_IMGS)
-KEYWORD, SITE, SCRAPED_TIME, N_IMGS = "animal", "pixabay", "01-31_16", 30
+KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
+N_IMGS = int(N_IMGS)
+# KEYWORD, SITE, SCRAPED_TIME, N_IMGS = "animal", "pixabay", "01-31_16", 30
 
 # AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
 
@@ -126,9 +126,9 @@ class PixabayCrawler:
                                     run = False
                                     break
                                     # TODO check db 중복
-                                if self.is_duplicate(img_dict["id"]):
-                                    continue
-                                self.send_img2gcs(img_dict, bucket)
+                                # if self.is_duplicate(img_dict["id"]):
+                                #     continue
+                                # self.send_img2gcs(img_dict, bucket)
                                 df = self.add_data2df(df, keyword, img_dict)
 
                                 imgs_downloaded += 1
@@ -195,7 +195,7 @@ class PixabayCrawler:
         return n_imgs
 
     def is_duplicate(self, img_id):
-        url = "http://34.64.169.19/api/v1/meta/duplicate_check"
+        url = "http://34.64.169.197/api/v1/meta/duplicate_check"
         data = {"id": img_id, "category": keyword}
         try:
             r = requests.post(url, data=data)
@@ -289,6 +289,23 @@ def send_metadata2gcs(keyword, df, bucket):
     print("saved metadata.feather to GCS")
 
 
+def send_metadata2api(df):
+    url = "http://34.64.169.197/api/v1/meta/create"
+
+    buffer = pa.BufferOutputStream()
+    feather.write_feather(df, buffer)
+
+    file = {"file": buffer.getvalue().to_pybytes()}
+    category = {"category": KEYWORD}
+    res = requests.post(url, files=file, data=category)
+
+    # Check the status code of the response
+    if res.status_code == 200:
+        print("metadata sent successfully")
+    else:
+        print("Failed to send data")
+
+
 if __name__ == "__main__":
     category = [
         "animals",
@@ -335,5 +352,6 @@ if __name__ == "__main__":
     keyword = [KEYWORD]
     scraper = PixabayCrawler(keyword, params, bucket)
     df = scraper.scraper(n_imgs=N_IMGS)
-    send_metadata2gcs(keyword, df, bucket)
+    send_metadata2api(df)
+    # send_metadata2gcs(keyword, df, bucket)
     # TODO: 이전에 크롤링했던 사진 이후부터 크롤링
