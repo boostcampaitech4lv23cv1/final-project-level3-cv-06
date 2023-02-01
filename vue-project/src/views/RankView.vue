@@ -32,10 +32,7 @@
         :style="{ height: '30vh', 'margin-top': '0vh' }"
       >
         <v-col cols="6" class="align-self-center">
-          <v-row
-            class="d-flex justify-end"
-            :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }"
-          >
+          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '0vh', 'font-size': '4vh' }">
             <v-col cols="2" class="justify">
               <profile />
             </v-col>
@@ -74,15 +71,12 @@
 
         <v-col cols="6">
           <v-row>
-            <v-col
-              cols="auto"
-              :style="{
-                'margin-left': '7vh',
-                'margin-top': '5vh',
-                'font-size': '23vh',
-                color: 'gold',
-              }"
-            >
+            <v-col cols="auto" :style="{
+              'margin-left': '7vh',
+              'margin-top': '2vh',
+              'font-size': '23vh',
+              color: 'gold',
+            }">
               {{ rank }}
             </v-col>
           </v-row>
@@ -160,13 +154,20 @@ export default {
         this.showInfo = true;
       }
     },
-    registerScore() {
+    async registerScore() {
       if (this.name === "") {
-        this.alert = true;
-      } else {
-        this.$store.commit("setName", this.name);
+        this.alert = true
+      }
+      else {
+        this.$store.commit('setName', this.name)
+        this.$router.push({ path: 'leaderboard' })
 
-        this.$router.push({ path: "leaderboard" });
+        let response = await this.$api(
+          "http://34.64.169.197/api/v1/score",
+          "POST",
+          { user_name: this.name, play_time: this.clearTime, correct_ctn: this.correctAnswers }
+        );
+
       }
     },
   },
@@ -189,18 +190,20 @@ export default {
       this.rank = "C";
     }
 
+    let response = await this.$api(
+      "http://34.64.169.197/api/v1/game/gameover",
+      "POST",
+      { category: this.$store.category, img_paths: imgPath, correct_list: correctList }
+    );
+
+
     // let response = await this.$api(
-    //   "http://34.64.169.197/api/v1/game/gameover",
+    //   'http://127.0.0.1:8000/api/v1/game/gameover',
     //   "POST",
     //   { img_paths: imgPath, score_list: correctList }
-    // );
+    // )
 
-    let response = await this.$api(
-      "http://127.0.0.1:8000/api/v1/game/gameover",
-      "POST",
-      { img_paths: imgPath, score_list: correctList }
-    );
-  },
+  }
 };
 </script>
 

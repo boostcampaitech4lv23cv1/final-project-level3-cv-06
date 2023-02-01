@@ -5,6 +5,10 @@
         <logo v-if='gameStatus === 0' :style="{ height: '20vh', width: '40vw' }" />
         <div v-if="gameStatus != 0" class="nums">{{ headText }}</div>
       </v-row>
+      <v-row class="d-flex justify-center mt-8" v-if="gameStatus != 0 & gameStatus != 10">
+        <v-sheet v-for="(i) in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="7vh"
+          width="6vh" rounded :style="{ 'margin-left': '0.2vw' }"></v-sheet>
+      </v-row>
       <v-row class="d-flex mt-8">
         <v-col cols="4"></v-col>
         <v-col cols="4">
@@ -107,7 +111,7 @@ function enter() {
     router.push({ path: "/rank" });
   }
   if (text.value == answerList.value[gameStatus.value - 1]) {
-    correctList.value.push(1)
+    correctList.value.push(true)
     if (wrongTimer.value > 0) {
       wrongTimer.value = 0;
     }
@@ -123,8 +127,7 @@ function enter() {
 }
 onMounted(async () => {
   const headers = { "Content-Type": "application/json" };
-  const query = router.currentRoute.value.query;
-  const params = { category: query.category };
+  const params = { category: store._state.data.category };
   let response = await axios.post(
     "http://34.64.169.197/api/v1/game/gamestart",
     params,
@@ -147,13 +150,12 @@ onMounted(async () => {
   store.commit("setOrigin", originImg);
   store.commit("setPaint", paintImg.value);
   store.commit("setAnswer", answerList.value);
-  store.commit("setRefresh", true)
 
 });
 watch(imgTimer, (newVal) => {
   if (newVal == 100) {
     resetImg();
-    correctList.value.push(0);
+    correctList.value.push(false);
   }
 });
 watch(totalTimer, (newVal) => {
