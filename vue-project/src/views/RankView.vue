@@ -1,15 +1,25 @@
 <template>
   <v-app class="hero">
     <v-container>
-      <v-row class="d-flex justify-center">
-        <score :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
+
+      <v-row>
+        <!-- score log show -->
+        <v-col cols="12" class="d-flex justify-center">
+          <score :style="{ height: '15vh', margin: '5vh 0vw 0vh 0vw' }" />
+        </v-col>
       </v-row>
+
+
       <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
+        <!-- description button as icon -->
         <v-btn rounded variant="plain" @click="infoChange" height="5vh">
           <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
         </v-btn>
       </v-row>
+
+
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <!-- sound button as icon-->
         <v-btn rounded variant="plain" @click="soundChange" height="5vh">
           <v-icon icon="mdi-volume-high" size="5vh" v-show="soundInfo == 0">
           </v-icon>
@@ -17,70 +27,79 @@
           </v-icon>
         </v-btn>
       </v-row>
-      <v-row>
-        <v-col cols="6" class="d-flex justify-end">
-          <v-alert v-show="alert == true" density="compact" type="warning" style="position: absolute;" width=17vw>
-            Enter your <strong>Name</strong>
-          </v-alert>
-        </v-col>
-      </v-row>
+
 
       <v-row class=" d-flex nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
+        <!-- game result information -->
         <v-col cols="6" class="align-self-center">
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '0vh', 'font-size': '4vh' }">
-            <v-col cols="2" class="justify">
+            <!-- profile icon & name input -->
+            <v-col cols="1" class="justify">
               <profile />
             </v-col>
-            <!-- <v-col cols="3" class="justify"> Nask </v-col> -->
-            <v-col cols="3" class="justfy">
-              <v-text-field label="Enter your name here!" v-model="name" single-line></v-text-field>
+            <!-- name input area -->
+            <v-col cols="1"></v-col>
+            <v-col xs="10" sm="5" lg="3" class="d-flex align-start">
+              <v-text-field label="Enter name here!" v-model="name" single-line class="input"></v-text-field>
             </v-col>
           </v-row>
 
+
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
-            <v-col cols="2">
+            <!-- check icon & correct number -->
+            <v-col cols="1">
               <check />
             </v-col>
-            <v-col cols="3"> {{ correctAnswers }}/9 </v-col>
+            <v-col cols="1"></v-col>
+            <!-- correct answer number show -->
+            <v-col xs="10" sm="5" lg="3" class="justfy"> {{ correctAnswer }}/9 </v-col>
           </v-row>
 
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
-            <v-col cols="2">
+            <!--timer icon show & clear time-->
+            <v-col cols="1">
               <timer />
             </v-col>
-            <v-col cols="3">
+            <v-col cols="1"></v-col>
+            <!--clear time show-->
+            <v-col xs="10" sm="5" lg="3" class="justfy">
               {{ clearTime }}
             </v-col>
           </v-row>
         </v-col>
 
-        <v-col cols="6">
-          <v-row>
-            <v-col cols="auto" :style="{
-              'margin-left': '7vh',
-              'margin-top': '2vh',
-              'font-size': '23vh',
-              color: 'gold',
-            }">
-              {{ rank }}
-            </v-col>
-          </v-row>
+
+        <!-- show rank emoji -->
+        <v-col cols="4" :style="{
+          'margin-left': '7vh',
+          'margin-top': '2vh',
+          'font-size': '23vh',
+          color: 'gold',
+        }">
+          {{ rank }}
         </v-col>
       </v-row>
 
-      <v-row class="d-flex justify-center">
-        <v-col cols="6" class="d-flex justify-cnter">
-          <v-btn class="mx-auto text-center" :style="{
+
+      <v-row class="justify-center">
+        <v-col cols="5" class="d-flex justify-end">
+          <!-- go result button -->
+          <v-btn class="text-center" :style="{
             margin: '15vh 0vw 0vh 0vw',
           }" @click="goResult">
             Show Result!
           </v-btn>
-          <v-btn class="mx-auto text-center" :style="{
+        </v-col>
+        <v-col cols="1"></v-col>
+        <v-col cols="5">
+          <!-- register score and go leaderboard -->
+          <v-btn class="text-center" :style="{
             margin: '15vh 0vw 0vh 0vw',
           }" @click="registerScore">
-            Register Score!
+            Show Rank
           </v-btn>
         </v-col>
+
       </v-row>
 
 
@@ -106,7 +125,7 @@ export default {
     return {
       rank: "",
       clearTime: this.$store.state.clearTime.toString().substr(0, 5),
-      correctAnswers: this.$store.state.correctAnswers,
+      correctAnswer: this.$store.state.correctAnswer,
       soundInfo: false,
       showInfo: false,
       correctNum: 0,
@@ -141,11 +160,11 @@ export default {
         this.$store.commit('setName', this.name)
         this.$router.push({ path: 'leaderboard' })
 
-        let response = await this.$api(
-          "http://34.64.169.197/api/v1/score",
-          "POST",
-          { user_name: this.name, play_time: this.clearTime, correct_ctn: this.correctAnswers }
-        );
+        // let response = await this.$api(
+        //   "http://34.64.169.197/api/v1/score",
+        //   "POST",
+        //   { user_name: this.name, play_time: this.clearTime, correct_ctn: this.correctAnswer }
+        // );
 
       }
     }
@@ -165,15 +184,15 @@ export default {
       this.rank = "A";
     } else if (Number(this.clearTime) <= 80) {
       this.rank = "B";
-    } else if (Number(this.clearTime) <= 90) {
+    } else if (Number(this.clearTime) <= 100) {
       this.rank = "C";
     }
 
-    let response = await this.$api(
-      "http://34.64.169.197/api/v1/game/gameover",
-      "POST",
-      { category: this.$store.category, img_paths: imgPath, correct_list: correctList }
-    );
+    // let response = await this.$api(
+    //   "http://34.64.169.197/api/v1/game/gameover",
+    //   "POST",
+    //   { category: this.$store.category, img_paths: imgPath, correct_list: correctList }
+    // );
 
 
     // let response = await this.$api(
@@ -218,5 +237,9 @@ export default {
 .nums {
   font-family: 'num';
   font-size: 2.3rem;
+}
+
+.input {
+  height: 1vh;
 }
 </style>

@@ -28,11 +28,13 @@
             color="white"></v-progress-linear>
         </v-col>
       </v-row>
-      <v-row class="d-flex justify-center mt-10">
+      <v-row class="mt-10">
         <v-col cols="4"></v-col>
-        <v-text-field v-show="gameStatus > 0" width="10px" label="Enter the answer" single-line density="compact"
-          v-model="text" @keydown.enter="enter"></v-text-field>
-        <v-btn v-show="gameStatus == 0" @click="startGame">Game Start!</v-btn>
+        <v-col cols="4" class="d-flex justify-center">
+          <v-text-field v-show="gameStatus > 0" label="Enter the answer" single-line density="compact" v-model="text"
+            @keydown.enter="enter"></v-text-field>
+          <v-btn v-show="gameStatus == 0 && nextImg != ''" @click="startGame">Game Start!</v-btn>
+        </v-col>
         <v-col cols="4"></v-col>
       </v-row>
       <v-row calss="d-flex justify-center">

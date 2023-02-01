@@ -7,7 +7,7 @@
             </v-col>
         </v-row>
         <v-row class="d-flex justify-center font">
-            <v-col xs="12" sm="6">
+            <v-col xs="12" sm="7">
                 <div class="scroll">
                     <v-table class="table">
                         <thead>
