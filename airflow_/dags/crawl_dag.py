@@ -81,32 +81,17 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         python_callable=df2db,
         op_kwargs={"keyword": keyword, "site": site, "scraped_time": scraped_time},
     )
-    img2gcs = LocalFilesystemToGCSOperator(
-        task_id="img2gcs",
-        src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/*.webp",
+    data2gcs = LocalFilesystemToGCSOperator(
+        task_id="data2gcs",
+        src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/*",
         dst=f"{keyword}/{site}/{scraped_time}/",
         bucket=bucket,
         gcp_conn_id="gcs_connection",
     )
-    metadata2gcs = LocalFilesystemToGCSOperator(
-        task_id="metadata2gcs",
-        src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/metadata.feather",
-        dst=f"{keyword}/{site}/{scraped_time}/",
-        bucket=bucket,
-        gcp_conn_id="gcs_connection",
-    )
-    # load_img_from_gcs2ssh = SSHOperator(
-    #     task_id="download_img_from_gcs2ssh",
-    #     ssh_conn_id="ssh_connection",
-    #     command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
-    # )
-    load_img_from_gcs2ssh = GCSToSFTPOperator(
+    load_img_from_gcs2ssh = SSHOperator(
         task_id="download_img_from_gcs2ssh",
-        source_bucket=bucket,
-        source_object=f"{keyword}/{site}/{scraped_time}/[0-9]*.webp",
-        destination_path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/",
-        gcp_conn_id="gcs_connection",
-        sftp_conn_id="sftp_connection",
+        ssh_conn_id="ssh_connection",
+        command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
     )
     sense_ssh_file = SFTPSensor(
         task_id="sense_ssh_file",
@@ -162,8 +147,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     #####################    TASKS    #####################
     (
         crawl_img
-        >> [metadata2db, img2gcs]
-        >> metadata2gcs
+        >> [metadata2db, data2gcs]
         >> sense_gcs_file
         >> load_img_from_gcs2ssh
         >> sense_ssh_file
