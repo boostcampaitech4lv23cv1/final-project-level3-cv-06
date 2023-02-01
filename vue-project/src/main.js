@@ -15,7 +15,7 @@ loadFonts();
 //   .mount('#app')
 
 const app = createApp(App);
-app.config.globalProperties.audio = new Audio(require("@/assets/BGM.mp3"));
+app.config.globalProperties.audio = new Audio(require("@/assets/short.mp3"));
 app.use(router);
 app.use(store);
 app.use(vuetify, {
