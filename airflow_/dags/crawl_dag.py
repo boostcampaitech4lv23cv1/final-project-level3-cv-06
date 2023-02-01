@@ -88,8 +88,8 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         bucket=bucket,
         gcp_conn_id="gcs_connection",
     )
-    load_img_from_gcs2ssh = SSHOperator(
-        task_id="download_img_from_gcs2ssh",
+    load_data_from_gcs2ssh = SSHOperator(
+        task_id="download_data_from_gcs2ssh",
         ssh_conn_id="ssh_connection",
         command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
     )
@@ -100,7 +100,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     )
 
     sense_gcs_file = GCSObjectExistenceSensor(
-        task_id="check_metadata_in_gcs",
+        task_id="sense_metadata_in_gcs",
         google_cloud_conn_id="gcs_connection",
         bucket=bucket,
         object=f"{keyword}/{site}/{scraped_time}/metadata.feather",
@@ -149,7 +149,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         crawl_img
         >> [metadata2db, data2gcs]
         >> sense_gcs_file
-        >> load_img_from_gcs2ssh
+        >> load_data_from_gcs2ssh
         >> sense_ssh_file
         >> infer_label
         >> df2api
