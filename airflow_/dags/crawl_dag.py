@@ -33,6 +33,8 @@ from pytz import timezone
 
 local_tz = pendulum.timezone("Asia/Seoul")
 scraped_time = datetime.now(timezone("Asia/Seoul")).strftime("%m-%d_%H")
+# scraped_time="01-31_16"
+
 
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 ssh_base = "/opt/ml/final-project-level3-cv-06"
@@ -143,12 +145,13 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         ssh_conn_id="ssh_connection",
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/paint_transformer/img2ani.py {keyword} {site} {scraped_time}",
+        cmd_timeout=600
     )
     ani2gcs = SFTPToGCSOperator(
         task_id="ani2gcs",
         source_path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/*_ani.webp",
         destination_bucket=bucket,
-        destination_path=f"{keyword}/{site}/{scraped_time}/",
+        destination_path=f"{keyword}/{site}/{scraped_time}",
         gcp_conn_id="gcs_connection",
         sftp_conn_id="sftp_connection",
     )
