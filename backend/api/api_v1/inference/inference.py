@@ -17,9 +17,9 @@ async def inference(
     # 사진 하나만 가능
     # print(uf.filename)
     file_name = file.filename
-    extend = file_name.split('.')[-1]
-    if extend == 'jpg':
-        extend = 'jpeg'
+    extend = file_name.split(".")[-1]
+    if extend == "jpg" or extend == "JPG":
+        extend = "jpeg"
         
     content = await file.read()
     bytes_data = BytesIO(content)

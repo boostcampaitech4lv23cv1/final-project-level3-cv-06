@@ -8,6 +8,7 @@ from glob import glob
 from PIL import Image
 import numpy as np
 import logging
+import uuid
 
 
 from google.cloud import storage
@@ -144,7 +145,7 @@ def save_user_img(img, file_name):
     # PIL image 받아서 WEBP로 저장
     webp_io = io.BytesIO()
     img.save(webp_io, format="WEBP")
-    blob = bucket.blob(f'/user_img/{file_name}.webp')
+    blob = bucket.blob(f'/user_img/{file_name}_{uuid.uuid1()}.webp')
     blob.upload_from_string(webp_io)
     LOGGER.info('save user image to GCS')
     

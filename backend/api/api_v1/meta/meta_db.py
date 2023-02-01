@@ -82,6 +82,8 @@ async def crawling_data(
             db_item = db.query(Animal.img_path == row.img_path).first()
             db_item.label = row.label
             db.commit()
+        elif row.category == "poster":
+            pass
         elif row.category == "landmark":
             pass
         elif row.category == "celebrity":
