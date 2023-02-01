@@ -6,6 +6,8 @@ import albumentations as A
 import cv2
 import numpy as np
 import pandas as pd
+import pyarrow as pa
+import pyarrow.feather as feather
 import requests
 import timm
 import torch
@@ -159,18 +161,33 @@ def join_df2db(df: pd.DataFrame, host: str = "34.145.38.251"):
     new_df.to_sql(name=KEYWORD, con=engine, if_exists="replace", index=False)
 
 
-def save_metadata(df):
-    base_path = f"{AIRFLOW_HOME}/data"
-    file_path = os.path.join(
-        base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata_with_label.feather"
-    )
-    df.to_feather(file_path)
+def send_metadata2api(df):
+    # base_path = f"{AIRFLOW_HOME}/data"
+    # file_path = os.path.join(
+    #     base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata_with_label.feather"
+    # )
+    # df.to_feather(file_path)
+
+    url = "http://34.64.169.197/api/v1/meta/create"
+
+    buffer = pa.BufferOutputStream()
+    feather.write_feather(df, buffer)
+
+    file = {"file": buffer.getvalue().to_pybytes()}
+    category = {"category": KEYWORD}
+    res = requests.post(url, files=file, data=category)
+
+    # Check the status code of the response
+    if res.status_code == 200:
+        print("metadata sent successfully")
+    else:
+        print("Failed to send data")
 
 
 if __name__ == "__main__":
 
     df = make_img_label()
-    save_metadata(df)
+    send_metadata2api(df)
     print("label: ", df["label"])
 
 # TODO imgnet 레이블 정리 및 간소화
