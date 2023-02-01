@@ -5,6 +5,8 @@ import os
 import sys
 
 import pandas as pd
+import pyarrow as pa
+import pyarrow.feather as feather
 import requests
 from PIL import Image
 
@@ -15,11 +17,10 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
-# SCRAPED_TIME, SITE = sys.argv[1:]
 KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
+# KEYWORD, SITE, SCRAPED_TIME, N_IMGS = "animal", "pixabay", "01-31_16", 30
 
 # AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
-# SCRAPED_TIME, SITE = "01-29_22", "pixabay"
 
 
 class PixabayCrawler:
@@ -250,7 +251,9 @@ def save_metadata(keyword, df):
 
     os.makedirs(save_path, exist_ok=True)
     df["img_path"] = df["img_path"].astype(str)
-    df.to_feather(f"{save_path}/metadata.feather")
+    # df.to_feather(f"{save_path}/metadata.feather")
+    table = pa.Table.from_pandas(df)
+    feather.write_feather(table, f"{save_path}/metadata.feather")
     print(f"saved metadata for {keyword[0]} at {save_path}/metadata.feather")
 
 
