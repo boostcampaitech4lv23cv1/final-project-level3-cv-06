@@ -18,6 +18,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
 KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
+N_IMGS=int(N_IMGS)
 # KEYWORD, SITE, SCRAPED_TIME, N_IMGS = "animal", "pixabay", "01-31_16", 30
 
 # AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
