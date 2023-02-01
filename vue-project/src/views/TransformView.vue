@@ -76,7 +76,7 @@
           <v-img src="../assets/tower-bridge-paint.jpg" width="100vw" v-show="uploaded == false" />
 
           <v-img max-width="100vw" class="mx-auto" :src="`data:image/gif;base64,${returnImg}`">
-            <v-progress-circular v-if="transform == true" class="loading" color="grey-lighten-4"
+            <v-progress-circular v-if="transform == true" class="loading-mobile" color="grey-lighten-4"
               indeterminate></v-progress-circular>
           </v-img>
         </v-col>
@@ -170,7 +170,7 @@ export default {
   margin-left: 10vw;
 }
 
-.loading {
+.loading-mobile {
   margin-top: 15vh;
   margin-left: 40vw;
 }
