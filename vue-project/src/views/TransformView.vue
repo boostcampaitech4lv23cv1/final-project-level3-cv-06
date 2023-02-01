@@ -22,11 +22,13 @@
             </template>
             <v-card>
               <v-card-title class="text-center" height="3vh"
-                >변환을 원하는 이미지를 업로드하면, 그림으로 다시 그려드릴게요!
+                >변환하려는 이미지를 업로드하면, 그림으로 다시 그려드릴게요!
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="dialog = false">확인</v-btn>
+                <v-btn variant="tonal" color="primary" @click="dialog = false"
+                  >확인</v-btn
+                >
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>

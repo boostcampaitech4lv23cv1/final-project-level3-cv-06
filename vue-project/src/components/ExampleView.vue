@@ -56,9 +56,8 @@
               class="d-flex justify-end"
               :style="{ margin: '3vh 0vw 0vh 0vw' }"
             >
-              <v-btn rounded variant="plain" @click="moveHome">
-                <v-icon icon="mdi-home-outline" size="5vh" color="white">
-                </v-icon>
+              <v-btn rounded variant="plain" @click="moveBack" height="5vh">
+                <back height="5vh" />
               </v-btn>
             </v-row>
 
@@ -268,7 +267,11 @@
   </v-app>
 </template>
 <script>
+import back from "../svg/backButton.vue";
 export default {
+  components: {
+    back,
+  },
   props: ["page"],
   data() {
     return {
@@ -285,8 +288,8 @@ export default {
     changeQuery(next) {
       this.$router.replace({ query: { page: next } });
     },
-    moveHome() {
-      this.$router.push({ path: "/" });
+    moveBack() {
+      this.$router.push({ path: "/select" });
     },
     audioChange() {
       if (this.$root.audio.paused) {

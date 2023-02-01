@@ -14,9 +14,43 @@
         </v-btn>
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <v-btn variant="plain" @click="movePage('/description', { page: 1 })">
+        <div class="text-center">
+          <v-dialog v-model="dialog">
+            <template v-slot:activator="{ props }">
+              <v-btn rounded variant="plain" v-bind="props" height="5vh">
+                <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="text-center" height="3vh">
+                카테고리에 해당하는 그림이 생성돼요. 그림을 보고 무엇인지 빨리
+                맞혀보세요!
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  variant="tonal"
+                  color="primary"
+                  @click="dialog = false"
+                  :style="{ margin: '0vh 0vw 0vh 30vw' }"
+                  >확인</v-btn
+                >
+                <v-spacer></v-spacer>
+                <v-btn
+                  variant="tonal"
+                  color="primary"
+                  @click="movePage('/description', { page: 1 })"
+                  :style="{ margin: '0vh 30vw 0vh 0vw' }"
+                  >게임방법 알아보기</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </div>
+        <!-- <v-btn variant="plain" @click="movePage('/description', { page: 1 })">
           <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
-        </v-btn>
+        </v-btn> -->
       </v-row>
 
       <v-row class="d-flex justify-center">
@@ -72,6 +106,7 @@ export default {
       ],
       selectedCategory: "animal",
       audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
+      dialog: false,
     };
   },
   computed: {
