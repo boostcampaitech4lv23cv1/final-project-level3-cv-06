@@ -26,8 +26,8 @@ def create_dummy(db: Session = Depends(get_db)):
 
 @router.post('/duplicate_check')
 async def duplicate_check(
-    id: str = Body(), 
-    category: str = Body(),
+    id: str = Body(embed=True),
+    category: str = Body(embed=True),
     db: Session = Depends(get_db)):
     
     valid = True

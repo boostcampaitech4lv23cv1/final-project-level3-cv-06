@@ -8,7 +8,7 @@ from fastapi import FastAPI, File, UploadFile, Response
 from fastapi.responses import FileResponse, JSONResponse
 
 router = APIRouter()
-
+router.redirect_slashes = False
 
 @router.post("/")
 async def inference(
