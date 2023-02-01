@@ -6,7 +6,7 @@ import router from "./router";
 import mixins from "./mixins";
 import myIcon from "./myIcon";
 import store from "./store/store";
-
+import bgm from "./assets/BGM.mp3";
 loadFonts();
 
 // createApp(App).use(router)
@@ -15,7 +15,7 @@ loadFonts();
 //   .mount('#app')
 
 const app = createApp(App);
-app.config.globalProperties.audio = new Audio(require("@/assets/short.mp3"));
+app.config.globalProperties.audio = new Audio(bgm);
 app.use(router);
 app.use(store);
 app.use(vuetify, {
