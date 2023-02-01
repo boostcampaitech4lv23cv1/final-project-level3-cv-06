@@ -3,6 +3,7 @@ from fastapi.responses import StreamingResponse
 
 
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from typing import List
 from io import BytesIO
 import pandas as pd
@@ -23,6 +24,34 @@ def create_dummy(db: Session = Depends(get_db)):
     return {'messege':'success'}
 
 
+@router.post('/duplicate_check')
+async def duplicate_check(
+    id: str = Body(), 
+    category: str = Body(),
+    db: Session = Depends(get_db)):
+    
+    valid = True
+    if category == "animal":
+        # TODO 리소스 줄이기
+        table = db.query(Animal).all()
+        # ordered로 받아 이분탐색 혹은 SQL문으로 한번에 가져오기
+        for data in table:
+            if data.img_path.split("/")[-1][:-5]==id:
+                valid = False
+                break
+    elif category == "poster":
+        pass
+    elif category == "landmark":
+        pass
+    elif category == "celebrity":
+        pass
+    
+    if valid:
+        return {"valid": True}
+    else:
+        return {"valid": False}
+    
+
 @router.post('/create')
 async def crawling_data(
     file: UploadFile = File(),
@@ -35,8 +64,6 @@ async def crawling_data(
         data = pd.read_feather(BytesIO(file_content))
     except Exception as e:
         LOGGER.warning(e)
-        return HTTPException(status_code=400, detail="check your extend(you need use feather)")
-    
     datas = []
     for idx, row in data.iterrows():
         if category == "animal": # 카테고리 이름 및 테이블 명 통일하기
@@ -73,9 +100,9 @@ async def crawling_data(
     try:
         file_content = await file.read()
         data = pd.read_feather(BytesIO(file_content))
-    except:
-        return HTTPException(status_code=400, detail="check your extend(you need use feather)")
-    
+    except Exception as e:
+        LOGGER.warning(e)
+        
     for idx, row in data.iterrows():
         if category == "animal": # 카테고리 이름 및 테이블 명 통일하기
             db_item = db.query(Animal.img_path == row.img_path).first()
