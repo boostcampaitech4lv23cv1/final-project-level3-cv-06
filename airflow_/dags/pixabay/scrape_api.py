@@ -8,8 +8,14 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.feather as feather
 import requests
+
+# from webp import WebP
+from google.cloud import storage
 from PIL import Image
 
+os.environ[
+    "GOOGLE_APPLICATION_CREDENTIALS"
+] = "/Users/juheon/Desktop/jh/final-project-level3-cv-06/airflow_/m2-key.json"
 # request timeout
 TIMEOUT = 60
 
@@ -17,17 +23,18 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
-KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
-N_IMGS=int(N_IMGS)
-# KEYWORD, SITE, SCRAPED_TIME, N_IMGS = "animal", "pixabay", "01-31_16", 30
+# KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
+# N_IMGS = int(N_IMGS)
+KEYWORD, SITE, SCRAPED_TIME, N_IMGS = "animal", "pixabay", "01-31_16", 30
 
 # AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
 
 
 class PixabayCrawler:
-    def __init__(self, key_words, params):
+    def __init__(self, key_words, params, bucket):
         self.keywords = key_words
         self.params = params
+        self.bucket = bucket
 
     def get_json(self):
         try:
@@ -87,7 +94,6 @@ class PixabayCrawler:
                     class_path = (
                         f"{AIRFLOW_HOME}/dags/data/{keyword}/{SITE}/{SCRAPED_TIME}"
                     )
-                    print(class_path)
                     os.makedirs(class_path, exist_ok=True)
 
                 except Exception:
@@ -119,8 +125,10 @@ class PixabayCrawler:
                                 if imgs_downloaded >= n_imgs:
                                     run = False
                                     break
-
-                                img_path = self.save_img(class_path, img_dict)
+                                    # TODO check db 중복
+                                if self.is_duplicate(img_dict["id"]):
+                                    continue
+                                self.send_img2gcs(img_dict, bucket)
                                 df = self.add_data2df(df, keyword, img_dict)
 
                                 imgs_downloaded += 1
@@ -186,14 +194,29 @@ class PixabayCrawler:
             n_imgs = available_imgs - 1
         return n_imgs
 
-    def save_img(self, class_path, image):
+    def is_duplicate(self, img_id):
+        url = "http://34.64.169.19/api/v1/meta/duplicate_check"
+        data = {"id": img_id, "category": keyword}
+        try:
+            r = requests.post(url, data=data)
+            logger.info(r)
+        except Exception as err:
+            logger.warning(err)
 
-        img_bytes = self.download_img(image["largeImageURL"])
+    def send_img2gcs(self, img_dict):
+        file_name = f"{KEYWORD}/{SITE}/{SCRAPED_TIME}/{str(img_dict['id'])}.webp"
+        img_bytes = self.download_img(img_dict["largeImageURL"])
         img_PIL = Image.open(io.BytesIO(img_bytes))
-
-        img_path = os.path.join(class_path, f"{str(image['id'])}.webp")
-        img_PIL.save(img_path, format="WEBP", quality=80)
-        return img_path
+        webp_io = io.BytesIO()
+        img_PIL.save(webp_io, format="WEBP", quality=80)
+        try:
+            blob = self.bucket.blob(file_name)
+            blob.upload_from_string(webp_io.getvalue(), content_type="image/webp")
+        except Exception as err:
+            logger.warning(err)
+            logger.warning(
+                f"an error occured saving this images {img_dict['largeImageURL']}"
+            )
 
 
 class Progressbar:
@@ -246,16 +269,24 @@ class Progressbar:
         self.print_bar()
 
 
-def save_metadata(keyword, df):
+def send_metadata2gcs(keyword, df, bucket):
     print("make_data_dir os.getcwd(): ", os.getcwd())
     save_path = f"{AIRFLOW_HOME}/dags/data/{keyword[0]}/{SITE}/{SCRAPED_TIME}"
 
     os.makedirs(save_path, exist_ok=True)
     df["img_path"] = df["img_path"].astype(str)
-    # df.to_feather(f"{save_path}/metadata.feather")
-    table = pa.Table.from_pandas(df)
-    feather.write_feather(table, f"{save_path}/metadata.feather")
-    print(f"saved metadata for {keyword[0]} at {save_path}/metadata.feather")
+
+    buffer = pa.BufferOutputStream()
+    feather.write_feather(df, buffer)
+
+    file_name = f"{KEYWORD}/{SITE}/{SCRAPED_TIME}/metadata.feather"
+
+    blob = bucket.blob(file_name)
+    blob.upload_from_string(
+        buffer.getvalue().to_pybytes(), content_type="application/octet-stream"
+    )
+
+    print("saved metadata.feather to GCS")
 
 
 if __name__ == "__main__":
@@ -297,10 +328,12 @@ if __name__ == "__main__":
         "safesearch": "true",
         "order": "latest",
     }
+    storage_client = storage.Client()
+    bucket_name = "scraped-img"
+    bucket = storage_client.bucket(bucket_name)
 
     keyword = [KEYWORD]
-    scraper = PixabayCrawler(keyword, params)
+    scraper = PixabayCrawler(keyword, params, bucket)
     df = scraper.scraper(n_imgs=N_IMGS)
-    save_metadata(keyword, df)
-    # TODO: 한번 실행할 때 크롤링할 이미지 개수 정하기 n_imgs
+    send_metadata2gcs(keyword, df, bucket)
     # TODO: 이전에 크롤링했던 사진 이후부터 크롤링
