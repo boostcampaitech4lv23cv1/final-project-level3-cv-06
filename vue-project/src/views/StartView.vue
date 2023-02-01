@@ -1,8 +1,10 @@
 <template>
   <v-app class="hero">
     <v-container height="100%">
-      <v-row class="d-flex justify-center">
+      <v-row>
+        <v-col cols="12" class="d-flex justify-center">
         <logo :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
+      </v-col>
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
         <v-btn rounded variant="plain" @click="movePage('/description', { page: 1 })">
@@ -31,7 +33,7 @@
         </v-col>
       </v-row>
 
-      <v-row :style="{ margin: '15vh 0vw 0vh 0vw' }" class="d-flex justify-center">
+      <v-row :style="{ margin: '10vh 0vw 0vh 0vw' }" class="d-flex justify-center">
         <v-col cols="6" class="d-flex justify-center">
           <v-btn rounded variant="plain" color="transparent" @click="movePage('/leaderboard')">
             <ranking :style="{ height: '7vh' }" />
