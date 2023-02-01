@@ -57,13 +57,10 @@ default_args = {
     # 'priority_weight': 10,
     # 'end_date': datetime(2016, 1, 1),
     # 'wait_for_downstream': False,
-    # 'dag': dag,
     # 'sla': timedelta(hours=2),
     # 'execution_timeout': timedelta(seconds=300),
     "on_failure_callback": send_slack_task_failure,
-    # "on_success_callback": send_slack_dag_success,
     "on_retry_callback": send_slack_task_retry,
-    # 'trigger_rule': 'all_success'
     "description": "A job for crawling img in pixabay",
     "tags": ["img", "crawler"],
 }
@@ -76,11 +73,6 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {keyword} {site} {scraped_time} {n_imgs}",
     )
 
-    # metadata2db = PythonOperator(
-    #     task_id="metadata2db",
-    #     python_callable=df2db,
-    #     op_kwargs={"keyword": keyword, "site": site, "scraped_time": scraped_time},
-    # )
     data2gcs = LocalFilesystemToGCSOperator(
         task_id="data2gcs",
         src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/*",
@@ -147,7 +139,6 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     #####################    TASKS    #####################
     (
         crawl_img
-        # >> [metadata2db, data2gcs]
         >> data2gcs
         >> sense_gcs_file
         >> load_data_from_gcs2ssh
