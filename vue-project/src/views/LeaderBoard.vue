@@ -1,10 +1,13 @@
 <template>
     <v-app class="hero">
-        <v-row class="d-flex justify-center">
-            <ranking :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
+        <v-row class>
+            <v-col cols="3"></v-col>
+            <v-col cols="6" class="d-flex justify-center align-center">
+                <ranking class="rank" />
+            </v-col>
         </v-row>
         <v-row class="d-flex justify-center font">
-            <v-col cols=6>
+            <v-col cols=6 xs="12">
                 <div class="scroll">
                     <v-table class="table">
                         <thead>
@@ -95,5 +98,20 @@ export default {
 .scroll {
     max-height: calc(60vh);
     overflow-y: scroll;
+}
+
+@media only screen and (max-width: 480px) {
+    .rank {
+        margin-top: 0vh;
+        margin-bottom: 0vh;
+        width: 40vh;
+    }
+}
+
+@media only screen and (min-width: 480px) {
+    .rank {
+        margin-top: 10vh;
+    }
+
 }
 </style>

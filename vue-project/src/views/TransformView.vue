@@ -24,7 +24,7 @@
             v-show="uploaded == false" />
           <v-img max-height="25vh" class="mx-auto" max-width="25vw" :src="imageUrl" v-show="uploaded == true" />
         </v-col>
-        <v-col cols="auto" class="d-flex align-center">
+        <v-col cols="2" class="d-flex align-center justify-center">
           <v-icon icon="mdi-arrow-right-bold" size="5vh"> </v-icon>
         </v-col>
         <v-col cols="5">
