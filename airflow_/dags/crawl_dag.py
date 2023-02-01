@@ -10,6 +10,7 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
+from airflow.providers.google.cloud.transfers.gcs_to_sftp import GCSToSFTPOperator
 from airflow.providers.google.cloud.transfers.local_to_gcs import (
     LocalFilesystemToGCSOperator,
 )
@@ -40,25 +41,13 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 ssh_base = "/opt/ml/final-project-level3-cv-06"
 keyword = "animal"
 site = "pixabay"
+n_imgs = 100
 bucket = "scraped-img"
 instance_name = "airflow-server"
 zone_name = "us-west1-b"
 
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
-
-
-def send_slack_task_failure(context):
-    slack_msg = f"""
-    :red_circle: Airflow Task Failed.
-    *Task*: {context.get('task_instance').task_id}
-    *Dag*: {context.get('task_instance').dag_id}
-    *Execution Time*: {context.get('execution_date')}
-    *Log Url*: {context.get('task_instance').log_url}
-    """
-
-    slack_hook = SlackWebhookHook(slack_webhook_conn_id="slack_connection")
-    slack_hook.send(text=slack_msg)
 
 
 default_args = {
@@ -76,7 +65,7 @@ default_args = {
     # 'sla': timedelta(hours=2),
     # 'execution_timeout': timedelta(seconds=300),
     "on_failure_callback": send_slack_task_failure,
-    "on_success_callback": send_slack_dag_success,
+    # "on_success_callback": send_slack_dag_success,
     "on_retry_callback": send_slack_task_retry,
     # 'trigger_rule': 'all_success'
     "description": "A job for crawling img in pixabay",
@@ -88,7 +77,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     #####################    JOBS    #######################
     crawl_img = BashOperator(
         task_id="img_crawler",
-        bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {keyword} {site} {scraped_time}",
+        bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {keyword} {site} {scraped_time} {n_imgs}",
     )
 
     metadata2db = PythonOperator(
@@ -110,10 +99,18 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         bucket=bucket,
         gcp_conn_id="gcs_connection",
     )
-    load_img_from_gcs2ssh = SSHOperator(
+    # load_img_from_gcs2ssh = SSHOperator(
+    #     task_id="download_img_from_gcs2ssh",
+    #     ssh_conn_id="ssh_connection",
+    #     command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
+    # )
+    load_img_from_gcs2ssh = GCSToSFTPOperator(
         task_id="download_img_from_gcs2ssh",
-        ssh_conn_id="ssh_connection",
-        command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
+        source_bucket=bucket,
+        source_object=f"{keyword}/{site}/{scraped_time}/[0-9]*.webp",
+        destination_path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/",
+        gcp_conn_id="gcs_connection",
+        sftp_conn_id="sftp_connection",
     )
     sense_ssh_file = SFTPSensor(
         task_id="sense_ssh_file",
@@ -133,6 +130,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         ssh_conn_id="ssh_connection",
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
+        cmd_timeout=600,
     )
     df2api = SSHOperator(
         task_id="df2api_remove_dir",
@@ -145,7 +143,7 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         ssh_conn_id="ssh_connection",
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/paint_transformer/img2ani.py {keyword} {site} {scraped_time}",
-        cmd_timeout=600
+        cmd_timeout=600,
     )
     ani2gcs = SFTPToGCSOperator(
         task_id="ani2gcs",
@@ -155,12 +153,16 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         gcp_conn_id="gcs_connection",
         sftp_conn_id="sftp_connection",
     )
-    remove_dir = SSHOperator(
-        task_id="remove_dir",
-        ssh_conn_id="ssh_connection",
-        command=f"rm -rf {ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}",
+    # remove_dir = SSHOperator(
+    #     task_id="remove_dir",
+    #     ssh_conn_id="ssh_connection",
+    #     command=f"rm -rf {ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}",
+    # )
+    slack_success_noti = SlackWebhookHook(
+        task_id="slack_success_noti",
+        http_conn_id="slack_connection",
+        message=""":large_green_circle: Airflow Dag Succeeded.""",
     )
-
     #####################    TASKS    #####################
     (
         crawl_img
@@ -173,7 +175,8 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         >> df2api
         >> img2ani
         >> ani2gcs
-        >> remove_dir
+        # >> remove_dir
+        >> slack_success_noti
     )
 
 # TODO handling errors

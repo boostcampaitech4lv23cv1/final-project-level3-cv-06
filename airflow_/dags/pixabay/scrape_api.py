@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
 # SCRAPED_TIME, SITE = sys.argv[1:]
-KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
+KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
 
 # AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
 # SCRAPED_TIME, SITE = "01-29_22", "pixabay"
@@ -288,15 +288,15 @@ if __name__ == "__main__":
         "page": 1,  # Returned search results are paginated. Use this parameter to select the page number.
         "per_page": MAX_IMG_PER_PAGE,  # Determine the number of results per page. Accepted values: 3 - 200. Default: 20.
         "category": category[0],
-        "min_width": 1920,
-        "min_height": 1920,
+        "min_width": 640,
+        "min_height": 640,
         "safesearch": "true",
         "order": "latest",
     }
 
     keyword = [KEYWORD]
     scraper = PixabayCrawler(keyword, params)
-    df = scraper.scraper(n_imgs=5)
+    df = scraper.scraper(n_imgs=N_IMGS)
     save_metadata(keyword, df)
     # TODO: 한번 실행할 때 크롤링할 이미지 개수 정하기 n_imgs
     # TODO: 이전에 크롤링했던 사진 이후부터 크롤링
