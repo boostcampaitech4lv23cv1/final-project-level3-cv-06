@@ -10,8 +10,7 @@ AIRFLOW_HOME = os.path.abspath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 )
 
-# KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
-KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "01-31_16"
+KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
 
 
 def img2ani():
@@ -33,7 +32,7 @@ def img2ani():
     img_paths = base_path + df["img_path"]
 
     for img_path in tqdm(img_paths):
-        save_path = img_path.split(".")[0] + "_ani-test.webp"
+        save_path = img_path.split(".")[0] + "_ani.webp"
         image = Image.open(img_path)
         output = inference(
             image=image,
@@ -55,7 +54,6 @@ def img2ani():
             duration=time_consume,
             loop=1,
         )
-        break
 
 
 if __name__ == "__main__":

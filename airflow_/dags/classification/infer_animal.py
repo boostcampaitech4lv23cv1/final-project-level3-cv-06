@@ -22,7 +22,6 @@ AIRFLOW_HOME = os.path.dirname(os.path.abspath(__file__))
 
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
-# KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "01-31_16"
 
 
 class ClassifyDataset(Dataset):
