@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.api_v1 import api_router
@@ -22,6 +22,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    client_host = request.client.host
+    LOGGER.info(f"request by {client_host}")
+    response = await call_next(request)
+    return response
 
 
 @app.on_event("startup")

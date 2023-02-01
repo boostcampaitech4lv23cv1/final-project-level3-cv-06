@@ -33,7 +33,8 @@ async def crawling_data(
     try:
         file_content = await file.read()
         data = pd.read_feather(BytesIO(file_content))
-    except:
+    except Exception as e:
+        LOGGER.warning(e)
         return HTTPException(status_code=400, detail="check your extend(you need use feather)")
     
     datas = []

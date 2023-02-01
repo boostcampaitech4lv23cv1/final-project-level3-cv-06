@@ -146,7 +146,7 @@ def save_user_img(img, file_name):
     webp_io = io.BytesIO()
     img.save(webp_io, format="WEBP")
     blob = bucket.blob(f'/user_img/{file_name}_{uuid.uuid1()}.webp')
-    blob.upload_from_string(webp_io)
+    blob.upload_from_string(webp_io.getvalue(), content_type="image/webp")
     LOGGER.info('save user image to GCS')
     
 
