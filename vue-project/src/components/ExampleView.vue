@@ -51,7 +51,18 @@
                 </v-icon>
               </v-btn>
             </v-row>
-            <v-row class="d-flex mt-8">
+
+            <v-row
+              class="d-flex justify-end"
+              :style="{ margin: '3vh 0vw 0vh 0vw' }"
+            >
+              <v-btn rounded variant="plain" @click="moveHome">
+                <v-icon icon="mdi-home-outline" size="5vh" color="white">
+                </v-icon>
+              </v-btn>
+            </v-row>
+
+            <v-row class="d-flex">
               <v-col cols="4"></v-col>
               <v-col cols="4">
                 <v-img
@@ -140,12 +151,12 @@
               class="text-center"
             >
               게임 화면의 구성을 설명합니다.<br />
-              <v-btn
+              <!-- <v-btn
                 class="ma-2"
                 icon="mdi-arrow-left-bold"
                 variant="text"
                 @click="moveHome"
-              />
+              /> -->
               <v-btn
                 class="ma-2"
                 icon="mdi-arrow-right-bold"
@@ -243,12 +254,12 @@
                 variant="text"
                 @click="changeQuery(5)"
               />
-              <v-btn
+              <!-- <v-btn
                 class="ma-2"
                 icon="mdi-arrow-right-bold"
                 variant="text"
                 @click="moveHome"
-              />
+              /> -->
             </div>
           </v-container>
         </v-overlay>
