@@ -7,9 +7,9 @@
 
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <v-btn rounded variant="plain" @click="audioChange" height="5vh">
-          <v-icon icon="mdi-volume-high" size="5vh" v-if="audioInfo == false">
+          <v-icon icon="mdi-volume-high" size="5vh" v-if="audioInfo == true">
           </v-icon>
-          <v-icon icon="mdi-volume-off" size="5vh" v-if="audioInfo == true">
+          <v-icon icon="mdi-volume-off" size="5vh" v-if="audioInfo == false">
           </v-icon>
         </v-btn>
       </v-row>

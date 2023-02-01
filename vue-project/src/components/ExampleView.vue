@@ -38,14 +38,14 @@
                 <v-icon
                   icon="mdi-volume-high"
                   size="5vh"
-                  v-show="audioInfo == false"
+                  v-show="audioInfo == true"
                   color="white"
                 >
                 </v-icon>
                 <v-icon
                   icon="mdi-volume-off"
                   size="5vh"
-                  v-show="audioInfo == true"
+                  v-show="audioInfo == false"
                   color="white"
                 >
                 </v-icon>
@@ -289,12 +289,12 @@ export default {
       this.$router.push({ path: "/" });
     },
     audioChange() {
-      this.$root.audio.muted = !this.$root.audio.muted;
-      if (this.audioInfo == true) {
-        this.audioInfo = false;
+      if (this.$root.audio.paused) {
+        this.$root.audio.play();
       } else {
-        this.audioInfo = true;
+        this.$root.audio.muted = !this.$root.audio.muted;
       }
+      this.audioInfo = !this.audioInfo;
     },
   },
 };

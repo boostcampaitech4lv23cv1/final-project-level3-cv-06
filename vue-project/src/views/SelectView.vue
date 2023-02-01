@@ -7,9 +7,9 @@
 
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <v-btn rounded variant="plain" @click="audioChange" height="5vh">
-          <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == false">
+          <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
           </v-icon>
-          <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == true">
+          <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == false">
           </v-icon>
         </v-btn>
       </v-row>
@@ -37,7 +37,6 @@
             }"
             :style="{ height: '5vh', width: '20vh', margin: '1vh 0vw 0vh 0vw' }"
           >
-
             {{ item.text }}
           </v-btn>
         </v-radio-group>
@@ -82,8 +81,8 @@ export default {
   },
   methods: {
     startGame() {
-      this.$store.commit('setCategory', this.selectedCategory),
-        this.$store.commit('setMode', this.selectedMode)
+      this.$store.commit("setCategory", this.selectedCategory),
+        this.$store.commit("setMode", this.selectedMode);
       this.$router.push({
         path: "/demo",
       });
