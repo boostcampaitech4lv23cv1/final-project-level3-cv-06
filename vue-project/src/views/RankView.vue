@@ -1,7 +1,7 @@
 <template>
   <v-app class="hero">
-    <v-container>
-
+    <v-container height="100%">
+    
       <v-row>
         <!-- score log show -->
         <v-col cols="12" class="d-flex justify-center">
@@ -9,24 +9,16 @@
         </v-col>
       </v-row>
 
-
-      <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
-        <!-- description button as icon -->
-        <v-btn rounded variant="plain" @click="infoChange" height="5vh">
-          <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
-        </v-btn>
-      </v-row>
-
-
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <!-- sound button as icon-->
-        <v-btn rounded variant="plain" @click="soundChange" height="5vh">
-          <v-icon icon="mdi-volume-high" size="5vh" v-show="soundInfo == 0">
+        <v-btn rounded variant="plain" @click="audioChange" height="5vh">
+          <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
+
           </v-icon>
-          <v-icon icon="mdi-volume-off" size="5vh" v-show="soundInfo == 1">
+          <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == false">
           </v-icon>
         </v-btn>
       </v-row>
+
 
 
       <v-row class=" d-flex nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
@@ -48,6 +40,7 @@
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
             <!-- check icon & correct number -->
             <v-col cols="1">
+
               <check />
             </v-col>
             <v-col cols="1"></v-col>
@@ -55,9 +48,11 @@
             <v-col xs="10" sm="5" lg="3" class="justfy"> {{ correctAnswer }}/9 </v-col>
           </v-row>
 
+
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
             <!--timer icon show & clear time-->
             <v-col cols="1">
+
               <timer />
             </v-col>
             <v-col cols="1"></v-col>
@@ -97,13 +92,11 @@
             margin: '15vh 0vw 0vh 0vw',
           }" @click="registerScore">
             Show Rank
+
           </v-btn>
         </v-col>
 
       </v-row>
-
-
-
     </v-container>
   </v-app>
 </template>
@@ -125,8 +118,10 @@ export default {
     return {
       rank: "",
       clearTime: this.$store.state.clearTime.toString().substr(0, 5),
+
       correctAnswer: this.$store.state.correctAnswer,
       soundInfo: false,
+
       showInfo: false,
       correctNum: 0,
       name: this.$store.state.name,
@@ -138,12 +133,13 @@ export default {
     goResult() {
       this.$router.push({ path: "/demoresult" });
     },
-    soundChange() {
-      if (this.soundInfo == true) {
-        this.soundInfo = false;
+    audioChange() {
+      if (this.$root.audio.paused) {
+        this.$root.audio.play();
       } else {
-        this.soundInfo = true;
+        this.$root.audio.muted = !this.$root.audio.muted;
       }
+      this.audioInfo = !this.audioInfo;
     },
     infoChange() {
       if (this.showInfo == true) {
@@ -153,6 +149,7 @@ export default {
       }
     },
     async registerScore() {
+
       if (this.name === "") {
         this.alert = true
       }
@@ -168,14 +165,15 @@ export default {
 
       }
     }
+
   },
   async mounted() {
-    let correctList = this.$store.state.correctList
-    let imgPath = this.$store.state.imgPath
+    let correctList = this.$store.state.correctList;
+    let imgPath = this.$store.state.imgPath;
 
     for (let i = 0; i < 9; i++) {
       if (correctList[i] == 1) {
-        this.correctNum += 1
+        this.correctNum += 1;
       }
     }
     if (Number(this.clearTime) <= 60) {
@@ -191,8 +189,10 @@ export default {
     // let response = await this.$api(
     //   "http://34.64.169.197/api/v1/game/gameover",
     //   "POST",
+
     //   { category: this.$store.category, img_paths: imgPath, correct_list: correctList }
     // );
+
 
 
     // let response = await this.$api(
@@ -200,8 +200,7 @@ export default {
     //   "POST",
     //   { img_paths: imgPath, score_list: correctList }
     // )
-
-  }
+  },
 };
 </script>
 
@@ -230,12 +229,12 @@ export default {
 }
 
 @font-face {
-  font-family: 'num';
-  src: url('../fonts/Lobster-Regular.ttf')
+  font-family: "num";
+  src: url("../fonts/Lobster-Regular.ttf");
 }
 
 .nums {
-  font-family: 'num';
+  font-family: "num";
   font-size: 2.3rem;
 }
 

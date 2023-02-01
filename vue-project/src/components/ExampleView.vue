@@ -18,15 +18,48 @@
                 2/9
               </div>
             </v-row>
-            <v-row class="d-flex mt-8">
+            <v-row
+              class="d-flex justify-end"
+              :style="{ margin: '3vh 0vw 0vh 0vw' }"
+            >
+              <v-btn rounded variant="plain" @click="audioChange" height="5vh">
+                <v-icon
+                  icon="mdi-volume-high"
+                  size="5vh"
+                  v-show="audioInfo == true"
+                  color="white"
+                >
+                </v-icon>
+                <v-icon
+                  icon="mdi-volume-off"
+                  size="5vh"
+                  v-show="audioInfo == false"
+                  color="white"
+                >
+                </v-icon>
+              </v-btn>
+            </v-row>
+
+            <v-row
+              class="d-flex justify-end"
+              :style="{ margin: '3vh 0vw 0vh 0vw' }"
+            >
+              <v-btn rounded variant="plain" @click="moveBack" height="5vh">
+                <back height="5vh" />
+              </v-btn>
+            </v-row>
+
+            <v-row class="d-flex">
               <v-col cols="4"></v-col>
               <v-col cols="4">
+
                 <v-img v-if="page == 3" class="mx-auto" src="../assets/bird.gif" height="40vh" width="40vw" />
                 <v-img v-if="page != 3" class="mx-auto" src="../assets/bird_overlayed.jpg" height="40vh" width="40vw" />
               </v-col>
               <v-col cols="4" class="mx-auto">
                 <div v-if="page == 6">
                   <v-progress-linear class="overlayedbar" height="20vh" color="white" v-model="totalTimer">
+
                   </v-progress-linear>
                 </div>
 
@@ -60,6 +93,7 @@
               게임 화면의 구성을 설명합니다.<br />
               <v-btn class="ma-2" icon="mdi-arrow-left-bold" variant="text" @click="moveHome" />
               <v-btn class="ma-2" icon="mdi-arrow-right-bold" variant="text" @click="changeQuery(2)" />
+
             </div>
             <div v-if="page == 2" :style="{ 'font-size': '3vh', color: 'white', position: '' }" class="text-center">
               1.현재 진행중인 게임 라운드입니다.<br />
@@ -85,8 +119,10 @@
               5. 남은 물감의 총량입니다.<br />
               그림을 그리면서 물감이 소모되며, 소진 시 미션 실패로 게임이
               종료됩니다.<br />
+
               <v-btn class="ma-2" icon="mdi-arrow-left-bold" variant="text" @click="changeQuery(5)" />
               <v-btn class="ma-2" icon="mdi-arrow-right-bold" variant="text" @click="moveHome" />
+
             </div>
           </v-container>
         </v-overlay>
@@ -95,13 +131,19 @@
   </v-app>
 </template>
 <script>
+import back from "../svg/backButton.vue";
 export default {
+  components: {
+    back,
+  },
   props: ["page"],
-
-  data: () => ({
-    overlay: false,
-    totalTimer: 25,
-  }),
+  data() {
+    return {
+      audioInfo: !this.$root.audio.muted,
+      overlay: false,
+      totalTimer: 25,
+    };
+  },
 
   mounted() {
     this.overlay = true;
@@ -110,8 +152,16 @@ export default {
     changeQuery(next) {
       this.$router.replace({ query: { page: next } });
     },
-    moveHome() {
-      this.$router.push({ path: "/" });
+    moveBack() {
+      this.$router.push({ path: "/select" });
+    },
+    audioChange() {
+      if (this.$root.audio.paused) {
+        this.$root.audio.play();
+      } else {
+        this.$root.audio.muted = !this.$root.audio.muted;
+      }
+      this.audioInfo = !this.audioInfo;
     },
   },
 };
@@ -127,6 +177,7 @@ export default {
 
 .overlayedbar {
   transform: rotate(90deg);
+
   margin-top: 20vh;
   background: linear-gradient(to right,
       #e5404023 0%,
@@ -136,6 +187,7 @@ export default {
       #3fa2ff3b 64%,
       #a53fff38 80%,
       #ff3fc93b 100%);
+
   border-radius: 30px;
 }
 

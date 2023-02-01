@@ -12,41 +12,73 @@
           <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
         </v-btn>
       </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '2vh 0vw 0vh 0vw' }">
-        <v-btn rounded variant="plain" @click="soundChange" height="5vh">
-          <v-icon icon="mdi-volume-high" size="5vh" v-show="soundInfo == 0">
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <v-btn rounded variant="plain" @click="audioChange" height="5vh">
+          <v-icon icon="mdi-volume-high" size="5vh" v-if="audioInfo == true">
+
           </v-icon>
-          <v-icon icon="mdi-volume-off" size="5vh" v-show="soundInfo == 1">
+          <v-icon icon="mdi-volume-off" size="5vh" v-if="audioInfo == false">
           </v-icon>
         </v-btn>
       </v-row>
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <div class="text-center">
+          <v-dialog v-model="dialog">
+            <template v-slot:activator="{ props }">
+              <v-btn rounded variant="plain" v-bind="props" height="5vh">
+                <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="text-center" height="3vh"
+                >변환하려는 이미지를 업로드하면, 그림으로 다시 그려드릴게요!
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn variant="tonal" color="primary" @click="dialog = false"
+                  >확인</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </div>
+      </v-row>
+
 
       <v-row class="d-flex justify-center" :style="{ margin: '2vh 0vw 0vh 0vw' }">
         <v-col cols="5">
           <v-img src="../assets/tower-bridge.jpg" width="30vw" class="mx-auto" v-show="uploaded == false" />
           <v-img max-height="25vh" class="mx-auto" max-width="30vw" :src="imageUrl" v-show="uploaded == true" />
+
         </v-col>
         <v-col cols="2" class="d-flex align-center justify-center">
           <v-icon icon="mdi-arrow-right-bold" size="5vh"> </v-icon>
         </v-col>
         <v-col cols="5">
+
           <v-img src="../assets/tower-bridge-paint.jpg" width="30vw" class="mx-auto" v-show="uploaded == false" />
 
           <v-img max-height="25vh" class="mx-auto" max-width="30vw" :src="`data:image/gif;base64,${returnImg}`">
             <v-progress-circular v-if="transform == true" class="loading" color="grey-lighten-4"
               indeterminate></v-progress-circular>
+
           </v-img>
         </v-col>
       </v-row>
       <v-row :style="{ margin: '5vh 0vw 0vh 0vw' }">
+
         <v-col xs="12" sm="6" class="mx-auto">
           <v-file-input clearable label="Upload your own image!" variant="solo" v-on:change="setImg"
             density="compact"></v-file-input>
+
         </v-col>
       </v-row>
       <v-row class="d-flex justify-center">
         <v-col cols="auto">
-          <v-btn @click="transformImg" :disabled="image == null">Transform!</v-btn>
+          <v-btn @click="transformImg" :disabled="image == null"
+            >Transform!</v-btn
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -100,7 +132,11 @@ export default {
       soundInfo: false,
       uploaded: false,
       imageUrl: "",
+
+      audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
+      dialog: false,
       isPortrait: true
+
     };
   },
   mounted() {
@@ -127,11 +163,13 @@ export default {
       const formData = new FormData();
       formData.append("file", this.image);
 
+
       // let response = await this.$api2(
       //   "http://34.64.169.197/api/v1/infer",
       //   "POST",
       //   formData
       // );
+
       let response = await this.$api2(
         "http://127.0.0.1:8000/api/v1/infer",
         "POST",
@@ -140,12 +178,13 @@ export default {
       this.returnImg = response["image"];
       this.transform = false;
     },
-    soundChange() {
-      if (this.soundInfo == true) {
-        this.soundInfo = false;
+    audioChange() {
+      if (this.$root.audio.paused) {
+        this.$root.audio.play();
       } else {
-        this.soundInfo = true;
+        this.$root.audio.muted = !this.$root.audio.muted;
       }
+      this.audioInfo = !this.audioInfo;
     },
     infoChange() {
       if (this.showInfo == true) {
