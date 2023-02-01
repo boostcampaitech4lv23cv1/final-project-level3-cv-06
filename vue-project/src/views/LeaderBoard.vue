@@ -5,28 +5,30 @@
         </v-row>
         <v-row class="d-flex justify-center font">
             <v-col cols=6>
-                <v-table class="table">
-                    <thead>
-                        <tr>
-                            <th class="text-center">
-                                Name
-                            </th>
-                            <th class="text-center">
-                                Score
-                            </th>
-                            <th class="text-center">
-                                Time
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="item in ranking" :key="item.name">
-                            <td class="text-center">{{ item.name }}</td>
-                            <td class="text-center">{{ item.score }}</td>
-                            <td class="text-center">{{ item.time }}</td>
-                        </tr>
-                    </tbody>
-                </v-table>
+                <div class="scroll">
+                    <v-table class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    Name
+                                </th>
+                                <th class="text-center">
+                                    Score
+                                </th>
+                                <th class="text-center">
+                                    Time
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in ranking" :key="item.name">
+                                <td class="text-center">{{ item.name }}</td>
+                                <td class="text-center">{{ item.score }}</td>
+                                <td class="text-center">{{ item.time }}</td>
+                            </tr>
+                        </tbody>
+                    </v-table>
+                </div>
             </v-col>
         </v-row>
     </v-app>
@@ -88,5 +90,10 @@ export default {
     font-family: 'default';
     font-size: 2.3rem;
     color: white
+}
+
+.scroll {
+    max-height: calc(60vh);
+    overflow-y: scroll;
 }
 </style>
