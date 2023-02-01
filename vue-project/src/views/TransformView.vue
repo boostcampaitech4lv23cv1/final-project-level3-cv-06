@@ -126,15 +126,10 @@ export default {
       formData.append("file", this.image);
 
       let response = await this.$api2(
-        "http://34.64.169.197/api/v1/infer",
+        "http://127.0.0.1:8000/api/v1/infer",
         "POST",
         formData
       );
-      // let response = await this.$api2(
-      //   "http://127.0.0.1:8000/api/v1/infer",
-      //   "POST",
-      //   formData
-      // );
       this.returnImg = response["image"];
       this.transform = false;
     },
