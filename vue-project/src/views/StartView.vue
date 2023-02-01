@@ -73,7 +73,7 @@ import ranking from "../svg/RankingLogo.vue";
 export default {
   data() {
     return {
-      audioInfo: true,
+      audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
     };
   },
   components: {
@@ -91,16 +91,13 @@ export default {
       });
     },
     audioChange() {
-      this.$root.audio.muted = !this.$root.audio.muted;
-      if (this.audioInfo == true) {
-        this.audioInfo = false;
+      if (this.$root.audio.paused) {
+        this.$root.audio.play();
       } else {
-        this.audioInfo = true;
+        this.$root.audio.muted = !this.$root.audio.muted;
       }
+      this.audioInfo = !this.audioInfo;
     },
-  },
-  mounted() {
-    this.$root.audio.play();
   },
 };
 </script>

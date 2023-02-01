@@ -60,12 +60,12 @@ export default {
   },
   methods: {
     audioChange() {
-      this.$root.audio.muted = !this.$root.audio.muted;
-      if (this.audioInfo == true) {
-        this.audioInfo = false;
+      if (this.$root.audio.paused) {
+        this.$root.audio.play();
       } else {
-        this.audioInfo = true;
+        this.$root.audio.muted = !this.$root.audio.muted;
       }
+      this.audioInfo = !this.audioInfo;
     },
   },
   // async mounted() {
