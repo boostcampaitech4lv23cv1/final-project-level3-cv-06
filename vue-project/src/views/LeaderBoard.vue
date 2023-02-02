@@ -1,5 +1,4 @@
 <template>
-
   <v-app class="hero">
     <v-container height="100%">
       <v-row class>
@@ -14,6 +13,11 @@
           </v-icon>
           <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == false">
           </v-icon>
+        </v-btn>
+      </v-row>
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <v-btn rounded variant="plain" @click="moveBack" height="5vh">
+          <back height="5vh" />
         </v-btn>
       </v-row>
       <v-row class="d-flex justify-center font">
@@ -40,15 +44,15 @@
       </v-row>
     </v-container>
   </v-app>
-
 </template>
 
 <script>
 import ranking from "../svg/rankingText.vue";
-
+import back from "../svg/backButton.vue";
 export default {
   components: {
     ranking,
+    back,
   },
   data() {
     return {
@@ -75,6 +79,9 @@ export default {
         this.$root.audio.muted = !this.$root.audio.muted;
       }
       this.audioInfo = !this.audioInfo;
+    },
+    moveBack() {
+      this.$router.push({ path: "/rank" });
     },
   },
 };

@@ -16,6 +16,11 @@
           </v-icon>
         </v-btn>
       </v-row>
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <v-btn rounded variant="plain" @click="moveHome" height="5vh">
+          <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
+        </v-btn>
+      </v-row>
 
       <v-row
         class="d-flex nums"
@@ -156,13 +161,10 @@ export default {
       }
       this.audioInfo = !this.audioInfo;
     },
-    infoChange() {
-      if (this.showInfo == true) {
-        this.showInfo = false;
-      } else {
-        this.showInfo = true;
-      }
+    moveHome() {
+      this.$router.push({ path: "/" });
     },
+
     async registerScore() {
       if (this.name === "") {
         this.alert = true;
