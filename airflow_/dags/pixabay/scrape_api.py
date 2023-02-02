@@ -110,6 +110,8 @@ class PixabayCrawler:
 
                 # creating the params list for all pages
                 imgs_downloaded = 0
+                n_imgs2gcs=0
+                
                 run = True
 
                 for page in itertools.count(1):
@@ -128,6 +130,7 @@ class PixabayCrawler:
                                 if self.is_valid(img_dict["id"]):
                                     self.send_img2gcs(img_dict)
                                     df = self.add_data2df(df, keyword, img_dict)
+                                    n_imgs2gcs+=1
 
                                 imgs_downloaded += 1
                                 Pbar.set(imgs_downloaded)
@@ -148,7 +151,7 @@ class PixabayCrawler:
             except Exception as err:
                 logger.warning(err)
                 logger.warning(f"an error occured proccesing the class {keyword}")
-        return df
+        return df,n_imgs2gcs
 
     def add_data2df(self, df, keyword, img_dict):
 
@@ -357,7 +360,7 @@ if __name__ == "__main__":
         "min_width": 640,
         "min_height": 640,
         "safesearch": "true",
-        "order": "latest",
+        "order": "popular",
     }
     storage_client = storage.Client()
     bucket_name = "scraped-img"
@@ -365,7 +368,8 @@ if __name__ == "__main__":
 
     keyword = [KEYWORD]
     scraper = PixabayCrawler(keyword, params, bucket)
-    df = scraper.scraper(n_imgs=N_IMGS)
+    df,n_imgs2gcs = scraper.scraper(n_imgs=N_IMGS)
+    print(f"Number of img2gcs is {n_imgs2gcs}")
     send_metadata2api(df)
     # send_metadata2gcs(keyword, df, bucket)
     # TODO: 이전에 크롤링했던 사진 이후부터 크롤링
