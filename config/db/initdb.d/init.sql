@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS game_data(
     correct_cnt integer DEFAULT 0,
     incorrect_cnt integer DEFAULT 0,
     use_status boolean DEFAULT TRUE
-
 );
 
 CREATE TABLE IF NOT EXISTS score(
