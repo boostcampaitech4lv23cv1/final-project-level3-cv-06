@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS game_data(
     id SERIAL PRIMARY KEY,
     created_time varchar(20),
     tag varchar(300),
-    category varchar(30)
+    category varchar(30),
     label varchar(100),
     img_height integer,
     img_width integer,
