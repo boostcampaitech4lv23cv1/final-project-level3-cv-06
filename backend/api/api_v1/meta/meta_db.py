@@ -86,8 +86,7 @@ async def crawling_create(
                 category=category,
                 img_height=row.img_height,
                 img_width=row.img_width,
-                img_path=row.img_path,
-                no_use=row.no_use
+                img_path=row.img_path
             )
         )
     db.add_all(datas)
