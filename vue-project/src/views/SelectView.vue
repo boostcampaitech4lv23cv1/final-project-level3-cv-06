@@ -126,7 +126,7 @@
       <!-- game 페이지 이동 버튼 -->
       <v-row>
         <v-col cols="12" class="d-flex justify-center" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-          <v-btn color="yellow" @click="startGame" :style="{ height: '4vh', width: '20vh' }">Game start</v-btn>
+          <v-btn color="yellow" @click="startGame">Game start</v-btn>
         </v-col>
       </v-row>
 
