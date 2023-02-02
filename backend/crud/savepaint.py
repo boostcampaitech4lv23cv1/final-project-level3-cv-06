@@ -8,17 +8,17 @@ from model import *
 from scheme import *
 
 def read_savepaint(db: Session, category: str):
-    # 없는 테이블 가져올 경우 예외 처리
-    if category == "animal":
-        img_paths = db.query(Animal).all()
-    elif category == "poster":
-        img_paths = db.query(Poster).all()
-    elif category == "lanmark":
-        img_paths = db.query(Landmark).all()
-    elif category == "celebrity":
-        img_paths = db.query(Celebrity).all()
-    else:
-        raise HTTPException(status_code=400, detail="존재하지 않는 카테고리입니다")
+    """category에 맞는 데이터 읽음
+
+    Args:
+        db (Session): DB
+        category (str): 카테고리
+
+    """
+    try:
+        img_paths = db.query(GameData).filter(GameData.category == category).all()
+    except:
+        return HTTPException(status_code=400, detail="존재하지 않는 카테고리입니다")
     
     return img_paths
 
