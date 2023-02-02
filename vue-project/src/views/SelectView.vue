@@ -80,8 +80,6 @@
 
 
       <v-row class="d-flex justify-center">
-
-
         <!-- category 선택 버튼 - radio type -->
         <v-radio-group v-model="selectedCategory">
           <v-btn rounded v-for="item in categoryItems" :key="item.value" :value="item.value"
@@ -98,8 +96,7 @@
       <!-- game 페이지 이동 버튼 -->
       <v-row>
         <v-col cols="12" class="d-flex justify-center" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-          <v-btn :disabled="categoryIsEmpty" color="yellow" @click="startGame"
-            :style="{ height: '4vh', width: '20vh' }">Game start</v-btn>
+          <v-btn color="yellow" @click="startGame" :style="{ height: '4vh', width: '20vh' }">Game start</v-btn>
         </v-col>
       </v-row>
 
@@ -116,6 +113,17 @@ export default {
     logo,
     category,
   },
+  /**
+   * The data function for the component.
+   *
+   * @return {Object}
+   *  The initial data for the component.
+   *
+   * @property {Array<{text: string, value: string}>} categoryItems - The list of category items.
+   * @property {string} selectedCategory - The selected category.
+   * @property {boolean} audioInfo - The state of the audio (muted or not).
+   * @property {boolean} showDialog - The visibility state of the dialog.
+   */
   data() {
     return {
       categoryItems: [
@@ -124,32 +132,52 @@ export default {
         { text: "Celebrity", value: "entertainer" },
       ],
       selectedCategory: "animal",
-      audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
+      audioInfo: (!this.$root.audio.muted && !this.$root.audio.paused),
       showDialog: false,
     };
   },
-  computed: {
-    categoryIsEmpty() {
-      return this.selectedCategory === "";
-    },
-  },
+
+
   methods: {
+    /**
+     * button event of routing to gameview and store category and mode to local storage
+     * @function startGame
+     */
     startGame() {
-      this.$store.commit("setCategory", this.selectedCategory),
-        this.$store.commit("setMode", this.selectedMode);
+      this.$store.commit("setCategory", this.selectedCategory);
+      this.$store.commit("setMode", this.selectedMode);
       this.$router.push({
         path: "/demo",
       });
     },
-    movePage(route, query) {
+
+
+    /**
+     * 버튼 클릭시 지정된 페이지로 이동하는 이벤트 함수
+     * @function movePage
+     * @param {string} route  이동할 페이지
+     */
+    movePage(route) {
       this.$router.push({
         path: route,
-        query: query,
       });
     },
+
+
+    /**
+     * 버튼 클릭시 클릭한 버튼의 value로 카테고리 값을 바꾸어 주는 이벤트 함수
+     * @function changeCategory
+     * @param {string} value
+     */
     changeCategory(value) {
       this.selectedCategory = value;
     },
+
+
+    /**
+     * 오디오 버튼 클릭으로 오디오를 끄거나 키는 이벤트 함수
+     * @function audioChange
+     */
     audioChange() {
       if (this.$root.audio.paused) {
         this.$root.audio.play();
@@ -158,12 +186,18 @@ export default {
       }
       this.audioInfo = !this.audioInfo;
     },
+
+
+    /**
+     * 홈 버튼 클릭시 홈화면으로 이동하는 이벤트 함수
+     * @function moveHome
+     */
     moveHome() {
       this.$router.push({ path: "/" });
     },
   },
   mounted() {
-    this.$root.audio.play();
+    // this.$root.audio.play();
   }
 };
 </script>

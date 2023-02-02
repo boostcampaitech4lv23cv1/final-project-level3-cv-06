@@ -48,19 +48,31 @@ import game from "../svg/GameButton.vue";
 import ranking from "../svg/RankingLogo.vue";
 
 export default {
+
+
   components: {
     logo,
     transform,
     game,
     ranking,
   },
+
+
   methods: {
+    /** 
+     * 버튼 클릭시 페이지 이동하는 함수
+     * @function movePage
+     * @param {string} route 이동할 페이지
+    */
     movePage(route) {
       this.$router.push({
         path: route,
       });
+
     },
   },
+
+
 };
 </script>
 
