@@ -4,7 +4,7 @@
     <v-container v-if="isPortrait == false">
       <v-row>
         <v-col cols="12" class="d-flex justify-center">
-          <logo :style="{ width: '50vw', margin: '0vh 0vw 0vh 0vw' }" />
+          <logo :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
         </v-col>
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
@@ -13,6 +13,11 @@
           </v-icon>
           <v-icon icon="mdi-volume-off" size="5vh" v-if="audioInfo == false">
           </v-icon>
+        </v-btn>
+      </v-row>
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <v-btn rounded variant="plain" @click="moveHome" height="5vh">
+          <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
         </v-btn>
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
@@ -225,12 +230,8 @@ export default {
       }
       this.audioInfo = !this.audioInfo;
     },
-    infoChange() {
-      if (this.showInfo == true) {
-        this.showInfo = false;
-      } else {
-        this.showInfo = true;
-      }
+    moveHome() {
+      this.$router.push({ path: "/" });
     },
   },
 };

@@ -1,9 +1,7 @@
 <template>
   <v-app class="fill-height hero">
-
     <v-container v-if="!isPortrait">
-      <v-row class=" justify-center">
-
+      <v-row class="justify-center">
         <result :style="{ height: '15vh', margin: '0vh 0vw 5vh 0vw' }" />
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 5vh 0vw' }">
@@ -12,6 +10,11 @@
           </v-icon>
           <v-icon icon="mdi-volume-off" size="5vh" v-if="audioInfo == false">
           </v-icon>
+        </v-btn>
+      </v-row>
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <v-btn rounded variant="plain" @click="moveBack" height="5vh">
+          <back height="5vh" />
         </v-btn>
       </v-row>
 
@@ -61,34 +64,50 @@
     </v-container>
 
     <v-container v-if="isPortrait">
-      <v-row class=" justify-center">
+      <v-row class="justify-center">
         <result :style="{ height: '10vh', margin: '3vh 0vw 10vh 0vw' }" />
       </v-row>
 
       <v-row>
-        <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
-          <v-img :width="'30vw'" :height="'20vh'" :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-            aspect-ratio="1" cover :src="`data:image/gif;base64,${originImg[n - 1]}`" class="grey lighten-2"
-            @click="moveDetail(n - 1)">
+        <v-col
+          v-for="n in 9"
+          :key="n"
+          class="d-flex child-flex no-padding"
+          cols="4"
+        >
+          <v-img
+            :width="'30vw'"
+            :height="'20vh'"
+            :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+            aspect-ratio="1"
+            cover
+            :src="`data:image/gif;base64,${originImg[n - 1]}`"
+            class="grey lighten-2"
+            @click="moveDetail(n - 1)"
+          >
           </v-img>
         </v-col>
       </v-row>
 
-
       <v-dialog v-model="showDialog" max-height="75vh" max-width="100vw">
         <v-row>
-          <v-col cols="4" class='mx-auto text-center nums'>
+          <v-col cols="4" class="mx-auto text-center nums">
             {{ answer[dialogNum] }}
           </v-col>
         </v-row>
         <v-row class="d-flex justify-center align-center">
-          <v-col cols="9" class='d-flex justify-center align-center'>
-            <v-img :src="`data:image/gif;base64,${resultImg[dialogNum]}`" max-height="50vh" />
+          <v-col cols="9" class="d-flex justify-center align-center">
+            <v-img
+              :src="`data:image/gif;base64,${resultImg[dialogNum]}`"
+              max-height="50vh"
+            />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="3" class="mx-auto">
-            <v-btn color="primary" block @click="showDialog = false">Close</v-btn>
+            <v-btn color="primary" block @click="showDialog = false"
+              >Close</v-btn
+            >
           </v-col>
         </v-row>
       </v-dialog>
@@ -98,9 +117,11 @@
 
 <script>
 import result from "../svg/resultText.vue";
+import back from "../svg/backButton.vue";
 export default {
   components: {
     result,
+    back,
   },
   data() {
     return {
@@ -112,8 +133,7 @@ export default {
       answer: this.$store.state.answerList,
       audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
 
-      isPortrait: true
-
+      isPortrait: true,
     };
   },
   methods: {
@@ -132,8 +152,11 @@ export default {
       }
       this.audioInfo = !this.audioInfo;
     },
+    moveBack() {
+      this.$router.push({ path: "/rank" });
+    },
   },
-  
+
   async mounted() {
     console.log(this.answer);
     console.log(this.path);
@@ -151,7 +174,6 @@ export default {
   },
   beforeUnmount() {
     window.removeEventListener("orientationchange", this.checkOrientation);
-
   },
 };
 </script>

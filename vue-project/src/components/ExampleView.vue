@@ -256,7 +256,7 @@
   </v-app>
 </template>
 <script>
-import back from "../svg/backButton.vue";
+import back from "../svg/backButtonWhite.vue";
 export default {
   components: {
     back,
