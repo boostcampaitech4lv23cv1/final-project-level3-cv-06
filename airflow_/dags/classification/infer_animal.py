@@ -22,6 +22,7 @@ AIRFLOW_HOME = os.path.dirname(os.path.abspath(__file__))
 
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
+# KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "02-02_19"
 
 
 class ClassifyDataset(Dataset):
@@ -62,9 +63,17 @@ class Model(LightningModule):
 
 def read_feather(file_path):
     if os.path.isfile(file_path):
-        return pd.read_feather(file_path)
+        return pd.read_csv(file_path)
     else:
         assert os.path.isfile(file_path), f"{file_path} is not found"
+
+
+def get_metadata_from_api() -> pd.DataFrame:
+    url = "http://34.64.169.197/api/v1/meta/read"
+    res = requests.get(url, allow_redirects=False)
+    df = res.json()
+    df = pd.DataFrame(df)
+    return df
 
 
 def inference(df) -> np.ndarray:
@@ -95,7 +104,8 @@ def pred2imgnetlabel(predictions: np.array, imagenet_labels: pd.DataFrame) -> li
     df = imagenet_labels.loc[predictions]
     for i in df[df["use"] == 0].index:
         df.loc[i, "korean"] = "NaN"
-    return list(df["korean"])
+    df["use"] = df["use"].astype("bool")
+    return list(df["korean"]), list(df["use"])
 
 
 def read_imgnet_labels():
@@ -115,16 +125,13 @@ def make_img_label() -> pd.DataFrame:
     """
 
     imagenet_labels = read_imgnet_labels()
-    base_path = f"{AIRFLOW_HOME}/data"
-
-    df = read_feather(
-        os.path.join(base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata.feather")
-    )
+    df = get_metadata_from_api()
     predictions = inference(df)
-    labels = pred2imgnetlabel(predictions, imagenet_labels)
+    labels, uses = pred2imgnetlabel(predictions, imagenet_labels)
     df["label"] = labels
-    df = df.drop(df[df["label"] == "NaN"].index)
-    return df.reset_index(drop=True)
+    df["use_status"] = uses
+
+    return df
 
 
 def join_df2db(df: pd.DataFrame, host: str = "34.145.38.251"):
@@ -161,13 +168,8 @@ def join_df2db(df: pd.DataFrame, host: str = "34.145.38.251"):
 
 
 def send_metadata2api(df):
-    # base_path = f"{AIRFLOW_HOME}/data"
-    # file_path = os.path.join(
-    #     base_path, KEYWORD, SITE, SCRAPED_TIME, "metadata_with_label.feather"
-    # )
-    # df.to_feather(file_path)
-
-    url = "http://34.64.169.197/api/v1/meta/create"
+    df = df.drop("tag", axis=1)
+    url = "http://34.64.169.197/api/v1/meta/update"
 
     buffer = pa.BufferOutputStream()
     feather.write_feather(df, buffer)
