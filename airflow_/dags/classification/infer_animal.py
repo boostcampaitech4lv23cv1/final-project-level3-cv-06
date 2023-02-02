@@ -14,15 +14,18 @@ import torch
 import yaml
 from albumentations.core.composition import Compose
 from albumentations.pytorch import ToTensorV2
+from PaintTransformer.inference import inference, init
+from PIL import Image
 from pytorch_lightning import LightningModule, Trainer
 from sqlalchemy import create_engine
 from torch.utils.data import DataLoader, Dataset
+from tqdm import tqdm
 
 AIRFLOW_HOME = os.path.dirname(os.path.abspath(__file__))
 
 
-KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
-# KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "02-02_19"
+# KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
+KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "02-02_19"
 
 
 class ClassifyDataset(Dataset):
@@ -185,10 +188,48 @@ def send_metadata2api(df):
         print(e)
 
 
+def img2ani(df):
+
+    base_path = f"{AIRFLOW_HOME}/dags/classification/data/"
+    time_consume = [100] * 100 + [100] * 100
+
+    resize_l = 1024
+    K = 5
+    stroke_num = 8
+    patch_size = 32
+
+    model, meta_brushes, device = init()
+
+    img_paths = base_path + df["img_path"]
+
+    for img_path in tqdm(img_paths):
+        save_path = img_path.split(".")[0] + "_ani.webp"
+        image = Image.open(img_path)
+        output = inference(
+            image=image,
+            resize_l=resize_l,  # resize original input to this size. (max(w, h) = resize_l)
+            K=K,  # set K
+            device=device,
+            model=model,
+            meta_brushes=meta_brushes,
+            stroke_num=stroke_num,
+            patch_size=patch_size,
+        )
+        Image.Image.save(
+            output[0],
+            save_path,
+            format="WEBP",
+            save_all=True,
+            append_images=output[1:],
+            optimize=True,
+            duration=time_consume,
+            loop=1,
+        )
+
+
 if __name__ == "__main__":
 
     df = make_img_label()
+    img2ani(df)
     send_metadata2api(df)
     print("label: ", df["label"])
-
-# TODO imgnet 레이블 정리 및 간소화
