@@ -23,7 +23,7 @@ def create_dummy(db: Session = Depends(get_db)):
 
 @router.get('/read', response_model=List[MetaDBOut])
 def read_all_no_label(db: Session = Depends(get_db)):
-    no_label_data = db.query(GameData).filter(and_(GameData.label == "", GameData.no_use == True)).all()
+    no_label_data = db.query(GameData).filter(and_(GameData.label == "", GameData.no_use == False)).all()
     return no_label_data
 
 
