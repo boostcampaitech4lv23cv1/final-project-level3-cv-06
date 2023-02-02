@@ -4,8 +4,7 @@ from PIL import Image
 
 from utils import predict_by_img, save_user_img, LOGGER
 from fastapi import APIRouter, HTTPException, BackgroundTasks
-from fastapi import FastAPI, File, UploadFile, Response
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import File, UploadFile, Response
 
 router = APIRouter()
 router.redirect_slashes = False
@@ -14,6 +13,13 @@ router.redirect_slashes = False
 async def inference(
     file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks()
 ):
+    """사용자의 사진 inference 및 사진 gcs에 저장
+
+    Args:
+        file (UploadFile, optional): image. Defaults to File(...).
+        background_tasks (BackgroundTasks, optional): 백그라운드 task(사진 저장). Defaults to BackgroundTasks().
+
+    """
     # 사진 하나만 가능
     # print(uf.filename)
     file_name = file.filename

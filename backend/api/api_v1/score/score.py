@@ -15,7 +15,7 @@ from crud import *
 from db import *
 
 router = APIRouter()
-
+router.redirect_slashes = False
 
 @router.post('/')
 async def create_score(score_in: ScoreIn, db: Session = Depends(get_db)):
