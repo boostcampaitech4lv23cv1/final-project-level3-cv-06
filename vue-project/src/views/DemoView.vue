@@ -1,12 +1,12 @@
 <template>
   <v-app class="hero">
-    <v-container>
+    <v-container v-if="!isPortrait">
 
 
       <v-row class="justify-center">
-        <v-col cols="10" class="d-flex justify-center">
+        <v-col cols="8" class="d-flex justify-center">
           <logo v-if="gameStatus === 0" :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }" />
-          <div v-if="gameStatus != 0" class="nums" :style="{ 'font-size': '5vw' }">
+          <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '5vw' , height:'10vh'}">
             {{ headText }}
           </div>
         </v-col>
@@ -14,20 +14,20 @@
 
 
       <v-row>
-        <v-col cols="4"></v-col>
-        <v-col cols="4">
-          <v-img src="../assets/example.jpg" height="40vh" width="40vw" class="mx-auto" v-show="gameStatus === 0" />
-          <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="40vh" width="40vw"
+        <v-col cols="3"></v-col>
+        <v-col cols="6">
+          <v-img src="../assets/example.jpg" height="35vh" width="40vw" class="mx-auto" v-show="gameStatus === 0" />
+          <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="40vh" width="100vw"
             @load="timeStart" />
         </v-col>
-        <v-col cols="4" class="mx-auto">
+        <v-col cols="3" class="d-flex justify-start">
           <v-progress-linear v-show="gameStatus > 0" class="bar" height="20vh" color="white" v-model="totalTimer">
           </v-progress-linear>
         </v-col>
       </v-row>
       <v-row class="d-flex justify-center text-center">
         <v-col>
-          <v-progress-circular v-show="gameStatus > 0 && imgTimer > 5" height="5vh" color="#0000FF" :size="65"
+          <v-progress-circular v-show="gameStatus > 0 && imgTimer > 5" height="4vh" color="#0000FF" :size="65"
             :width="8" model-value="100">
             <div :style="{
               'font-size': '3vh',
@@ -37,7 +37,7 @@
             </div>
           </v-progress-circular>
 
-          <v-progress-circular v-show="gameStatus > 0 && imgTimer <= 5" height="5vh" color="#FF0000" :size="65"
+          <v-progress-circular v-show="gameStatus > 0 && imgTimer <= 5" height="4vh" color="#FF0000" :size="65"
             :width="8" model-value="100">
             <div :style="{
               'font-size': '3vh',
@@ -50,9 +50,9 @@
       </v-row>
 
       <v-row class="d-flex justify-center" v-if="(gameStatus != 0) & (gameStatus != 10)"
-        :style="{ 'margin-top': '3vh' }">
-        <v-sheet v-for="i in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="7vh"
-          width="6vh" rounded :style="{ 'margin-left': '1vw' }"></v-sheet>
+        :style="{ 'margin-top': '1vh' }">
+        <v-sheet v-for="i in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="6vh"
+          width="6vh" rounded :style="{ 'margin-left': '0.5vw' }"></v-sheet>
       </v-row>
 
       <v-row>
@@ -75,8 +75,85 @@
         </div>
       </v-row>
     </v-container>
+
+
+    <v-container v-if="isPortrait">
+    <v-row class="justify-center">
+      <v-col cols="8" class="d-flex justify-center">
+        <logo v-if="gameStatus === 0" :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }" />
+        <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '10vw' , height:'15vh'}">
+          {{ headText }}
+        </div>
+      </v-col>
+    </v-row>
+
+
+    <v-row>
+      <v-progress-linear v-show="gameStatus > 0" class="mobile-bar"  height="10vw" color="white" v-model="totalTimer" />
+    </v-row>
+
+    <v-row>
+
+      <v-col cols="12">
+        <v-img src="../assets/example.jpg" height="30vh" width="100vw" class="mx-auto" v-show="gameStatus === 0" />
+        <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="50vh" width="100vw"
+          @load="timeStart" />
+      </v-col>
+
+
+    </v-row>
+    <v-row class="d-flex justify-center text-center">
+      <v-col>
+        <v-progress-circular v-show="gameStatus > 0 && imgTimer > 5" height="4vh" color="#0000FF" :size="65"
+          :width="8" model-value="100">
+          <div :style="{
+            'font-size': '3vh',
+            color: 'black',
+          }">
+            {{ imgTimer }}
+          </div>
+        </v-progress-circular>
+
+        <v-progress-circular v-show="gameStatus > 0 && imgTimer <= 5" height="4vh" color="#FF0000" :size="65"
+          :width="8" model-value="100">
+          <div :style="{
+            'font-size': '3vh',
+            color: 'black',
+          }">
+            {{ imgTimer }}
+          </div>
+        </v-progress-circular>
+      </v-col>
+    </v-row>
+
+    <v-row class="d-flex justify-center" v-if="(gameStatus != 0) & (gameStatus != 10)"
+      :style="{ 'margin-top': '1vh' }">
+      <v-sheet v-for="i in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="6vh"
+        width="6vh" rounded :style="{ 'margin-left': '0.5vw' }"></v-sheet>
+    </v-row>
+
+    <v-row class="d-flex justify-center">
+      <v-col cols="10" class="d-flex justify-center">
+        <v-text-field v-show="gameStatus > 0" label="Enter the answer" single-line density="compact" v-model="text"
+          @keydown.enter="enter"></v-text-field>
+
+        <v-btn v-show="gameStatus == 0 && nextImg != ''" @click="startGame">Game Start!</v-btn>
+      </v-col>
+    </v-row>
+
+    <v-row calss="d-flex justify-center">
+      <div v-show="wrongTimer > 0" class="mx-auto">
+        <wrong />
+      </div>
+      <div v-show="rightTimer > 0" class="mx-auto">
+        <right />
+      </div>
+    </v-row>
+    </v-container>
   </v-app>
 </template>
+
+
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
@@ -100,6 +177,7 @@ const store = useStore();
 const loaded = ref(0);
 const imgList = ref([]);
 const correctAnswers = ref(0);
+const isPortrait = ref(true);
 
 setInterval(() => {
   if (loaded.value == 1) {
@@ -121,6 +199,11 @@ setInterval(() => {
     wrongTimer.value = wrongTimer.value - 1;
   }
 }, 1000);
+
+function checkOrientation() {
+  isPortrait.value = window.screen.orientation.type === "portrait-primary";
+}
+
 function timeStart() {
   loaded.value = 1;
 }
@@ -219,6 +302,9 @@ onMounted(async () => {
   }
   const gifBlob = new Blob(chunksArr, { type: "image/gif" });
   nextImg.value = URL.createObjectURL(gifBlob);
+
+  checkOrientation();
+  window.addEventListener("orientationchange", checkOrientation);
 });
 watch(imgTimer, (newVal) => {
   if (newVal == 0) {
@@ -250,6 +336,20 @@ watch(totalTimer, (newVal) => {
 .bar {
   transform: rotate(90deg);
   margin-top: 17vh;
+  background: linear-gradient(to right,
+      #e54040 0%,
+      #ffa63a 16%,
+      #dcff3f 32%,
+      #6cff3f 48%,
+      #3fa2ff 64%,
+      #a53fff 80%,
+      #ff3fc9 100%);
+  border-radius: 30px;
+}
+
+
+.mobile-bar {
+  transform: rotate(180deg);
   background: linear-gradient(to right,
       #e54040 0%,
       #ffa63a 16%,

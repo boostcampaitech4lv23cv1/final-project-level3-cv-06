@@ -27,7 +27,7 @@
         <!-- 이미지를 3x3으로 출력 -->
         <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
           <v-img :width="'45vw'" :height="'60vh'" :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-            aspect-ratio="1" cover :src="`data:image/gif;base64,${originImg[n - 1]}`" class="grey lighten-2"
+            aspect-ratio="1" cover :src="`${originImg[n - 1]}`" class="grey lighten-2"
             @click="moveDetail(n - 1)">
           </v-img>
         </v-col>
@@ -49,7 +49,7 @@
         <v-row class="d-flex justify-center align-center">
           <!-- paint image 출력 -->
           <v-col cols="4" class="d-flex justify-center align-center">
-            <v-img :src="`data:image/gif;base64,${paintImg[dialogNum]}`" max-height="50vh" />
+            <v-img :src="`${paintImg[dialogNum]}`" max-height="50vh" />
           </v-col>
         </v-row>
 
@@ -78,7 +78,7 @@
         <!-- 이미지를 3x3으로 출력 -->
         <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
           <v-img :width="'30vw'" :height="'20vh'" :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-            aspect-ratio="1" cover :src="`data:image/gif;base64,${originImg[n - 1]}`" class="grey lighten-2"
+            aspect-ratio="1" cover :src="`${originImg[n - 1]}`" class="grey lighten-2"
             @click="moveDetail(n - 1)">
           </v-img>
         </v-col>
@@ -100,7 +100,7 @@
         <v-row class="d-flex justify-center align-center">
           <!-- paint image 출력 -->
           <v-col cols="9" class='d-flex justify-center align-center'>
-            <v-img :src="`data:image/gif;base64,${paintImg[dialogNum]}`" max-height="50vh" />
+            <v-img :src="`${paintImg[dialogNum]}`" max-height="50vh" />
           </v-col>
         </v-row>
 

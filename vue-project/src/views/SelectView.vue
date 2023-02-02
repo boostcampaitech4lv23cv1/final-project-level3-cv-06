@@ -174,7 +174,7 @@ export default {
       this.$store.commit("setCategory", this.selectedCategory);
       this.$store.commit("setMode", this.selectedMode);
       this.$router.push({
-        path: "/game",
+        path: "/demo",
       });
     },
 
