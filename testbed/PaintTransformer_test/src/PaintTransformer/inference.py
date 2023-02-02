@@ -125,12 +125,10 @@ def param2img_serial(
     even_idx_x = torch.arange(0, w, 2, device=cur_canvas.device)
     odd_idx_y = torch.arange(1, h, 2, device=cur_canvas.device)
     odd_idx_x = torch.arange(1, w, 2, device=cur_canvas.device)
-    even_y_even_x_coord_y, even_y_even_x_coord_x = torch.meshgrid(
-        [even_idx_y, even_idx_x]
-    )
-    odd_y_odd_x_coord_y, odd_y_odd_x_coord_x = torch.meshgrid([odd_idx_y, odd_idx_x])
-    even_y_odd_x_coord_y, even_y_odd_x_coord_x = torch.meshgrid([even_idx_y, odd_idx_x])
-    odd_y_even_x_coord_y, odd_y_even_x_coord_x = torch.meshgrid([odd_idx_y, even_idx_x])
+    even_y_even_x_coord_y, even_y_even_x_coord_x = torch.meshgrid([even_idx_y, even_idx_x], indexing='ij')
+    odd_y_odd_x_coord_y, odd_y_odd_x_coord_x = torch.meshgrid([odd_idx_y, odd_idx_x], indexing='ij')
+    even_y_odd_x_coord_y, even_y_odd_x_coord_x = torch.meshgrid([even_idx_y, odd_idx_x], indexing='ij')
+    odd_y_even_x_coord_y, odd_y_even_x_coord_x = torch.meshgrid([odd_idx_y, even_idx_x], indexing='ij')
     cur_canvas = F.pad(
         cur_canvas,
         [
@@ -447,7 +445,7 @@ def init(stroke_num: int = 8, model_path: str = "model.pth"):
     path = get_path_from_current_file(model_path)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = prepare_infer_model(path, stroke_num, device)
-    meta_brushes = make_meta_brushes(device, mode="small")
+    meta_brushes = make_meta_brushes(device, mode="large")
     return model, meta_brushes, device
 
 
@@ -456,10 +454,10 @@ def inference(
     device,
     model,
     meta_brushes,
-    resize_l: int=1024,
-    K: int=5,
-    stroke_num: int=8,
-    patch_size: int=32,
+    resize_l: int = 1024,
+    K: int = 5,
+    stroke_num: int = 8,
+    patch_size: int = 32,
 ):
     """PaintTransformer로 inference
     input args: image, device, model, meta_brushes, resize_l=1024, K=5, stroke_num=8, patch_size=32
@@ -480,9 +478,7 @@ def inference(
         for layer in range(K + 1):
             layer_size = patch_size * (2**layer)
             img_patch, _ = make_img_patch(patch_size, original_img_pad, layer_size)
-            result_patch, _ = make_img_patch(
-                patch_size, final_result, patch_size * (2**layer)
-            )
+            result_patch, _ = make_img_patch(patch_size, final_result, layer_size)
             # There are patch_num * patch_num patches in total
             patch_num = (layer_size - patch_size) // patch_size + 1
 
@@ -521,9 +517,7 @@ def inference(
             # decision: b, h, w, stroke_per_patch
             param[..., :2] = param[..., :2] / 2 + 0.25
             param[..., 2:4] = param[..., 2:4] / 2
-            if type(original_w) != type(1):
-                aaa = 1
-                1
+
             final_result = param2img_serial(
                 param=param,
                 decision=decision,
