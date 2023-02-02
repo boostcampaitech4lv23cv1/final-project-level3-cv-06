@@ -125,11 +125,9 @@ class PixabayCrawler:
                                 if imgs_downloaded >= n_imgs:
                                     run = False
                                     break
-                                    # TODO check db 중복
-                                if self.is_duplicate(img_dict["id"]):
-                                    continue
-                                self.send_img2gcs(img_dict, bucket)
-                                df = self.add_data2df(df, keyword, img_dict)
+                                if self.is_valid(img_dict["id"]):
+                                    self.send_img2gcs(img_dict)
+                                    df = self.add_data2df(df, keyword, img_dict)
 
                                 imgs_downloaded += 1
                                 Pbar.set(imgs_downloaded)
@@ -194,15 +192,22 @@ class PixabayCrawler:
             n_imgs = available_imgs - 1
         return n_imgs
 
-    def is_duplicate(self, img_id):
+    def is_valid(self, img_id: int) -> bool:
+        """check img_id is a duplicate
+
+        Args:
+            img_id (str): img id of pixabay
+
+        Returns:
+            bool: True if not duplicate
+        """
         url = "http://34.64.169.197/api/v1/meta/duplicate_check"
         data = {"id": str(img_id), "category": keyword[0]}
 
         try:
             res = requests.post(url, json=data)
             res.raise_for_status()
-            # TODO 리턴값 처리
-            p = res.content
+            return res.json()["valid"]
         except Exception as err:
             logger.warning(err)
             logger.warning("an error occured requesting duplicate check")
