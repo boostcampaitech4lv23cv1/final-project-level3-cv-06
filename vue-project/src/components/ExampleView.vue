@@ -326,7 +326,7 @@ export default {
   props: ["page"],
   data() {
     return {
-      audioInfo: !this.$root.audio.muted,
+      audioInfo: true,
       overlay: false,
       totalTimer: 25,
     };
@@ -334,6 +334,8 @@ export default {
 
   mounted() {
     this.overlay = true;
+    this.$root.audio.play();
+    this.audioInfo = !this.$root.audio.muted;
   },
   methods: {
     changeQuery(next) {
@@ -343,11 +345,7 @@ export default {
       this.$router.push({ path: "/select" });
     },
     audioChange() {
-      if (this.$root.audio.paused) {
-        this.$root.audio.play();
-      } else {
-        this.$root.audio.muted = !this.$root.audio.muted;
-      }
+      this.$root.audio.muted = !this.$root.audio.muted;
       this.audioInfo = !this.audioInfo;
     },
   },

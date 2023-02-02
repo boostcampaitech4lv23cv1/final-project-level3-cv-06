@@ -8,20 +8,25 @@
         </v-col>
       </v-row>
 
-
-
       <!-- 모바일 ui(음향,홈,설명) -->
       <v-row class="d-flex d-sm-none justify-center">
         <!-- 음향(소리) 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
           <v-btn rounded variant="plain" @click="audioChange">
-            <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == true">
+            <v-icon
+              icon="mdi-volume-high"
+              size="5vh"
+              v-show="audioInfo == true"
+            >
             </v-icon>
-            <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == false">
+            <v-icon
+              icon="mdi-volume-off"
+              size="5vh"
+              v-show="audioInfo == false"
+            >
             </v-icon>
           </v-btn>
         </v-col>
-
 
         <!-- 홈 이동 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
@@ -30,7 +35,6 @@
           </v-btn>
         </v-col>
 
-
         <!-- 설명 dialog 버튼-->
         <v-col cols="2" class="d-flex justify-center">
           <v-btn rounded variant="plain" @click="showDialog = true">
@@ -38,8 +42,6 @@
           </v-btn>
         </v-col>
       </v-row>
-
-
 
       <v-row>
         <v-col cols="2" sm="4" />
@@ -54,18 +56,21 @@
         <v-col cols="2" sm="4">
           <!-- 음향(소리) 버튼 -->
 
-          <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
+          <v-row
+            class="d-none d-sm-flex justify-end"
+            :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }"
+          >
             <v-btn rounded variant="plain" @click="audioChange">
-              <v-icon
-                icon="mdi-volume-off"
-                size="5vh"
-                v-show="audioInfo == true"
-              >
-              </v-icon>
               <v-icon
                 icon="mdi-volume-high"
                 size="5vh"
-                v-show="audioInfo == false"
+                v-if="audioInfo == true"
+              >
+              </v-icon>
+              <v-icon
+                icon="mdi-volume-off"
+                size="5vh"
+                v-if="audioInfo == false"
               >
               </v-icon>
             </v-btn>
@@ -73,8 +78,10 @@
 
           <!-- 홈 이동 버튼 -->
 
-          <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
-
+          <v-row
+            class="d-none d-sm-flex justify-end"
+            :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }"
+          >
             <v-btn rounded variant="plain" @click="moveHome">
               <v-icon icon="mdi-home-outline" size="5vh" />
             </v-btn>
@@ -82,8 +89,10 @@
 
           <!-- 설명 dialog 버튼-->
 
-          <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
-
+          <v-row
+            class="d-none d-sm-flex justify-end"
+            :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }"
+          >
             <v-btn rounded variant="plain" @click="showDialog = true">
               <v-icon icon="mdi-information-outline" size="5vh" />
             </v-btn>
@@ -196,7 +205,7 @@ export default {
         { text: "Celebrity", value: "entertainer" },
       ],
       selectedCategory: "animal",
-      audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
+      audioInfo: true,
       showDialog: false,
     };
   },
@@ -240,11 +249,7 @@ export default {
      * @function audioChange
      */
     audioChange() {
-      if (this.$root.audio.paused) {
-        this.$root.audio.play();
-      } else {
-        this.$root.audio.muted = !this.$root.audio.muted;
-      }
+      this.$root.audio.muted = !this.$root.audio.muted;
       this.audioInfo = !this.audioInfo;
     },
 
@@ -257,7 +262,10 @@ export default {
     },
   },
   mounted() {
-    // this.$root.audio.play();
+    if (this.$root.audio.paused) {
+      this.$root.audio.play();
+    }
+    this.audioInfo = !this.$root.audio.muted;
   },
 };
 </script>
