@@ -4,21 +4,20 @@
     <v-container v-if="isPortrait == false">
       <v-row>
         <v-col cols="12" class="d-flex justify-center">
-          <logo :style="{ width: '50vw', margin: '0vh 0vw 0vh 0vw' }" />
+          <logo :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
         </v-col>
-      </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '0vh 0vw 0vh 0vw' }">
-        <v-btn rounded variant="plain" @click="infoChange" height="5vh">
-          <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
-        </v-btn>
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <v-btn rounded variant="plain" @click="audioChange" height="5vh">
           <v-icon icon="mdi-volume-high" size="5vh" v-if="audioInfo == true">
-
           </v-icon>
           <v-icon icon="mdi-volume-off" size="5vh" v-if="audioInfo == false">
           </v-icon>
+        </v-btn>
+      </v-row>
+      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <v-btn rounded variant="plain" @click="moveHome" height="5vh">
+          <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
         </v-btn>
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
@@ -31,7 +30,7 @@
             </template>
             <v-card>
               <v-card-title class="text-center" height="3vh"
-                >변환하려는 이미지를 업로드하면, 그림으로 다시 그려드릴게요!
+                >변환하려는 이미지를 업로드하면, 그림으로 다시 그려드려요!
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -45,33 +44,60 @@
         </div>
       </v-row>
 
-
-      <v-row class="d-flex justify-center" :style="{ margin: '2vh 0vw 0vh 0vw' }">
+      <v-row
+        class="d-flex justify-center"
+        :style="{ margin: '2vh 0vw 0vh 0vw' }"
+      >
         <v-col cols="5">
-          <v-img src="../assets/tower-bridge.jpg" width="30vw" class="mx-auto" v-show="uploaded == false" />
-          <v-img max-height="25vh" class="mx-auto" max-width="30vw" :src="imageUrl" v-show="uploaded == true" />
-
+          <v-img
+            src="../assets/tower-bridge.jpg"
+            width="30vw"
+            class="mx-auto"
+            v-show="uploaded == false"
+          />
+          <v-img
+            max-height="25vh"
+            class="mx-auto"
+            max-width="30vw"
+            :src="imageUrl"
+            v-show="uploaded == true"
+          />
         </v-col>
         <v-col cols="2" class="d-flex align-center justify-center">
           <v-icon icon="mdi-arrow-right-bold" size="5vh"> </v-icon>
         </v-col>
         <v-col cols="5">
+          <v-img
+            src="../assets/tower-bridge-paint.jpg"
+            width="30vw"
+            class="mx-auto"
+            v-show="uploaded == false"
+          />
 
-          <v-img src="../assets/tower-bridge-paint.jpg" width="30vw" class="mx-auto" v-show="uploaded == false" />
-
-          <v-img max-height="25vh" class="mx-auto" max-width="30vw" :src="`data:image/gif;base64,${returnImg}`">
-            <v-progress-circular v-if="transform == true" class="loading" color="grey-lighten-4"
-              indeterminate></v-progress-circular>
-
+          <v-img
+            max-height="25vh"
+            class="mx-auto"
+            max-width="30vw"
+            :src="`data:image/gif;base64,${returnImg}`"
+          >
+            <v-progress-circular
+              v-if="transform == true"
+              class="loading"
+              color="grey-lighten-4"
+              indeterminate
+            ></v-progress-circular>
           </v-img>
         </v-col>
       </v-row>
       <v-row :style="{ margin: '5vh 0vw 0vh 0vw' }">
-
         <v-col xs="12" sm="6" class="mx-auto">
-          <v-file-input clearable label="Upload your own image!" variant="solo" v-on:change="setImg"
-            density="compact"></v-file-input>
-
+          <v-file-input
+            clearable
+            label="Upload your own image!"
+            variant="solo"
+            v-on:change="setImg"
+            density="compact"
+          ></v-file-input>
         </v-col>
       </v-row>
       <v-row class="d-flex justify-center">
@@ -83,7 +109,6 @@
       </v-row>
     </v-container>
 
-
     <!-- <v-container class="d-sm-none"> -->
     <v-container v-if="isPortrait == true">
       <v-row>
@@ -94,22 +119,45 @@
 
       <v-row :style="{ margin: '1vh 0vw 0vh 0vw' }">
         <v-col cols="12">
-          <v-file-input clearable label="Upload your own image!" variant="solo" v-on:change="setImg"
-            density="compact"></v-file-input>
+          <v-file-input
+            clearable
+            label="Upload your own image!"
+            variant="solo"
+            v-on:change="setImg"
+            density="compact"
+          ></v-file-input>
         </v-col>
         <v-row class="d-flex justify-center">
           <v-col cols="auto">
-            <v-btn @click="transformImg" :disabled="image == null">Transform!</v-btn>
+            <v-btn @click="transformImg" :disabled="image == null"
+              >Transform!</v-btn
+            >
           </v-col>
         </v-row>
       </v-row>
       <v-row>
-        <v-col cols="12" class="d-flex justify-center" :style="{ margin: '5vh 0vw 0vh 0vw' }">
-          <v-img src="../assets/tower-bridge-paint.jpg" width="100vw" v-show="uploaded == false" />
+        <v-col
+          cols="12"
+          class="d-flex justify-center"
+          :style="{ margin: '5vh 0vw 0vh 0vw' }"
+        >
+          <v-img
+            src="../assets/tower-bridge-paint.jpg"
+            width="100vw"
+            v-show="uploaded == false"
+          />
 
-          <v-img max-width="100vw" class="mx-auto" :src="`data:image/gif;base64,${returnImg}`">
-            <v-progress-circular v-if="transform == true" class="loading-mobile" color="grey-lighten-4"
-              indeterminate></v-progress-circular>
+          <v-img
+            max-width="100vw"
+            class="mx-auto"
+            :src="`data:image/gif;base64,${returnImg}`"
+          >
+            <v-progress-circular
+              v-if="transform == true"
+              class="loading-mobile"
+              color="grey-lighten-4"
+              indeterminate
+            ></v-progress-circular>
           </v-img>
         </v-col>
       </v-row>
@@ -129,14 +177,11 @@ export default {
       transform: false,
       returnImg: null,
       img_loaded: false,
-      soundInfo: false,
       uploaded: false,
       imageUrl: "",
-
       audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
       dialog: false,
-      isPortrait: true
-
+      isPortrait: true,
     };
   },
   mounted() {
@@ -163,7 +208,6 @@ export default {
       const formData = new FormData();
       formData.append("file", this.image);
 
-
       // let response = await this.$api2(
       //   "http://34.64.169.197/api/v1/infer",
       //   "POST",
@@ -186,12 +230,8 @@ export default {
       }
       this.audioInfo = !this.audioInfo;
     },
-    infoChange() {
-      if (this.showInfo == true) {
-        this.showInfo = false;
-      } else {
-        this.showInfo = true;
-      }
+    moveHome() {
+      this.$router.push({ path: "/" });
     },
   },
 };

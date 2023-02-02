@@ -28,9 +28,7 @@
         </v-col>
       </v-row>
 
-
       <v-row :style="{ margin: '10vh 0vw 0vh 0vw' }" class="d-flex justify-center">
-
         <v-col cols="6" class="d-flex justify-center">
           <v-btn rounded variant="plain" color="transparent" @click="movePage('/leaderboard')">
             <ranking :style="{ height: '7vh' }" />
