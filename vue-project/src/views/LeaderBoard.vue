@@ -1,13 +1,40 @@
 <template>
   <v-app class="hero">
     <v-container height="100%">
+
+
       <v-row class>
-        <v-col cols="3"></v-col>
+        <v-col cols="3" />
+        <!-- ranking logo 출력 -->
         <v-col cols="6" class="d-flex justify-center align-center">
           <ranking class="rank" />
         </v-col>
       </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+
+
+      <v-row class="d-flex d-sm-none justify-end">
+        <!-- mobile portrait 음향 버튼 -->
+        <v-col cols="2" class="d-flex justify-center">
+          <v-btn rounded variant="plain" @click="audioChange" height="5vh">
+            <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
+            </v-icon>
+            <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == false">
+            </v-icon>
+          </v-btn>
+        </v-col>
+
+
+        <!--mobile portrait 홈 버튼 -->
+        <v-col cols="2" class="d-flex justify-center">
+          <v-btn rounded variant="plain" @click="moveBack" height="5vh">
+            <back height="5vh" />
+          </v-btn>
+        </v-col>
+
+      </v-row>
+
+      <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <!-- 음향 버튼 -->
         <v-btn rounded variant="plain" @click="audioChange" height="5vh">
           <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
           </v-icon>
@@ -15,12 +42,18 @@
           </v-icon>
         </v-btn>
       </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+
+
+      <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <!-- 홈 이동 버튼 -->
         <v-btn rounded variant="plain" @click="moveBack" height="5vh">
           <back height="5vh" />
         </v-btn>
       </v-row>
+
+
       <v-row class="d-flex justify-center font">
+        <!-- 랭킹 테이블 생성 -->
         <v-col xs="12" sm="6">
           <div class="scroll">
             <v-table class="table">
