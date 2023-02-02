@@ -1,7 +1,6 @@
 <template>
   <v-app class="hero">
     <v-container height="100%">
-    
       <v-row>
         <!-- score log show -->
         <v-col cols="12" class="d-flex justify-center">
@@ -12,19 +11,22 @@
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <v-btn rounded variant="plain" @click="audioChange" height="5vh">
           <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
-
           </v-icon>
           <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == false">
           </v-icon>
         </v-btn>
       </v-row>
 
-
-
-      <v-row class=" d-flex nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
+      <v-row
+        class="d-flex nums"
+        :style="{ height: '30vh', 'margin-top': '0vh' }"
+      >
         <!-- game result information -->
         <v-col cols="6" class="align-self-center">
-          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '0vh', 'font-size': '4vh' }">
+          <v-row
+            class="d-flex justify-end"
+            :style="{ height: '8vh', 'margin-top': '0vh', 'font-size': '4vh' }"
+          >
             <!-- profile icon & name input -->
             <v-col cols="1" class="justify">
               <profile />
@@ -32,27 +34,36 @@
             <!-- name input area -->
             <v-col cols="1"></v-col>
             <v-col xs="10" sm="5" lg="3" class="d-flex align-start">
-              <v-text-field label="Enter name here!" v-model="name" single-line class="input"></v-text-field>
+              <v-text-field
+                label="Enter name here!"
+                v-model="name"
+                single-line
+                class="input"
+              ></v-text-field>
             </v-col>
           </v-row>
 
-
-          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+          <v-row
+            class="d-flex justify-end"
+            :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }"
+          >
             <!-- check icon & correct number -->
             <v-col cols="1">
-
               <check />
             </v-col>
             <v-col cols="1"></v-col>
             <!-- correct answer number show -->
-            <v-col xs="10" sm="5" lg="3" class="justfy"> {{ correctAnswer }}/9 </v-col>
+            <v-col xs="10" sm="5" lg="3" class="justfy">
+              {{ correctAnswer }}/9
+            </v-col>
           </v-row>
 
-
-          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+          <v-row
+            class="d-flex justify-end"
+            :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }"
+          >
             <!--timer icon show & clear time-->
             <v-col cols="1">
-
               <timer />
             </v-col>
             <v-col cols="1"></v-col>
@@ -63,39 +74,46 @@
           </v-row>
         </v-col>
 
-
         <!-- show rank emoji -->
-        <v-col cols="4" :style="{
-          'margin-left': '7vh',
-          'margin-top': '2vh',
-          'font-size': '23vh',
-          color: 'gold',
-        }">
+        <v-col
+          cols="4"
+          :style="{
+            'margin-left': '7vh',
+            'margin-top': '2vh',
+            'font-size': '23vh',
+            color: 'gold',
+          }"
+        >
           {{ rank }}
         </v-col>
       </v-row>
 
-
       <v-row class="justify-center">
         <v-col cols="5" class="d-flex justify-end">
           <!-- go result button -->
-          <v-btn class="text-center" :style="{
-            margin: '15vh 0vw 0vh 0vw',
-          }" @click="goResult">
+          <v-btn
+            class="text-center"
+            :style="{
+              margin: '15vh 0vw 0vh 0vw',
+            }"
+            @click="goResult"
+          >
             Show Result!
           </v-btn>
         </v-col>
         <v-col cols="1"></v-col>
         <v-col cols="5">
           <!-- register score and go leaderboard -->
-          <v-btn class="text-center" :style="{
-            margin: '15vh 0vw 0vh 0vw',
-          }" @click="registerScore">
+          <v-btn
+            class="text-center"
+            :style="{
+              margin: '15vh 0vw 0vh 0vw',
+            }"
+            @click="registerScore"
+          >
             Show Rank
-
           </v-btn>
         </v-col>
-
       </v-row>
     </v-container>
   </v-app>
@@ -118,11 +136,8 @@ export default {
     return {
       rank: "",
       clearTime: this.$store.state.clearTime.toString().substr(0, 5),
-
       correctAnswer: this.$store.state.correctAnswer,
-      soundInfo: false,
-
-      showInfo: false,
+      audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
       correctNum: 0,
       name: this.$store.state.name,
       alert: false,
@@ -149,23 +164,19 @@ export default {
       }
     },
     async registerScore() {
-
       if (this.name === "") {
-        this.alert = true
-      }
-      else {
-        this.$store.commit('setName', this.name)
-        this.$router.push({ path: 'leaderboard' })
+        this.alert = true;
+      } else {
+        this.$store.commit("setName", this.name);
+        this.$router.push({ path: "leaderboard" });
 
         // let response = await this.$api(
         //   "http://34.64.169.197/api/v1/score",
         //   "POST",
         //   { user_name: this.name, play_time: this.clearTime, correct_ctn: this.correctAnswer }
         // );
-
       }
-    }
-
+    },
   },
   async mounted() {
     let correctList = this.$store.state.correctList;
@@ -192,8 +203,6 @@ export default {
 
     //   { category: this.$store.category, img_paths: imgPath, correct_list: correctList }
     // );
-
-
 
     // let response = await this.$api(
     //   'http://127.0.0.1:8000/api/v1/game/gameover',
