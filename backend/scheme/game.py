@@ -13,7 +13,7 @@ class GameOver(BaseModel):
     
 
 class SavePaintOut(BaseModel):
-    base_url: str = "https://console.cloud.google.com/storage/browser/scraped-img/"
+    base_url: str = "https://storage.googleapis.com/scraped-img/"
     label: str
     img_path: str
     class Config:
