@@ -81,7 +81,7 @@ export default {
       this.audioInfo = !this.audioInfo;
     },
     moveBack() {
-      this.$router.push({ path: "/rank" });
+      this.$router.go(-1);
     },
   },
 };
