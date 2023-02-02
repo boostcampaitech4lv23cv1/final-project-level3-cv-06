@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS game_data(
     img_path varchar(100) NOT NULL,
     correct_cnt integer DEFAULT 0,
     incorrect_cnt integer DEFAULT 0,
-    no_use boolean DEFAULT FALSE
+    use_status boolean DEFAULT TRUE
 
 );
 

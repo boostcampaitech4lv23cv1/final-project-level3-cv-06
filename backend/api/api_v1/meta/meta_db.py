@@ -23,7 +23,7 @@ def create_dummy(db: Session = Depends(get_db)):
 
 @router.get('/read', response_model=List[MetaDBOut])
 def read_all_no_label(db: Session = Depends(get_db)):
-    no_label_data = db.query(GameData).filter(and_(GameData.label == "", GameData.no_use == False)).all()
+    no_label_data = db.query(GameData).filter(and_(GameData.label == "", GameData.use_status == True)).all()
     return no_label_data
 
 
@@ -98,7 +98,7 @@ async def crawling_create(
 
 @router.post('/update')
 async def crawling_update(
-    file: UploadFile = File(), 
+    file: UploadFile = File(),
     category: str = Body(),
     db: Session = Depends(get_db)):
     """ 추론 서버에서 추론 후 label 업데이트 하는 API
@@ -120,7 +120,7 @@ async def crawling_update(
     for idx, row in data.iterrows():
         db_item = db.query(GameData).filter(and_(GameData.category == category, GameData.img_path == row.img_path)).first()
         db_item.label = row.label
-        db_item.no_use = row.no_use
+        db_item.use_status = row.use_status
     db.commit()
         
     return {"messege": "success"}

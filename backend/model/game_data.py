@@ -15,4 +15,4 @@ class GameData(Base):
     img_path = Column(String(100), nullable=False)
     correct_cnt = Column(Integer, default=0)
     incorrect_cnt = Column(Integer, default=0)
-    no_use = Column(Boolean, default=False)
+    use_status = Column(Boolean, default=False)
