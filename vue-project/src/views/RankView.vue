@@ -22,16 +22,10 @@
         </v-btn>
       </v-row>
 
-      <v-row
-        class="d-flex nums"
-        :style="{ height: '30vh', 'margin-top': '0vh' }"
-      >
+      <v-row class="d-flex nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
         <!-- game result information -->
         <v-col cols="6" class="align-self-center">
-          <v-row
-            class="d-flex justify-end"
-            :style="{ height: '8vh', 'margin-top': '0vh', 'font-size': '4vh' }"
-          >
+          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '0vh', 'font-size': '4vh' }">
             <!-- profile icon & name input -->
             <v-col cols="1" class="justify">
               <profile />
@@ -39,19 +33,11 @@
             <!-- name input area -->
             <v-col cols="1"></v-col>
             <v-col xs="10" sm="5" lg="3" class="d-flex align-start">
-              <v-text-field
-                label="Enter name here!"
-                v-model="name"
-                single-line
-                class="input"
-              ></v-text-field>
+              <v-text-field label="Enter name here!" v-model="name" single-line class="input"></v-text-field>
             </v-col>
           </v-row>
 
-          <v-row
-            class="d-flex justify-end"
-            :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }"
-          >
+          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
             <!-- check icon & correct number -->
             <v-col cols="1">
               <check />
@@ -63,10 +49,7 @@
             </v-col>
           </v-row>
 
-          <v-row
-            class="d-flex justify-end"
-            :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }"
-          >
+          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
             <!--timer icon show & clear time-->
             <v-col cols="1">
               <timer />
@@ -80,15 +63,12 @@
         </v-col>
 
         <!-- show rank emoji -->
-        <v-col
-          cols="4"
-          :style="{
-            'margin-left': '7vh',
-            'margin-top': '2vh',
-            'font-size': '23vh',
-            color: 'gold',
-          }"
-        >
+        <v-col cols="4" :style="{
+          'margin-left': '7vh',
+          'margin-top': '2vh',
+          'font-size': '23vh',
+          color: 'gold',
+        }">
           {{ rank }}
         </v-col>
       </v-row>
@@ -96,26 +76,18 @@
       <v-row class="justify-center">
         <v-col cols="5" class="d-flex justify-end">
           <!-- go result button -->
-          <v-btn
-            class="text-center"
-            :style="{
-              margin: '15vh 0vw 0vh 0vw',
-            }"
-            @click="goResult"
-          >
+          <v-btn class="text-center" :style="{
+            margin: '15vh 0vw 0vh 0vw',
+          }" @click="goResult">
             Show Result!
           </v-btn>
         </v-col>
         <v-col cols="1"></v-col>
         <v-col cols="5">
           <!-- register score and go leaderboard -->
-          <v-btn
-            class="text-center"
-            :style="{
-              margin: '15vh 0vw 0vh 0vw',
-            }"
-            @click="registerScore"
-          >
+          <v-btn class="text-center" :style="{
+            margin: '15vh 0vw 0vh 0vw',
+          }" @click="registerScore">
             Show Rank
           </v-btn>
         </v-col>

@@ -5,10 +5,10 @@
         <logo v-if='gameStatus === 0' :style="{ height: '20vh', width: '40vw' }" />
         <div v-if="gameStatus != 0" class="nums">{{ headText }}</div>
       </v-row>
-      <v-row class="d-flex justify-center mt-8" v-if="gameStatus != 0 & gameStatus != 10">
+      <!-- <v-row class="d-flex justify-center mt-8" v-if="gameStatus != 0 & gameStatus != 10">
         <v-sheet v-for="(i) in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="7vh"
           width="6vh" rounded :style="{ 'margin-left': '0.2vw' }"></v-sheet>
-      </v-row>
+      </v-row> -->
       <v-row class="d-flex mt-8">
         <v-col cols="4"></v-col>
         <v-col cols="4">
@@ -141,11 +141,12 @@ onMounted(async () => {
   for (let i = 0; i < 9; i++) {
     answerList.value.push(response.data[i]['label'])
 
-    originImg.push('https://storage.googleapis.com/image_cloud_demo/' + response.data[i]['img_path'])
+    originImg.push(response.data[i]['base_url'] + response.data[i]['img_path'])
 
-    let tmp = response.data[i]['img_path'].split('_')
+    let tmp = response.data[i]['img_path'].split('.')
     tmp[1] = 'ani.webp'
-    paintImg.value.push('https://storage.googleapis.com/image_cloud_demo/' + tmp.join('_'))
+    console.log(tmp)
+    paintImg.value.push(response.data[i]['base_url'] + tmp.join('_'))
   }
   console.log(answerList.value)
 
