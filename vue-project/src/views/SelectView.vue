@@ -1,73 +1,108 @@
 <template>
   <v-app class="hero">
     <v-container height="100%">
+
+
       <v-row class="d-flex justify-center">
-        <v-col cols="12" class="d-flex justify-center">
-          <logo :style="{ height: '15vh', margin: '10vh 0vw 0vh 0vw' }" />
+        <!-- save paint! 로고 출력 -->
+        <v-col cols="10" class="d-flex justify-center">
+          <logo :style="{ height: '14vh', margin: '10vh 0vw 0vh 0vw' }" />
         </v-col>
       </v-row>
 
-      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <v-btn rounded variant="plain" @click="audioChange" height="5vh">
-          <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
-          </v-icon>
-          <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == false">
-          </v-icon>
-        </v-btn>
-      </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <v-btn rounded variant="plain" @click="moveHome" height="5vh">
-          <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
-        </v-btn>
-      </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <div class="text-center">
-          <v-dialog v-model="dialog">
-            <template v-slot:activator="{ props }">
-              <v-btn rounded variant="plain" v-bind="props" height="5vh">
-                <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title class="text-center" height="3vh">
-                카테고리에 해당하는 그림이 생성돼요. 그림을 보고 무엇인지 빨리
-                맞혀보세요!
-              </v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn variant="tonal" color="primary" @click="dialog = false"
-                  :style="{ margin: '0vh 0vw 0vh 30vw' }">확인</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn variant="tonal" color="primary" @click="movePage('/description', { page: 1 })"
-                  :style="{ margin: '0vh 30vw 0vh 0vw' }">게임방법 알아보기</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </div>
-        <!-- <v-btn variant="plain" @click="movePage('/description', { page: 1 })">
-          <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
-        </v-btn> -->
+
+      <v-row>
+        <v-col cols="2" sm="4" />
+
+        <!-- category logo 출력 -->
+        <v-col cols="8" sm="4" class="d-flex justify-center align-center">
+          <category :style="{ height: '6vh', width: '70vw', margin: '5vh 0vw 1vh 0vw' }" />
+        </v-col>
+
+
+        <v-col cols="2" sm="4">
+          <!-- 음향(소리) 버튼 -->
+          <v-row class="d-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
+            <v-btn rounded variant="plain" @click="audioChange">
+              <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == true">
+              </v-icon>
+              <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == false">
+              </v-icon>
+            </v-btn>
+          </v-row>
+
+
+          <!-- 홈 이동 버튼 -->
+          <v-row class="d-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
+            <v-btn rounded variant="plain" @click="moveHome">
+              <v-icon icon="mdi-home-outline" size="5vh" />
+            </v-btn>
+          </v-row>
+
+
+          <!-- 설명 dialog 버튼-->
+          <v-row class="d-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
+            <v-btn rounded variant="plain" @click="showDialog = true">
+              <v-icon icon="mdi-information-outline" size="5vh" />
+            </v-btn>
+          </v-row>
+
+        </v-col>
       </v-row>
 
-      <v-row class="d-flex justify-center">
-        <category :style="{ height: '7vh', margin: '0vh 0vw 5vh 0vw' }" />
-      </v-row>
+
+      <!-- description dialog -->
+      <v-dialog v-model="showDialog">
+
+        <v-card>
+          <!-- dialog text -->
+          <v-card-title class="text-center" height="3vh">
+            카테고리에 해당하는 그림이 생성돼요. 그림을 보고 무엇인지 빨리
+            맞혀보세요!
+          </v-card-title>
+
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <!-- dialog close 버튼 -->
+            <v-btn variant="tonal" color="primary" @click="showDialog = false"
+              :style="{ margin: '0vh 0vw 0vh 30vw' }">확인</v-btn>
+
+
+            <v-spacer></v-spacer>
+            <!-- description 이동 버튼 -->
+            <v-btn variant="tonal" color="primary" @click="movePage('/description', { page: 1 })"
+              :style="{ margin: '0vh 30vw 0vh 0vw' }">게임방법 알아보기</v-btn>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
 
       <v-row class="d-flex justify-center">
+
+
+        <!-- category 선택 버튼 - radio type -->
         <v-radio-group v-model="selectedCategory">
           <v-btn rounded v-for="item in categoryItems" :key="item.value" :value="item.value"
             @click="changeCategory(item.value)" :class="{
               selected: selectedCategory === item.value,
               ' mx-auto ': true,
-            }" :style="{ height: '4vh', width: '20vh', margin: '1vh 0vw 0vh 0vw' }">
+            }" :style="{ height: '4vh', width: '23vh', margin: '1.5vh 0vw 0vh 0vw' }">
             {{ item.text }}
           </v-btn>
         </v-radio-group>
       </v-row>
-      <v-col cols="12" class="d-flex justify-center" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <v-btn :disabled="categoryIsEmpty" color="yellow" @click="startGame">Game start</v-btn>
-      </v-col>
+
+
+      <!-- game 페이지 이동 버튼 -->
+      <v-row>
+        <v-col cols="12" class="d-flex justify-center" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+          <v-btn :disabled="categoryIsEmpty" color="yellow" @click="startGame"
+            :style="{ height: '4vh', width: '20vh' }">Game start</v-btn>
+        </v-col>
+      </v-row>
+
     </v-container>
   </v-app>
 </template>
@@ -86,11 +121,11 @@ export default {
       categoryItems: [
         { text: "Animal", value: "animal" },
         { text: "Landmark", value: "landmark" },
-        { text: "Entertainment", value: "entertainer" },
+        { text: "Celebrity", value: "entertainer" },
       ],
       selectedCategory: "animal",
       audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
-      dialog: false,
+      showDialog: false,
     };
   },
   computed: {
@@ -127,6 +162,9 @@ export default {
       this.$router.push({ path: "/" });
     },
   },
+  mounted() {
+    this.$root.audio.play();
+  }
 };
 </script>
 
@@ -139,5 +177,19 @@ export default {
 
 .selected {
   background-color: rgb(248, 207, 71);
+}
+
+@media only screen and (max-width: 480px) {
+  .icon-size {
+    width: 2vh;
+    height: 2vh;
+  }
+}
+
+@media only screen and (min-width: 480px) {
+  .icon-size {
+    width: 5vh;
+    height: 5vh;
+  }
 }
 </style>
