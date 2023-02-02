@@ -37,7 +37,7 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 ssh_base = "/opt/ml/final-project-level3-cv-06"
 keyword = "animal"
 site = "pixabay"
-n_imgs = 100
+n_imgs = 50
 bucket = "scraped-img"
 instance_name = "airflow-server"
 zone_name = "us-west1-b"
@@ -73,43 +73,17 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {keyword} {site} {scraped_time} {n_imgs}",
     )
 
-    data2gcs = LocalFilesystemToGCSOperator(
-        task_id="data2gcs",
-        src=f"{AIRFLOW_HOME}/dags/data/{keyword}/{site}/{scraped_time}/*",
-        dst=f"{keyword}/{site}/{scraped_time}/",
-        bucket=bucket,
-        gcp_conn_id="gcs_connection",
-    )
     load_data_from_gcs2ssh = SSHOperator(
         task_id="download_data_from_gcs2ssh",
         ssh_conn_id="ssh_connection",
         command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
     )
-    sense_ssh_file = SFTPSensor(
-        task_id="sense_ssh_file",
-        sftp_conn_id="sftp_connection",
-        path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/metadata.feather",
-    )
-
-    sense_gcs_file = GCSObjectExistenceSensor(
-        task_id="sense_metadata_in_gcs",
-        google_cloud_conn_id="gcs_connection",
-        bucket=bucket,
-        object=f"{keyword}/{site}/{scraped_time}/metadata.feather",
-    )
-
     infer_label = SSHOperator(
         task_id="infer_label",
         ssh_conn_id="ssh_connection",
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
         cmd_timeout=600,
-    )
-    df2api = SSHOperator(
-        task_id="df2api_remove_dir",
-        ssh_conn_id="ssh_connection",
-        command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
-            && python {ssh_base}/airflow_/dags/classification/df2api.py {keyword} {site} {scraped_time}",
     )
     img2ani = SSHOperator(
         task_id="img2ani",
@@ -139,12 +113,8 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     #####################    TASKS    #####################
     (
         crawl_img
-        >> data2gcs
-        >> sense_gcs_file
         >> load_data_from_gcs2ssh
-        >> sense_ssh_file
         >> infer_label
-        >> df2api
         >> img2ani
         >> ani2gcs
         # >> remove_dir
