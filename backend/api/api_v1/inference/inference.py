@@ -5,11 +5,12 @@ from PIL import Image
 from utils import predict_by_img, save_user_img, LOGGER
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from fastapi import File, UploadFile, Response
+import time
 
 router = APIRouter()
 router.redirect_slashes = False
 
-@router.post("/")
+@router.post("")
 async def inference(
     file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks()
 ):
@@ -33,11 +34,15 @@ async def inference(
 
     # gcs로 보내는 task로 변경할 것
     background_tasks.add_task(save_user_img, img, file_name)
-    LOGGER.info("Inference")
     
-    paint_img = predict_by_img(img)
-    img_byte = BytesIO()
-    paint_img.save(img_byte, format=extend)
-    img_byte = img_byte.getvalue()
-    encoded = base64.b64encode(img_byte)
+    try:
+        start_time = time()
+        paint_img = predict_by_img(img)
+        img_byte = BytesIO()
+        paint_img.save(img_byte, format=extend)
+        img_byte = img_byte.getvalue()
+        encoded = base64.b64encode(img_byte)
+        LOGGER.info(f"Inference(process time: {time() - start_time})")
+    except Exception as e:
+        LOGGER.error(e)
     return Response(content=encoded)

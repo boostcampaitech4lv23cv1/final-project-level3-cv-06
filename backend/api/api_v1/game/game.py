@@ -1,8 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
-from fastapi.responses import StreamingResponse
 
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
 from typing import List
 
 from utils import *
@@ -26,7 +24,7 @@ async def gamestart(game_start: GameStart, db: Session = Depends(get_db)) -> Lis
         List: 랜덤한 경로
     """
     
-    img_paths = read_savepaint(db, game_start.category)
+    img_paths = read_category(db, game_start.category)
     LOGGER.info('someone start game')
     return random.sample(img_paths, 9)
 
@@ -38,16 +36,11 @@ async def gameover(game_over: GameOver, db: Session = Depends(get_db)):
     """
     category = game_over.category
     for path, correct in zip(game_over.img_paths, game_over.correct_list):
-        try:
-            db_game = db.query(GameData).filter(and_(GameData.category == category, GameData.img_path == path)).first()
-        except Exception as e:
-            LOGGER.warning(e)
-            return HTTPException(status_code=400, detail="잘못된 카테고리가 입력 되었습니다")
-            
+        data = read_category_and_path(db, path, category)
         if correct:
-            db_game.correct_cnt += 1
+            data.correct_cnt += 1
         else:
-            db_game.incorrect_cnt += 1
+            data.incorrect_cnt += 1
             
     db.commit()
     
