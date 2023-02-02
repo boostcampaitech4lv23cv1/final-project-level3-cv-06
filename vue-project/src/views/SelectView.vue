@@ -28,21 +28,11 @@
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                  variant="tonal"
-                  color="primary"
-                  @click="dialog = false"
-                  :style="{ margin: '0vh 0vw 0vh 30vw' }"
-                  >확인</v-btn
-                >
+                <v-btn variant="tonal" color="primary" @click="dialog = false"
+                  :style="{ margin: '0vh 0vw 0vh 30vw' }">확인</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn
-                  variant="tonal"
-                  color="primary"
-                  @click="movePage('/description', { page: 1 })"
-                  :style="{ margin: '0vh 30vw 0vh 0vw' }"
-                  >게임방법 알아보기</v-btn
-                >
+                <v-btn variant="tonal" color="primary" @click="movePage('/description', { page: 1 })"
+                  :style="{ margin: '0vh 30vw 0vh 0vw' }">게임방법 알아보기</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -59,30 +49,17 @@
 
       <v-row class="d-flex justify-center">
         <v-radio-group v-model="selectedCategory">
-          <v-btn
-            rounded
-            v-for="item in categoryItems"
-            :key="item.value"
-            :value="item.value"
-            @click="changeCategory(item.value)"
-            :class="{
+          <v-btn rounded v-for="item in categoryItems" :key="item.value" :value="item.value"
+            @click="changeCategory(item.value)" :class="{
               selected: selectedCategory === item.value,
               ' mx-auto ': true,
-            }"
-            :style="{ height: '5vh', width: '20vh', margin: '1vh 0vw 0vh 0vw' }"
-          >
+            }" :style="{ height: '4vh', width: '20vh', margin: '1vh 0vw 0vh 0vw' }">
             {{ item.text }}
           </v-btn>
         </v-radio-group>
       </v-row>
-      <v-col
-        cols="12"
-        class="d-flex justify-center"
-        :style="{ margin: '3vh 0vw 0vh 0vw' }"
-      >
-        <v-btn :disabled="categoryIsEmpty" color="yellow" @click="startGame"
-          >Game start</v-btn
-        >
+      <v-col cols="12" class="d-flex justify-center" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+        <v-btn :disabled="categoryIsEmpty" color="yellow" @click="startGame">Game start</v-btn>
       </v-col>
     </v-container>
   </v-app>

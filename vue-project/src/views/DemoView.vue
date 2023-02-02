@@ -5,7 +5,7 @@
         <logo v-if="gameStatus === 0" :style="{ height: '20vh', width: '40vw' }" />
         <div v-if="gameStatus != 0" class="nums">{{ headText }}</div>
       </v-row>
-      <v-row class="d-flex justify-center mt-8" v-if="gameStatus != 0 & gameStatus != 10">
+      <v-row class="d-flex justify-center" v-if="gameStatus != 0 & gameStatus != 10">
         <v-sheet v-for="(i) in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="7vh"
           width="6vh" rounded :style="{ 'margin-left': '0.2vw' }"></v-sheet>
       </v-row>
@@ -27,7 +27,7 @@
             color="primary"></v-progress-linear>
         </v-col>
       </v-row>
-      <v-row class="mt-10">
+      <v-row>
         <v-col cols="4"></v-col>
         <v-col cols="4" class="d-flex justify-center">
           <v-text-field v-show="gameStatus > 0" label="Enter the answer" single-line density="compact" v-model="text"
@@ -233,8 +233,20 @@ watch(totalTimer, (newVal) => {
   src: url("../fonts/Lobster-Regular.ttf");
 }
 
-.nums {
-  font-family: "num";
-  font-size: 4rem;
+
+
+@media only screen and (max-height: 480px) {
+  .nums {
+    font-family: "num";
+    font-size: 2rem;
+  }
+}
+
+@media only screen and (min-height: 480px) {
+  .nums {
+    font-family: "num";
+    font-size: 4rem;
+  }
+
 }
 </style>
