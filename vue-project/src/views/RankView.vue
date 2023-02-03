@@ -176,7 +176,6 @@ export default {
     // let response = await this.$api(
     //   "http://34.64.169.197/api/v1/game/gameover",
     //   "POST",
-
     //   { category: this.$store.state.category, img_paths: imgPath, correct_list: correctList }
     // );
 
