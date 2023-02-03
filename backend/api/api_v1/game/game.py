@@ -47,6 +47,5 @@ async def gameover(game_over: GameOver, db: Session = Depends(get_db)):
             data.correct_cnt += 1
         else:
             data.incorrect_cnt += 1
-            
-    db.commit()
+        db.commit()
     
