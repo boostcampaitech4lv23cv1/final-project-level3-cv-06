@@ -110,8 +110,8 @@ class PixabayCrawler:
 
                 # creating the params list for all pages
                 imgs_downloaded = 0
-                n_imgs2gcs=0
-                
+                n_imgs2gcs = 0
+
                 run = True
 
                 for page in itertools.count(1):
@@ -130,7 +130,7 @@ class PixabayCrawler:
                                 if self.is_valid(img_dict["id"]):
                                     self.send_img2gcs(img_dict)
                                     df = self.add_data2df(df, keyword, img_dict)
-                                    n_imgs2gcs+=1
+                                    n_imgs2gcs += 1
 
                                 imgs_downloaded += 1
                                 Pbar.set(imgs_downloaded)
@@ -151,7 +151,7 @@ class PixabayCrawler:
             except Exception as err:
                 logger.warning(err)
                 logger.warning(f"an error occured proccesing the class {keyword}")
-        return df,n_imgs2gcs
+        return df, n_imgs2gcs
 
     def add_data2df(self, df, keyword, img_dict):
 
@@ -217,7 +217,7 @@ class PixabayCrawler:
 
     def send_img2gcs(self, img_dict):
         file_name = f"{KEYWORD}/{SITE}/{SCRAPED_TIME}/{str(img_dict['id'])}.webp"
-        img_bytes = self.download_img(img_dict["largeImageURL"])
+        img_bytes = self.download_img(img_dict["webformatURL"])
         img_PIL = Image.open(io.BytesIO(img_bytes))
         webp_io = io.BytesIO()
         img_PIL.save(webp_io, format="WEBP", quality=80)
@@ -229,6 +229,28 @@ class PixabayCrawler:
             logger.warning(
                 f"an error occured saving this images {img_dict['largeImageURL']}"
             )
+
+    def resize_keep_aspect_ratio(self, img, size: int = 640):
+        """resize image while keeping aspect ratio
+
+        Args:
+            img (PIL image): image to resize
+            size (int): (resize size)
+
+        Returns:
+            PIL image: resized image
+        """
+        original_w, original_h = img.size
+        if original_w >= 640 or original_h >= 640:
+            if original_w > original_h:
+                img = img.resize(
+                    (size, int(size / original_w * original_h)), resample=Image.NEAREST
+                )
+            else:
+                img = img.resize(
+                    (int(size / original_h * original_w), size), resample=Image.NEAREST
+                )
+        return img, img.size
 
 
 class Progressbar:
@@ -368,7 +390,7 @@ if __name__ == "__main__":
 
     keyword = [KEYWORD]
     scraper = PixabayCrawler(keyword, params, bucket)
-    df,n_imgs2gcs = scraper.scraper(n_imgs=N_IMGS)
+    df, n_imgs2gcs = scraper.scraper(n_imgs=N_IMGS)
     print(f"Number of img2gcs is {n_imgs2gcs}")
     send_metadata2api(df)
     # send_metadata2gcs(keyword, df, bucket)
