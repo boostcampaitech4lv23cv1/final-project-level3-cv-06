@@ -198,15 +198,10 @@ export default {
   height: "10vh";
 }
 
-.result {
-  background: url("../assets/test.jpg");
-  background-size: cover;
-  height: 100vh;
-}
-
 .hero {
   background: url("../assets/test.jpg");
   background-size: cover;
+  height: 100vh;
 }
 
 .score-space {
