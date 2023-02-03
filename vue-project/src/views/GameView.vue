@@ -286,7 +286,7 @@ function enter() {
     if (gameStatus.value === 9) {
       store.commit("setCleartime", totalTimer);
       store.commit("setCorrect", correctList.value)
-      // gameOver()
+      gameOver()
       router.push({ path: "/rank" });
     }
     else {
@@ -315,9 +315,10 @@ async function gameOver() {
     "http://34.64.169.197/api/v1/game/gameover",
     "POST",
 
-    { category: store._state.data.category, img_paths: store._state.data.originImg, correct_list: store._state.data.correctList }
+    { category: store._state.data.category, img_paths: store._state.data.imgPath, correct_list: store._state.data.correctList }
   );
 }
+
 
 /**
  * 화면이 마운트 될 시 필요한 정보를 서버로 부터 가져오고 저장 및 화면의 portrait 여부 구별
@@ -381,7 +382,7 @@ watch(totalTimer, (newVal) => {
     }
     store.commit("setCleartime", 0);
     store.commit("setCorrect", correctList.value)
-    // gameOver()
+    gameOver()
     router.push({ path: "/rank" });
   }
 });

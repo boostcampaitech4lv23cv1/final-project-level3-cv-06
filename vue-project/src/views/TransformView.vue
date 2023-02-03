@@ -131,7 +131,7 @@
       <v-dialog v-model="showDialog">
         <v-card>
           <!-- description text -->
-          <v-card-title class="text-center" height="3vh">이미지에 밑에 사진처럼 변합니다!</v-card-title>
+          <v-card-title class="text-center" height="3vh">이미지를 밑 사진처럼 변합니다!</v-card-title>
 
           <!-- dialog close 버튼 -->
           <v-card-actions>

@@ -11,7 +11,6 @@ const store = createStore({
             rank:'S',
             correctList:[],
             clearTime:100,
-            name:'',
             correctAnswer:0,
             mode:'',
             category:'',
@@ -46,9 +45,6 @@ const store = createStore({
         },
         setPath(state,path){
             state.imgPath=path
-        },
-        setName(state,name){
-            state.name=name
         },
         setMode(state,mode){
             state.mode=mode
