@@ -450,7 +450,7 @@ def init(stroke_num: int = 8, model_path: str = "model.pth"):
     path = get_path_from_current_file(model_path)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = prepare_infer_model(path, stroke_num, device)
-    meta_brushes = make_meta_brushes(device, mode="small")
+    meta_brushes = make_meta_brushes(device, mode="large")
     return model, meta_brushes, device
 
 
