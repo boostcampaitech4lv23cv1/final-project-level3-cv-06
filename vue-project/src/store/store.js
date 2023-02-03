@@ -20,7 +20,6 @@ const store = createStore({
     mutations:{
         setOrigin(state,img){
             state.originImg=img
-            // state.imgPath=img
         },
         setPaint(state,gif){
             state.paintImg=gif
@@ -44,7 +43,6 @@ const store = createStore({
             state.clearTime=cleartime
         },
         setCorrectanswers(state,correctanswers){
-            state.correctAnswers=correctanswers
         },
         setPath(state,path){
             state.imgPath=path
