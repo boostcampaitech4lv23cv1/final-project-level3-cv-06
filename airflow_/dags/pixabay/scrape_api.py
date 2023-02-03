@@ -165,7 +165,7 @@ class PixabayCrawler:
                             img_dict["webformatWidth"],
                             img_dict["webformatHeight"],
                             SCRAPED_TIME,
-                            "",
+                            "NaN",
                         ]
                     ],
                     columns=df.columns,
