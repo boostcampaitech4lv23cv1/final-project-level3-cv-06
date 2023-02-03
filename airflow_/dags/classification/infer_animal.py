@@ -153,6 +153,9 @@ def make_img_label() -> pd.DataFrame:
     labels, uses = pred2imgnetlabel(predictions, imagenet_labels)
     df["label"] = labels
     df["use_status"] = uses
+    print(
+        f"The number use_status(True) is {df['use_status'].value_counts()[True]}/{len(uses)}!"
+    )
 
     return df
 
