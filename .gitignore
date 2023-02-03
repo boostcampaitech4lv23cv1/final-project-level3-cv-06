@@ -235,6 +235,7 @@ airflow_/Pipfile
 airflow_/dags/data
 airflow_/dags/classification/data
 # scraped data
-airflow_/dags/secret.yml
+airflow_/secret.yml
+airflow_/m2-key.json
 
 lightning_logs/

@@ -14,9 +14,6 @@ import yaml
 from google.cloud import storage
 from PIL import Image
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "m2-key.json")
-)
 # request timeout
 TIMEOUT = 60
 
@@ -26,8 +23,10 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
 KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
 N_IMGS = int(N_IMGS)
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "{AIRFLOW_HOME}/m2-key.json"
+
 with open(f"{AIRFLOW_HOME}/secret.yml", "r") as f:
-    secret = yaml.safe_load(f)
+    secret = yaml.load(f, Loader=yaml.FullLoader)
 
 
 class PixabayCrawler:
