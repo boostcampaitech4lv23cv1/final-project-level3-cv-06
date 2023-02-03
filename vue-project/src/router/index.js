@@ -40,11 +40,6 @@ const routes = [
     component: resultview,
   },
   {
-    path: "/detail",
-    name: "detail",
-    component: detailview,
-  },
-  {
     path: "/transform",
     name: "transform",
     component: transformview,
@@ -64,11 +59,6 @@ const routes = [
     path: "/demoresult",
     name: "demoresult",
     component: demoresult,
-  },
-  {
-    path: "/demodetail",
-    name: "demodetail",
-    component: demodetail,
   },
   {
     path: "/leaderboard",
