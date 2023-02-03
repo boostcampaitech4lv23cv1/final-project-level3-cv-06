@@ -224,16 +224,26 @@ def make_duration_list(
     Returns:
         list: duration list
     """
+
+    exp_dict = {
+        "SQRT":0.5,
+        "LINEAR":1,
+        "SQUARE":2,
+    }
+    min_time_step = 12
+
     if mode == "CONSTANT":
         return [round(total_time * 1000 / num_frame)] * num_frame
-    if mode == "LINEAR":
-        min_time_step = 12
+    else:
+        exp_num = exp_dict[mode]
         duration_list = np.arange(min_time_step, min_time_step + num_frame)
+        duration_list = np.power(duration_list, exp_num)
         duration_list = np.asarray(
             duration_list / sum(duration_list) * total_time * 1000, dtype=int
         )
         duration_list[duration_list < min_time_step] = min_time_step
         return list(duration_list)
+
 
 
 def img2ani(df: pd.DataFrame) -> None:
