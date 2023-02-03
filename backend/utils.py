@@ -127,7 +127,7 @@ def from_image_to_str(img, extend):
     """
     pillow image 객체를 bytes로 변환
     """
-    if extend == "jpg":
+    if extend == "jpg" or extend == "JPG":
         extend = "jpeg"
 
     imgByteArr = io.BytesIO()
@@ -162,14 +162,6 @@ def set_logger(name):
 LOGGER = set_logger('app')
 
 
-def get_tabel_name(category):
-    category_dict = {
-        "animal": "Aniaml",
-        "landmark": "Landmark",
-        "celebrity": "Celebrity"
-    }
-    
-    
 def user_name_check(name, db: Session = Depends(get_db)):
     exist = db.query(Score).filter(Score.user_name == name).first()
     if exist:
