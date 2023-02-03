@@ -85,13 +85,6 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
             && python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
         cmd_timeout=600,
     )
-    img2ani = SSHOperator(
-        task_id="img2ani",
-        ssh_conn_id="ssh_connection",
-        command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
-            && python {ssh_base}/airflow_/dags/paint_transformer/img2ani.py {keyword} {site} {scraped_time}",
-        cmd_timeout=600,
-    )
     ani2gcs = SFTPToGCSOperator(
         task_id="ani2gcs",
         source_path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/*_ani.webp",
@@ -115,7 +108,6 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         crawl_img
         >> load_data_from_gcs2ssh
         >> infer_label
-        >> img2ani
         >> ani2gcs
         # >> remove_dir
         >> slack_success_noti
@@ -123,5 +115,3 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
 
 # TODO handling errors
 # TODO configure the retries % failures
-# TODO 새로 올라온 데이터에 대해서만 크롤링 후 db에 저장하도록 수정
-# TODO gcs에 저장된 데이터와 local 데이터 중복 없도록 업로드
