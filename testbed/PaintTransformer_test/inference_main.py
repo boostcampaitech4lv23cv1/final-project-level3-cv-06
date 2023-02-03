@@ -9,10 +9,10 @@ import numpy as np
 
 resize_l = 1024
 K = 5
-stroke_num = 16
+stroke_num = 12
 patch_size = 32
 
-model, meta_brushes, device = init(stroke_num, model_path="model_16.pth")
+model, meta_brushes, device = init(stroke_num, model_path="model_12.pth")
 
 image = Image.open("dataset/original/entertainer/iu/iu_01.jpg")
 output = inference(
@@ -37,13 +37,14 @@ def make_duration_list(num_frame: int=200, total_time: int=10, mode: str="CONSTA
         return duration_list
     if mode=="LINEAR":
         duration_list = np.arange(min_time_step, min_time_step + num_frame)
+        duration_list = np.power(duration_list, 2)
         duration_list = np.asarray(duration_list/sum(duration_list)*total_time*1000, dtype=int)
         duration_list[duration_list<min_time_step] = min_time_step
         return list(duration_list)
 
 
 
-fn = "output_iu_dummy_16_linear"
+fn = "output_iu_dummy_12_sq"
 
 # constant
 # timestep_list = [10]*200

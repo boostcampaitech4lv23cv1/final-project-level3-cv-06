@@ -63,8 +63,7 @@ def make_img_patch(patch_size, original_img_pad, layer_size, pad=False):
     img_patch = (
         img_patch.permute(0, 2, 1)
         .contiguous()
-        .view(-1, 3, patch_size, patch_size)
-        .contiguous()
+        .reshape(-1, 3, patch_size, patch_size)
     )
 
     return img_patch, img
@@ -150,20 +149,19 @@ def param2img_serial(
             stride=(patch_size_y // 2, patch_size_x // 2),
         )
         # canvas_patch: b, 3 * py * px, h * w
-        canvas_patch = canvas_patch.view(
+        canvas_patch = canvas_patch.reshape(
             b, 3, patch_size_y, patch_size_x, h, w
-        ).contiguous()
+        )
         canvas_patch = canvas_patch.permute(0, 4, 5, 1, 2, 3).contiguous()
         # canvas_patch: b, h, w, 3, py, px
         selected_canvas_patch = canvas_patch[:, patch_coord_y, patch_coord_x, :, :, :]
         selected_h, selected_w = selected_canvas_patch.shape[1:3]
         selected_param = (
             param[:, patch_coord_y, patch_coord_x, stroke_id, :]
-            .view(-1, p)
-            .contiguous()
+            .reshape(-1, p)
         )
         selected_decision = (
-            decision[:, patch_coord_y, patch_coord_x, stroke_id].view(-1).contiguous()
+            decision[:, patch_coord_y, patch_coord_x, stroke_id].reshape(-1)
         )
         selected_foregrounds = torch.zeros(
             selected_param.shape[0],
@@ -189,24 +187,24 @@ def param2img_serial(
                 patch_size_x,
                 meta_brushes,
             )
-        selected_foregrounds = selected_foregrounds.view(
+        selected_foregrounds = selected_foregrounds.reshape(
             b, selected_h, selected_w, 3, patch_size_y, patch_size_x
-        ).contiguous()
-        selected_alphas = selected_alphas.view(
+        )
+        selected_alphas = selected_alphas.reshape(
             b, selected_h, selected_w, 3, patch_size_y, patch_size_x
-        ).contiguous()
-        selected_decision = selected_decision.view(
+        )
+        selected_decision = selected_decision.reshape(
             b, selected_h, selected_w, 1, 1, 1
-        ).contiguous()
+        )
         selected_canvas_patch = (
             selected_foregrounds * selected_alphas * selected_decision
             + selected_canvas_patch * (1 - selected_alphas * selected_decision)
         )
         this_canvas = selected_canvas_patch.permute(0, 3, 1, 4, 2, 5).contiguous()
         # this_canvas: b, 3, selected_h, py, selected_w, px
-        this_canvas = this_canvas.view(
+        this_canvas = this_canvas.reshape(
             b, 3, selected_h * patch_size_y, selected_w * patch_size_x
-        ).contiguous()
+        )
         # this_canvas: b, 3, selected_h * py, selected_w * px
         return this_canvas
 
@@ -227,9 +225,7 @@ def param2img_serial(
                     dim=3,
                 )
             cur_canvas = canvas
-            if type(original_w) != type(1):
-                aaa = 1
-                1
+
             frame = crop(
                 cur_canvas[
                     :,
@@ -240,7 +236,7 @@ def param2img_serial(
                 original_h,
                 original_w,
             )
-            frame_list.append(frame[0].cpu().numpy())
+            frame_list.append(frame[0])
 
     if odd_idx_y.shape[0] > 0 and odd_idx_x.shape[0] > 0:
         for i in range(s):
@@ -276,7 +272,7 @@ def param2img_serial(
                 original_h,
                 original_w,
             )
-            frame_list.append(frame[0].cpu().numpy())
+            frame_list.append(frame[0])
 
     if odd_idx_y.shape[0] > 0 and even_idx_x.shape[0] > 0:
         for i in range(s):
@@ -308,7 +304,7 @@ def param2img_serial(
                 original_h,
                 original_w,
             )
-            frame_list.append(frame[0].cpu().numpy())
+            frame_list.append(frame[0])
 
     if even_idx_y.shape[0] > 0 and odd_idx_x.shape[0] > 0:
         for i in range(s):
@@ -343,7 +339,7 @@ def param2img_serial(
                 original_h,
                 original_w,
             )
-            frame_list.append(frame[0].cpu().numpy())
+            frame_list.append(frame[0])
 
     cur_canvas = cur_canvas[
         :,
@@ -487,30 +483,29 @@ def inference(
 
             grid = (
                 shape_param[:, :, :2]
-                .view(img_patch.shape[0] * stroke_num, 1, 1, 2)
-                .contiguous()
+                .reshape(img_patch.shape[0] * stroke_num, 1, 1, 2)
+                
             )
             img_temp = (
                 img_patch.unsqueeze(1)
                 .contiguous()
                 .repeat(1, stroke_num, 1, 1, 1)
-                .view(img_patch.shape[0] * stroke_num, 3, patch_size, patch_size)
-                .contiguous()
+                .reshape(img_patch.shape[0] * stroke_num, 3, patch_size, patch_size)
+                
             )
             color = (
                 F.grid_sample(img_temp, 2 * grid - 1, align_corners=False)
-                .view(img_patch.shape[0], stroke_num, 3)
-                .contiguous()
+                .reshape(img_patch.shape[0], stroke_num, 3)
+                
             )
             stroke_param = torch.cat([shape_param, color], dim=-1)
             # stroke_param: b * h * w, stroke_per_patch, param_per_stroke
             # stroke_decision: b * h * w, stroke_per_patch, 1
-            param = stroke_param.view(
+            param = stroke_param.reshape(
                 1, patch_num, patch_num, stroke_num, 8
-            ).contiguous()
+            )
             decision = (
-                stroke_decision.view(1, patch_num, patch_num, stroke_num)
-                .contiguous()
+                stroke_decision.reshape(1, patch_num, patch_num, stroke_num)
                 .bool()
             )
             # param: b, h, w, stroke_per_patch, 8
@@ -547,26 +542,23 @@ def inference(
 
         grid = (
             shape_param[:, :, :2]
-            .view(img_patch.shape[0] * stroke_num, 1, 1, 2)
-            .contiguous()
+            .reshape(img_patch.shape[0] * stroke_num, 1, 1, 2)
         )
         img_temp = (
             img_patch.unsqueeze(1)
             .contiguous()
             .repeat(1, stroke_num, 1, 1, 1)
-            .view(img_patch.shape[0] * stroke_num, 3, patch_size, patch_size)
-            .contiguous()
+            .reshape(img_patch.shape[0] * stroke_num, 3, patch_size, patch_size)
         )
         color = (
             F.grid_sample(img_temp, 2 * grid - 1, align_corners=False)
-            .view(img_patch.shape[0], stroke_num, 3)
-            .contiguous()
+            .reshape(img_patch.shape[0], stroke_num, 3)
         )
         stroke_param = torch.cat([shape_param, color], dim=-1)
         # stroke_param: b * h * w, stroke_per_patch, param_per_stroke
         # stroke_decision: b * h * w, stroke_per_patch, 1
-        param = stroke_param.view(1, h, w, stroke_num, 8).contiguous()
-        decision = stroke_decision.view(1, h, w, stroke_num).contiguous().bool()
+        param = stroke_param.reshape(1, h, w, stroke_num, 8)
+        decision = stroke_decision.reshape(1, h, w, stroke_num).bool()
         # param: b, h, w, stroke_per_patch, 8
         # decision: b, h, w, stroke_per_patch
         param[..., :2] = param[..., :2] / 2 + 0.25
@@ -587,7 +579,8 @@ def inference(
         ]
 
         final_result = crop(final_result, original_h, original_w)
-        frame_list = np.array(frame_list)
+        frame_list = torch.stack(frame_list).cpu().numpy()
+        # frame_list = np.array(frame_list)
         frame_list = frame_list.transpose((0, 2, 3, 1))
         frame_list = (255 * np.clip(frame_list, 0, 1)).astype(np.uint8)
         img_list = []
