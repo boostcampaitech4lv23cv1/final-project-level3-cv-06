@@ -54,7 +54,7 @@ async def crawling_create(
     file: UploadFile = File(),
     category: str = Body(),
     db: Session = Depends(get_db)):
-    """_summary_
+    """크롤링 후 데이터 생성
 
     Args:
         file (UploadFile, optional): feather 파일(data frame). Defaults to File().
