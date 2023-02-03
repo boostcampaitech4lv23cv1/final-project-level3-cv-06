@@ -26,7 +26,7 @@ AIRFLOW_HOME = os.path.dirname(os.path.abspath(__file__))
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
 # KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "02-02_21"
-with open(f"{os.path.abspath(os.path.join(AIRFLOW_HOME, '..'))}/secret.yml", "r") as f:
+with open(f"{os.path.abspath(os.path.join(AIRFLOW_HOME, '..','..'))}/secret.yml", "r") as f:
     secret = yaml.load(f, Loader=yaml.FullLoader)
 
 
