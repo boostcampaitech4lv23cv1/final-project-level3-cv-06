@@ -233,4 +233,8 @@ airflow_/standalone_admin_password.txt
 airflow_/Pipfile
 
 airflow_/dags/data
+airflow_/dags/classification/data
 # scraped data
+airflow_/dags/secret.yml
+
+lightning_logs/
