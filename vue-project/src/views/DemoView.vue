@@ -6,7 +6,7 @@
       <v-row class="justify-center">
         <v-col cols="8" class="d-flex justify-center">
           <logo v-if="gameStatus === 0" :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }" />
-          <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '5vw' , height:'10vh'}">
+          <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '5vw', height: '10vh' }">
             {{ headText }}
           </div>
         </v-col>
@@ -27,17 +27,7 @@
       </v-row>
       <v-row class="d-flex justify-center text-center">
         <v-col>
-          <v-progress-circular v-show="gameStatus > 0 && imgTimer > 5" height="4vh" color="#0000FF" :size="65"
-            :width="8" model-value="100">
-            <div :style="{
-              'font-size': '3vh',
-              color: 'black',
-            }">
-              {{ imgTimer }}
-            </div>
-          </v-progress-circular>
-
-          <v-progress-circular v-show="gameStatus > 0 && imgTimer <= 5" height="4vh" color="#FF0000" :size="65"
+          <v-progress-circular v-show="gameStatus > 0" height="4vh" :size="65" :style="{ color: progressColor }"
             :width="8" model-value="100">
             <div :style="{
               'font-size': '3vh',
@@ -78,77 +68,68 @@
 
 
     <v-container v-if="isPortrait">
-    <v-row class="justify-center">
-      <v-col cols="8" class="d-flex justify-center">
-        <logo v-if="gameStatus === 0" :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }" />
-        <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '10vw' , height:'15vh'}">
-          {{ headText }}
+      <v-row class="justify-center">
+        <v-col cols="8" class="d-flex justify-center">
+          <logo v-if="gameStatus === 0" :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }" />
+          <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '10vw', height: '15vh' }">
+            {{ headText }}
+          </div>
+        </v-col>
+      </v-row>
+
+
+      <v-row>
+        <v-progress-linear v-show="gameStatus > 0" class="mobile-bar" height="10vw" color="white"
+          v-model="totalTimer" />
+      </v-row>
+
+      <v-row>
+
+        <v-col cols="12">
+          <v-img src="../assets/example.jpg" height="30vh" width="100vw" class="mx-auto" v-show="gameStatus === 0" />
+          <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="50vh" width="100vw"
+            @load="timeStart" />
+        </v-col>
+
+
+      </v-row>
+      <v-row class="d-flex justify-center text-center">
+        <v-col>
+          <v-progress-circular v-show="gameStatus > 0" height="4vh" :size="65" :width="8" :style="{ color: progressColor }"
+            model-value="100">
+            <div :style="{
+              'font-size': '3vh',
+              color: 'black',
+            }">
+              {{ imgTimer }}
+            </div>
+          </v-progress-circular>
+        </v-col>
+      </v-row>
+
+      <v-row class="d-flex justify-center" v-if="(gameStatus != 0) & (gameStatus != 10)"
+        :style="{ 'margin-top': '1vh' }">
+        <v-sheet v-for="i in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="6vh"
+          width="6vh" rounded :style="{ 'margin-left': '0.5vw' }"></v-sheet>
+      </v-row>
+
+      <v-row class="d-flex justify-center">
+        <v-col cols="10" class="d-flex justify-center">
+          <v-text-field v-show="gameStatus > 0" label="Enter the answer" single-line density="compact" v-model="text"
+            @keydown.enter="enter"></v-text-field>
+
+          <v-btn v-show="gameStatus == 0 && nextImg != ''" @click="startGame">Game Start!</v-btn>
+        </v-col>
+      </v-row>
+
+      <v-row calss="d-flex justify-center">
+        <div v-show="wrongTimer > 0" class="mx-auto">
+          <wrong />
         </div>
-      </v-col>
-    </v-row>
-
-
-    <v-row>
-      <v-progress-linear v-show="gameStatus > 0" class="mobile-bar"  height="10vw" color="white" v-model="totalTimer" />
-    </v-row>
-
-    <v-row>
-
-      <v-col cols="12">
-        <v-img src="../assets/example.jpg" height="30vh" width="100vw" class="mx-auto" v-show="gameStatus === 0" />
-        <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="50vh" width="100vw"
-          @load="timeStart" />
-      </v-col>
-
-
-    </v-row>
-    <v-row class="d-flex justify-center text-center">
-      <v-col>
-        <v-progress-circular v-show="gameStatus > 0 && imgTimer > 5" height="4vh" color="#0000FF" :size="65"
-          :width="8" model-value="100">
-          <div :style="{
-            'font-size': '3vh',
-            color: 'black',
-          }">
-            {{ imgTimer }}
-          </div>
-        </v-progress-circular>
-
-        <v-progress-circular v-show="gameStatus > 0 && imgTimer <= 5" height="4vh" color="#FF0000" :size="65"
-          :width="8" model-value="100">
-          <div :style="{
-            'font-size': '3vh',
-            color: 'black',
-          }">
-            {{ imgTimer }}
-          </div>
-        </v-progress-circular>
-      </v-col>
-    </v-row>
-
-    <v-row class="d-flex justify-center" v-if="(gameStatus != 0) & (gameStatus != 10)"
-      :style="{ 'margin-top': '1vh' }">
-      <v-sheet v-for="i in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="6vh"
-        width="6vh" rounded :style="{ 'margin-left': '0.5vw' }"></v-sheet>
-    </v-row>
-
-    <v-row class="d-flex justify-center">
-      <v-col cols="10" class="d-flex justify-center">
-        <v-text-field v-show="gameStatus > 0" label="Enter the answer" single-line density="compact" v-model="text"
-          @keydown.enter="enter"></v-text-field>
-
-        <v-btn v-show="gameStatus == 0 && nextImg != ''" @click="startGame">Game Start!</v-btn>
-      </v-col>
-    </v-row>
-
-    <v-row calss="d-flex justify-center">
-      <div v-show="wrongTimer > 0" class="mx-auto">
-        <wrong />
-      </div>
-      <div v-show="rightTimer > 0" class="mx-auto">
-        <right />
-      </div>
-    </v-row>
+        <div v-show="rightTimer > 0" class="mx-auto">
+          <right />
+        </div>
+      </v-row>
     </v-container>
   </v-app>
 </template>
@@ -178,6 +159,7 @@ const loaded = ref(0);
 const imgList = ref([]);
 const correctAnswers = ref(0);
 const isPortrait = ref(true);
+const progressColor = ref("#0000FF")
 
 setInterval(() => {
   if (loaded.value == 1) {
@@ -309,6 +291,9 @@ onMounted(async () => {
 watch(imgTimer, (newVal) => {
   if (newVal == 0) {
     resetImg();
+  }
+  if (newVal <= 5) {
+    progressColor.value = "#FF0000"
   }
 });
 watch(totalTimer, (newVal) => {
