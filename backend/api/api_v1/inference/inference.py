@@ -36,13 +36,13 @@ async def inference(
     background_tasks.add_task(save_user_img, img, file_name)
     
     try:
-        start_time = time()
+        start_time = time.time()
         paint_img = predict_by_img(img)
         img_byte = BytesIO()
         paint_img.save(img_byte, format=extend)
         img_byte = img_byte.getvalue()
         encoded = base64.b64encode(img_byte)
-        LOGGER.info(f"Inference(process time: {time() - start_time})")
+        LOGGER.info(f"Inference(process time: {time.time() - start_time})")
         return Response(content=encoded)
     except Exception as e:
         LOGGER.error(e)
