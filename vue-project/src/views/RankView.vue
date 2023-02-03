@@ -140,11 +140,11 @@ export default {
         this.$store.commit("setName", this.name);
         this.$router.push({ path: "leaderboard" });
 
-        // let response = await this.$api(
-        //   "http://34.64.169.197/api/v1/score",
-        //   "POST",
-        //   { user_name: this.name, play_time: this.clearTime, correct_ctn: this.correctAnswer }
-        // );
+        let response = await this.$api(
+          "http://34.64.169.197/api/v1/score/create",
+          "POST",
+          { user_name: this.name, play_time: this.clearTime, correct_ctn: this.correctAnswer }
+        );
       }
     },
   },
@@ -169,11 +169,14 @@ export default {
       this.rank = "C";
     }
 
+    console.log(this.$store.category)
+    console.log(imgPath)
+    console.log(correctList)
     // let response = await this.$api(
     //   "http://34.64.169.197/api/v1/game/gameover",
     //   "POST",
 
-    //   { category: this.$store.category, img_paths: imgPath, correct_list: correctList }
+    //   { category: 'animal', img_paths: imgPath, correct_list: correctList }
     // );
 
     // let response = await this.$api(

@@ -33,16 +33,18 @@ const store = createStore({
         },
         setCorrect(state,correct){
             state.correctList=correct
+            state.correctAnswer=0
+            for(let i=0; i<9; i++){
+                if(correct[i]==true){
+                    state.correctAnswer+=1
+                }
+            }
         },
         setCleartime(state,cleartime){
             state.clearTime=cleartime
         },
         setCorrectanswers(state,correctanswers){
             state.correctAnswers=correctanswers
-            state.correctAnswer=0
-            for(let i=0; i<9; i++){
-                state.correctAnswer+=1
-            }
         },
         setPath(state,path){
             state.imgPath=path
