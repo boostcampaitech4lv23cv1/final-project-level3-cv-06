@@ -24,9 +24,15 @@ async def gamestart(game_start: GameStart, db: Session = Depends(get_db)) -> Lis
         List: 랜덤한 경로
     """
     
-    img_paths = read_category(db, game_start.category)
+    img_paths = read_game_data(db, game_start.category)
     LOGGER.info('someone start game')
-    return random.sample(img_paths, 9)
+    try:
+        random_list = random.sample(img_paths, 9)
+    except Exception as e:
+        LOGGER.error(e)
+        return HTTPException(status_code="500", detail="아직 게임이 준비되지 않았습니다.(The number of category is under 9)")
+
+    return random_list
 
 
 @router.post('/gameover')

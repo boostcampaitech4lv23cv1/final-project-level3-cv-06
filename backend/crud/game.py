@@ -7,6 +7,23 @@ from utils import LOGGER
 from model import *
 from scheme import *
 
+def read_game_data(db: Session, category: str):
+    """category에 맞으면서 use status가 True인 데이터 읽음
+
+    Args:
+        db (Session): DB
+        category (str): 카테고리
+
+    """
+    try:
+        img_paths = db.query(GameData).filter(and_(GameData.category == category, GameData.use_status == True)).all()
+    except Exception as e:
+        LOGGER.error(e)
+        return HTTPException(status_code=500, detail="DB ERROR(please check category)")
+    
+    return img_paths
+
+
 def read_category(db: Session, category: str):
     """category에 맞는 데이터 읽음
 
@@ -16,10 +33,10 @@ def read_category(db: Session, category: str):
 
     """
     try:
-        img_paths = db.query(GameData).filter(GameData.category == category).all()
+        img_paths = db.query(GameData).filter(and_(GameData.category == category, GameData.label != None)).all()
     except Exception as e:
         LOGGER.error(e)
-        return HTTPException(status_code=500, detail="DB ERROR(please check category, img_path)")
+        return HTTPException(status_code=500, detail="DB ERROR(please check category)")
     
     return img_paths
 

@@ -17,7 +17,7 @@ from db import *
 router = APIRouter()
 router.redirect_slashes = False
 
-@router.post('')
+@router.post('/create')
 async def create(score_in: ScoreIn, db: Session = Depends(get_db)):
     # validation check
     # valid = user_name_check(score_in.user_name, db)
@@ -27,7 +27,7 @@ async def create(score_in: ScoreIn, db: Session = Depends(get_db)):
     
 
 
-@router.get('', response_model=List[ScoreOut])
+@router.get('/read', response_model=List[ScoreOut])
 async def read_score(db: Session = Depends(get_db)):
     data = read_all_score(db)
     return data
