@@ -114,7 +114,7 @@ export default {
       rank: "",
       clearTime: this.$store.state.clearTime.toString().substr(0, 5),
       correctAnswer: this.$store.state.correctAnswer,
-      audioInfo: !this.$root.audio.muted && !this.$root.audio.paused,
+      audioInfo: true,
       correctNum: 0,
       name: this.$store.state.name,
       alert: false,
@@ -126,11 +126,7 @@ export default {
       this.$router.push({ path: "/demoresult" });
     },
     audioChange() {
-      if (this.$root.audio.paused) {
-        this.$root.audio.play();
-      } else {
-        this.$root.audio.muted = !this.$root.audio.muted;
-      }
+      this.$root.audio.muted = !this.$root.audio.muted;
       this.audioInfo = !this.audioInfo;
     },
     moveHome() {
@@ -153,6 +149,8 @@ export default {
     },
   },
   async mounted() {
+    this.$root.audio.play();
+    this.audioInfo = !this.$root.audio.muted;
     let correctList = this.$store.state.correctList;
     let imgPath = this.$store.state.imgPath;
 
