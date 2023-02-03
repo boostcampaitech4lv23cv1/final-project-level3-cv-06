@@ -115,3 +115,5 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
 
 # TODO handling errors
 # TODO configure the retries % failures
+# TODO docker compose postgre 지우기
+# TODO make sensor that sense gcp img files on ssh
