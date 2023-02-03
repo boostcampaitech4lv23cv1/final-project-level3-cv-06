@@ -140,11 +140,11 @@ export default {
         this.$store.commit("setName", this.name);
         this.$router.push({ path: "leaderboard" });
 
-        let response = await this.$api(
-          "http://34.64.169.197/api/v1/score/create",
-          "POST",
-          { user_name: this.name, play_time: this.clearTime, correct_ctn: this.correctAnswer }
-        );
+        // let response = await this.$api(
+        //   "http://34.64.169.197/api/v1/score/create",
+        //   "POST",
+        //   { user_name: this.name, play_time: this.clearTime, correct_ctn: this.correctAnswer }
+        // );
       }
     },
   },
@@ -152,7 +152,7 @@ export default {
     this.$root.audio.play();
     this.audioInfo = !this.$root.audio.muted;
     let correctList = this.$store.state.correctList;
-    let imgPath = this.$store.state.imgPath;
+    let imgPath = this.$store.state.originImg;
 
     for (let i = 0; i < 9; i++) {
       if (correctList[i] == 1) {
@@ -169,14 +169,14 @@ export default {
       this.rank = "C";
     }
 
-    console.log(this.$store.category)
+    console.log(this.$store.state.category)
     console.log(imgPath)
     console.log(correctList)
+    console.log(this.$store.state.correctAnswer)
     // let response = await this.$api(
     //   "http://34.64.169.197/api/v1/game/gameover",
     //   "POST",
-
-    //   { category: 'animal', img_paths: imgPath, correct_list: correctList }
+    //   { category: this.$store.state.category, img_paths: imgPath, correct_list: correctList }
     // );
 
     // let response = await this.$api(
@@ -197,15 +197,10 @@ export default {
   height: "10vh";
 }
 
-.result {
-  background: url("../assets/test.jpg");
-  background-size: cover;
-  height: 100vh;
-}
-
 .hero {
   background: url("../assets/test.jpg");
   background-size: cover;
+  height: 100vh;
 }
 
 .score-space {

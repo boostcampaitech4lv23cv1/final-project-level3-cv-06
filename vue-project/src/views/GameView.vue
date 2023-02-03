@@ -104,23 +104,18 @@
 
 
       <v-row>
-        <v-col cols="2"></v-col>
-
-
-        <!--default 이미지 출력 및 게임시작시 gif 이미지 출력-->
-        <v-col cols="8">
-          <v-img src="../assets/example.jpg" height="20vh" width="40vw" class="mx-auto" v-show="gameStatus === 0" />
-          <v-img v-show="gameStatus != 0" v-bind:src="paintImg[gameStatus - 1]" class="mx-auto" height="40vh"
-            width="40vw" @load="loaded = 1" />
-        </v-col>
-
-
-        <!-- 전체 타이머에 대한 프로그래스 바 -->
-        <v-col cols="2" class="mx-auto">
-          <v-progress-linear v-show="gameStatus > 0" class="bar" height="10vw" color="white" v-model="totalTimer">
-          </v-progress-linear>
-        </v-col>
+        <!-- 전체 타이머에 대한 프로그레스 바-->
+        <v-progress-linear v-show="gameStatus > 0" class="mobile-bar" height="10vw" color="white"
+          v-model="totalTimer" />
       </v-row>
+
+
+      <!-- default 이미지 및 gif 게임 이미지 출력 -->
+      <v-col cols="12">
+        <v-img src="../assets/example.jpg" height="30vh" width="100vw" class="mx-auto" v-show="gameStatus === 0" />
+        <v-img v-show="gameStatus != 0" v-bind:src="paintImg[gameStatus - 1]" class="mx-auto" height="50vh"
+          width="100vw" @load="loaded = 1" />
+      </v-col>
 
 
       <v-row class="d-flex justify-center text-center">
@@ -286,12 +281,15 @@ function startGame() {
  */
 function enter() {
   if (text.value == answerList.value[gameStatus.value - 1]) {
+    loaded.value = 0
+    correctList.value.push(true)
     if (gameStatus.value === 9) {
+      store.commit("setCleartime", totalTimer);
       store.commit("setCorrect", correctList.value)
+      // gameOver()
       router.push({ path: "/rank" });
     }
     else {
-      correctList.value.push(true)
       if (wrongTimer.value > 0) {
         wrongTimer.value = 0;
       }
@@ -307,6 +305,19 @@ function enter() {
   }
 }
 
+
+/**
+ * game이 끝나면 서버에 메타 정보를 보내는 함수
+ * @function gameover
+ */
+async function gameOver() {
+  let response = await this.$api(
+    "http://34.64.169.197/api/v1/game/gameover",
+    "POST",
+
+    { category: store._state.data.category, img_paths: store._state.data.originImg, correct_list: store._state.data.correctList }
+  );
+}
 
 /**
  * 화면이 마운트 될 시 필요한 정보를 서버로 부터 가져오고 저장 및 화면의 portrait 여부 구별
@@ -365,7 +376,9 @@ watch(totalTimer, (newVal) => {
     for (let i = 0; i < 9 - correctList.value.length; i++) {
       correctList.value.push(false)
     }
+    store.commit("setCleartime", 0);
     store.commit("setCorrect", correctList.value)
+    // gameOver()
     router.push({ path: "/rank" });
   }
 });
@@ -390,6 +403,20 @@ watch(totalTimer, (newVal) => {
   transform: rotate(90deg);
   margin-top: 17vh;
   background: linear-gradient(to right, #E54040 0%, #FFA63A 16%, #DCFF3F 32%, #6CFF3F 48%, #3FA2FF 64%, #A53FFF 80%, #FF3FC9 100%);
+  border-radius: 30px;
+}
+
+
+.mobile-bar {
+  transform: rotate(180deg);
+  background: linear-gradient(to right,
+      #e54040 0%,
+      #ffa63a 16%,
+      #dcff3f 32%,
+      #6cff3f 48%,
+      #3fa2ff 64%,
+      #a53fff 80%,
+      #ff3fc9 100%);
   border-radius: 30px;
 }
 
