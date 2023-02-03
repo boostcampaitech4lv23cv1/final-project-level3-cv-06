@@ -373,3 +373,4 @@ if __name__ == "__main__":
     send_metadata2api(df)
     # send_metadata2gcs(keyword, df, bucket)
     # TODO: 이전에 크롤링했던 사진 이후부터 크롤링
+    # TODO: pixabay에서 url전부 뽑고 url리스트를 api에 전달해서 한번에 중복체크, 그 후 멀티프로세싱이나 비동기로 이미지 다운
