@@ -133,6 +133,7 @@ export default {
 //         'http://127.0.0.1:8000/api/v1/game/gameover',
 //         "POST",
 //     )
+//     console.log(response)
 //     rank=response.rank
 // }
 </script>

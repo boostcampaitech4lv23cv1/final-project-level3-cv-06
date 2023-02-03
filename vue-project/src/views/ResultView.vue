@@ -31,7 +31,7 @@
             :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
             aspect-ratio="1"
             cover
-            :src="`data:image/gif;base64,${originImg[n - 1]}`"
+            :src="`${originImg[n - 1]}`"
             class="grey lighten-2"
             @click="moveDetail(n - 1)"
           >
@@ -51,10 +51,7 @@
         <v-row class="d-flex justify-center align-center">
           <!-- paint image 출력 -->
           <v-col cols="4" class="d-flex justify-center align-center">
-            <v-img
-              :src="`data:image/gif;base64,${paintImg[dialogNum]}`"
-              max-height="50vh"
-            />
+            <v-img :src="`${paintImg[dialogNum]}`" max-height="50vh" />
           </v-col>
         </v-row>
 
@@ -90,7 +87,7 @@
             :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
             aspect-ratio="1"
             cover
-            :src="`data:image/gif;base64,${originImg[n - 1]}`"
+            :src="`${originImg[n - 1]}`"
             class="grey lighten-2"
             @click="moveDetail(n - 1)"
           >
@@ -110,10 +107,7 @@
         <v-row class="d-flex justify-center align-center">
           <!-- paint image 출력 -->
           <v-col cols="9" class="d-flex justify-center align-center">
-            <v-img
-              :src="`data:image/gif;base64,${paintImg[dialogNum]}`"
-              max-height="50vh"
-            />
+            <v-img :src="`${paintImg[dialogNum]}`" max-height="50vh" />
           </v-col>
         </v-row>
 

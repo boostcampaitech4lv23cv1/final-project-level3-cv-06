@@ -125,7 +125,7 @@
             <v-btn
               variant="tonal"
               color="primary"
-              @click="movePage('/description', { page: 1 })"
+              @click="movePage('/description')"
               :style="{ margin: '0vh 30vw 0vh 0vw' }"
               >게임방법 알아보기</v-btn
             >
@@ -165,12 +165,7 @@
           class="d-flex justify-center"
           :style="{ margin: '3vh 0vw 0vh 0vw' }"
         >
-          <v-btn
-            color="yellow"
-            @click="startGame"
-            :style="{ height: '4vh', width: '20vh' }"
-            >Game start</v-btn
-          >
+          <v-btn color="yellow" @click="startGame">Game start</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -228,10 +223,9 @@ export default {
      * @function movePage
      * @param {string} route  이동할 페이지
      */
-    movePage(route, query) {
+    movePage(route) {
       this.$router.push({
         path: route,
-        query: query,
       });
     },
 
