@@ -333,11 +333,13 @@ onMounted(async () => {
   );
 
   let originImg = []
+  let imgPath = []
 
   for (let i = 0; i < 9; i++) {
     answerList.value.push(response.data[i]['label'])
 
     originImg.push(response.data[i]['base_url'] + response.data[i]['img_path'])
+    imgPath.push(response.data[i]['img_path'])
 
     let tmp = response.data[i]['img_path'].split('.')
     tmp[1] = 'ani.webp'
@@ -349,6 +351,7 @@ onMounted(async () => {
   store.commit("setOrigin", originImg);
   store.commit("setPaint", paintImg.value);
   store.commit("setAnswer", answerList.value);
+  store.commit('setPath', imgPath)
 
   checkOrientation();
   window.addEventListener("orientationchange", checkOrientation);

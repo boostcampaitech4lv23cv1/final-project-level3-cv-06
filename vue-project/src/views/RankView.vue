@@ -140,11 +140,11 @@ export default {
         this.$store.commit("setName", this.name);
         this.$router.push({ path: "leaderboard" });
 
-        // let response = await this.$api(
-        //   "http://34.64.169.197/api/v1/score/create",
-        //   "POST",
-        //   { user_name: this.name, play_time: this.clearTime, correct_ctn: this.correctAnswer }
-        // );
+        let response = await this.$api(
+          "http://34.64.169.197/api/v1/score/create",
+          "POST",
+          { user_name: this.name, play_time: this.clearTime, correct_cnt: this.correctAnswer }
+        );
       }
     },
   },
@@ -152,7 +152,7 @@ export default {
     this.$root.audio.play();
     this.audioInfo = !this.$root.audio.muted;
     let correctList = this.$store.state.correctList;
-    let imgPath = this.$store.state.originImg;
+    let imgPath = this.$store.state.imgPath;
 
     for (let i = 0; i < 9; i++) {
       if (correctList[i] == 1) {
@@ -173,12 +173,12 @@ export default {
     console.log(imgPath)
     console.log(correctList)
     console.log(this.$store.state.correctAnswer)
-    // let response = await this.$api(
-    //   "http://34.64.169.197/api/v1/game/gameover",
-    //   "POST",
+    let response = await this.$api(
+      "http://34.64.169.197/api/v1/game/gameover",
+      "POST",
 
-    //   { category: this.$store.state.category, img_paths: imgPath, correct_list: correctList }
-    // );
+      { category: this.$store.state.category, img_paths: imgPath, correct_list: correctList }
+    );
 
     // let response = await this.$api(
     //   'http://127.0.0.1:8000/api/v1/game/gameover',
