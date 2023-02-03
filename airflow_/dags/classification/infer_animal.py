@@ -24,8 +24,8 @@ from tqdm import tqdm
 AIRFLOW_HOME = os.path.dirname(os.path.abspath(__file__))
 
 
-# KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
-KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "02-02_19"
+KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
+# KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "02-02_21"
 
 
 class ClassifyDataset(Dataset):
@@ -72,6 +72,11 @@ def read_feather(file_path):
 
 
 def get_metadata_from_api() -> pd.DataFrame:
+    """get metadata from api
+
+    Returns:
+        pd.DataFrame: metadata dataframe
+    """
     url = "http://34.64.169.197/api/v1/meta/read"
     res = requests.get(url, allow_redirects=False)
     df = res.json()
@@ -79,7 +84,15 @@ def get_metadata_from_api() -> pd.DataFrame:
     return df
 
 
-def inference(df) -> np.ndarray:
+def inference_img(df: pd.DataFrame) -> np.ndarray:
+    """inference from crawled images using imagenet pretrained model
+
+    Args:
+        df (pd.DataFrame): crawled images metadata
+
+    Returns:
+        np.ndarray: prediction from model (imgnet class)
+    """
     transform = Compose([A.Resize(height=224, width=224), A.Normalize(), ToTensorV2()])
     test_set = ClassifyDataset(df, transform)
     test_loader = DataLoader(test_set, batch_size=1, shuffle=False, num_workers=4)
@@ -111,7 +124,12 @@ def pred2imgnetlabel(predictions: np.array, imagenet_labels: pd.DataFrame) -> li
     return list(df["korean"]), list(df["use"])
 
 
-def read_imgnet_labels():
+def read_imgnet_labels() -> pd.DataFrame:
+    """read imagenet labels
+
+    Returns:
+        pd.DataFrame: imagenet label dataframe
+    """
     df = pd.read_csv(f"{AIRFLOW_HOME}/imagenet_class.csv")
     df.drop("english", axis=1, inplace=True)
     return df
@@ -129,7 +147,7 @@ def make_img_label() -> pd.DataFrame:
 
     imagenet_labels = read_imgnet_labels()
     df = get_metadata_from_api()
-    predictions = inference(df)
+    predictions = inference_img(df)
     labels, uses = pred2imgnetlabel(predictions, imagenet_labels)
     df["label"] = labels
     df["use_status"] = uses
@@ -170,7 +188,12 @@ def join_df2db(df: pd.DataFrame, host: str = "34.145.38.251"):
     new_df.to_sql(name=KEYWORD, con=engine, if_exists="replace", index=False)
 
 
-def send_metadata2api(df):
+def send_metadata2api(df: pd.DataFrame) -> None:
+    """send metadata dataframe to api server
+
+    Args:
+        df (pd.DataFrame): metadata dataframe
+    """
     df = df.drop("tag", axis=1)
     url = "http://34.64.169.197/api/v1/meta/update"
 
@@ -188,10 +211,44 @@ def send_metadata2api(df):
         print(e)
 
 
-def img2ani(df):
+def make_duration_list(
+    num_frame: int = 200, total_time: int = 10, mode: str = "LINEAR"
+)-> list:
+    """make frame duration list for animation
 
-    base_path = f"{AIRFLOW_HOME}/dags/classification/data/"
-    time_consume = [100] * 100 + [100] * 100
+    Args:
+        num_frame (int, optional): number of frames. Defaults to 200.
+        total_time (int, optional): total time of animation. Defaults to 10.
+        mode (str, optional): mode of duration list. Defaults to "LINEAR".
+
+    Returns:
+        list: duration list
+    """
+    if mode == "CONSTANT":
+        return [round(total_time * 1000 / num_frame)] * num_frame
+    if mode == "LINEAR":
+        min_time_step = 12
+        duration_list = np.arange(min_time_step, min_time_step + num_frame)
+        duration_list = np.asarray(
+            duration_list / sum(duration_list) * total_time * 1000, dtype=int
+        )
+        duration_list[duration_list < min_time_step] = min_time_step
+        return list(duration_list)
+
+
+def img2ani(df: pd.DataFrame) -> None:
+    """convert img to animation
+
+    1. check if img use_status is True
+    2. convert img to animation using PaintTransformer
+    3. save animation in webp format
+
+    Args:
+        df (pd.DataFrame): metadata dataframe
+    """
+
+    base_path = f"{AIRFLOW_HOME}/data/"
+    time_consume = make_duration_list(num_frame=200, total_time=10, mode="LINEAR")
 
     resize_l = 1024
     K = 5
@@ -202,29 +259,30 @@ def img2ani(df):
 
     img_paths = base_path + df["img_path"]
 
-    for img_path in tqdm(img_paths):
-        save_path = img_path.split(".")[0] + "_ani.webp"
-        image = Image.open(img_path)
-        output = inference(
-            image=image,
-            resize_l=resize_l,  # resize original input to this size. (max(w, h) = resize_l)
-            K=K,  # set K
-            device=device,
-            model=model,
-            meta_brushes=meta_brushes,
-            stroke_num=stroke_num,
-            patch_size=patch_size,
-        )
-        Image.Image.save(
-            output[0],
-            save_path,
-            format="WEBP",
-            save_all=True,
-            append_images=output[1:],
-            optimize=True,
-            duration=time_consume,
-            loop=1,
-        )
+    for img_path, use_status in tqdm(zip(img_paths, df["use_status"])):
+        if use_status:
+            save_path = img_path.split(".")[0] + "_ani.webp"
+            image = Image.open(img_path)
+            output = inference(
+                image=image,
+                resize_l=resize_l,  # resize original input to this size. (max(w, h) = resize_l)
+                K=K,  # set K
+                device=device,
+                model=model,
+                meta_brushes=meta_brushes,
+                stroke_num=stroke_num,
+                patch_size=patch_size,
+            )
+            Image.Image.save(
+                output[0],
+                save_path,
+                format="WEBP",
+                save_all=True,
+                append_images=output[1:],
+                optimize=True,
+                duration=time_consume,
+                loop=1,
+            )
 
 
 if __name__ == "__main__":
@@ -233,3 +291,4 @@ if __name__ == "__main__":
     img2ani(df)
     send_metadata2api(df)
     print("label: ", df["label"])
+# TODO animation 인메모리로 GCS 전송
