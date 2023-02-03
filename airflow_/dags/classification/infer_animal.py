@@ -26,6 +26,8 @@ AIRFLOW_HOME = os.path.dirname(os.path.abspath(__file__))
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
 # KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "02-02_21"
+with open(f"{os.path.abspath(os.path.join(AIRFLOW_HOME, '..'))}/secret.yml", "r") as f:
+    secret = yaml.load(f, Loader=yaml.FullLoader)
 
 
 class ClassifyDataset(Dataset):
@@ -77,7 +79,7 @@ def get_metadata_from_api() -> pd.DataFrame:
     Returns:
         pd.DataFrame: metadata dataframe
     """
-    url = "http://34.64.169.197/api/v1/meta/read"
+    url = f"{secret['api_url']}/api/v1/meta/read"
     res = requests.get(url, allow_redirects=False)
     df = res.json()
     df = pd.DataFrame(df)
@@ -195,7 +197,7 @@ def send_metadata2api(df: pd.DataFrame) -> None:
         df (pd.DataFrame): metadata dataframe
     """
     df = df.drop("tag", axis=1)
-    url = "http://34.64.169.197/api/v1/meta/update"
+    url = f"{secret['api_url']}/api/v1/meta/update"
 
     buffer = pa.BufferOutputStream()
     feather.write_feather(df, buffer)
@@ -213,7 +215,7 @@ def send_metadata2api(df: pd.DataFrame) -> None:
 
 def make_duration_list(
     num_frame: int = 200, total_time: int = 10, mode: str = "LINEAR"
-)-> list:
+) -> list:
     """make frame duration list for animation
 
     Args:
@@ -226,9 +228,9 @@ def make_duration_list(
     """
 
     exp_dict = {
-        "SQRT":0.5,
-        "LINEAR":1,
-        "SQUARE":2,
+        "SQRT": 0.5,
+        "LINEAR": 1,
+        "SQUARE": 2,
     }
     min_time_step = 12
 
@@ -243,7 +245,6 @@ def make_duration_list(
         )
         duration_list[duration_list < min_time_step] = min_time_step
         return list(duration_list)
-
 
 
 def img2ani(df: pd.DataFrame) -> None:

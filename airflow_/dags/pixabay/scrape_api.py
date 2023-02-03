@@ -8,6 +8,7 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.feather as feather
 import requests
+import yaml
 
 # from webp import WebP
 from google.cloud import storage
@@ -25,9 +26,8 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
 KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
 N_IMGS = int(N_IMGS)
-# KEYWORD, SITE, SCRAPED_TIME, N_IMGS = "animal", "pixabay", "01-31_16", 30
-
-# AIRFLOW_HOME = "/opt/ml/final-project-level3-cv-06/airflow_"
+with open(f"{AIRFLOW_HOME}/secret.yml", "r") as f:
+    secret = yaml.safe_load(f)
 
 
 class PixabayCrawler:
@@ -204,7 +204,7 @@ class PixabayCrawler:
         Returns:
             bool: True if not duplicate
         """
-        url = "http://34.64.169.197/api/v1/meta/duplicate_check"
+        url = f"{secret['api_url']}/api/v1/meta/duplicate_check"
         data = {"id": str(img_id), "category": keyword[0]}
 
         try:
@@ -324,7 +324,7 @@ def send_metadata2gcs(keyword, df, bucket):
 
 
 def send_metadata2api(df):
-    url = "http://34.64.169.197/api/v1/meta/create"
+    url = f"{secret['api_url']}/api/v1/meta/create"
 
     buffer = pa.BufferOutputStream()
     feather.write_feather(df, buffer)
@@ -373,17 +373,16 @@ if __name__ == "__main__":
     MIN_IMG_PER_PAGE = 3
 
     params = {
-        "key": "33032380-426e7c126c233898d98f2cb2b",
+        "key": secret["pixabay_api"],
         "q": "None",
         "image_type": "photo",
         "page": 1,  # Returned search results are paginated. Use this parameter to select the page number.
         "per_page": MAX_IMG_PER_PAGE,  # Determine the number of results per page. Accepted values: 3 - 200. Default: 20.
         "category": category[0],
-        "min_width": 640,
-        "min_height": 640,
         "safesearch": "true",
         "order": "popular",
     }
+
     storage_client = storage.Client()
     bucket_name = "scraped-img"
     bucket = storage_client.bucket(bucket_name)
