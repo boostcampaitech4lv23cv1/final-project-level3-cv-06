@@ -19,7 +19,7 @@
 
           <v-col cols="1">
             <!-- 오디오 버튼 -->
-            <v-btn rounded variant="plain" @click="audioChange" height="5vh">
+            <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
               <v-icon :icon="audioIcon" size="5vh" color="white"> </v-icon>
             </v-btn>
             <br />
@@ -141,7 +141,7 @@
           <v-col cols="1">
             <div class="d-flex align-center">
               <!-- 오디오 버튼 -->
-              <v-btn rounded variant="plain" @click="audioChange" height="3vh">
+              <v-btn rounded variant="plain" @click="changeAudio" height="3vh">
                 <v-icon :icon="audioIcon" size="3vh" color="white"> </v-icon>
               </v-btn>
             </div>
@@ -268,7 +268,7 @@ export default {
    */
   data() {
     return {
-      audioIcon: !this.$root.audio.muted,
+      audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
       overlay: false,
       totalTimer: 25,
       page: 1,
@@ -324,9 +324,9 @@ export default {
    */
   mounted() {
     this.overlay = true;
-    this.audioIcon = this.$root.audio.muted
-      ? "mdi-volume-off"
-      : "mdi-volume-high";
+    if (this.$root.audio.paused) {
+      this.$root.audio.play();
+    }
     this.checkOrientation();
     window.addEventListener("orientationchange", this.checkOrientation);
   },
@@ -350,10 +350,10 @@ export default {
       this.$router.push({ path: "/select" });
     },
     /**
-     * 오디오 변경 감지 후 재생 및 멈춤
-     * @function audioChange
+     * 오디오 버튼 클릭으로 오디오를 끄거나 키는 이벤트 함수
+     * @function changeAudio
      */
-    audioChange() {
+    changeAudio() {
       if (this.$root.audio.paused) {
         this.$root.audio.play();
       } else {

@@ -12,36 +12,36 @@
       <v-row class="d-flex d-sm-none justify-end">
         <!-- mobile portrait 음향 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
-          <v-btn rounded variant="plain" @click="audioChange" height="5vh">
-            <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
-            </v-icon>
-            <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == false">
-            </v-icon>
+          <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
+            <v-icon :icon="audioIcon" size="5vh"> </v-icon>
           </v-btn>
         </v-col>
 
         <!--mobile portrait 홈 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
-          <v-btn rounded variant="plain" @click="moveBack" height="5vh">
-            <back height="5vh" />
+          <v-btn rounded variant="plain" @click="moveHome" height="5vh">
+            <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
           </v-btn>
         </v-col>
       </v-row>
 
-      <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+      <v-row
+        class="d-none d-sm-flex justify-end"
+        :style="{ margin: '3vh 0vw 0vh 0vw' }"
+      >
         <!-- 음향 버튼 -->
-        <v-btn rounded variant="plain" @click="audioChange" height="5vh">
-          <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
-          </v-icon>
-          <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == false">
-          </v-icon>
+        <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
+          <v-icon :icon="audioIcon" size="5vh"> </v-icon>
         </v-btn>
       </v-row>
 
-      <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
+      <v-row
+        class="d-none d-sm-flex justify-end"
+        :style="{ margin: '3vh 0vw 0vh 0vw' }"
+      >
         <!-- 홈 이동 버튼 -->
-        <v-btn rounded variant="plain" @click="moveBack" height="5vh">
-          <back height="5vh" />
+        <v-btn rounded variant="plain" @click="moveHome" height="5vh">
+          <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
         </v-btn>
       </v-row>
 
@@ -74,11 +74,9 @@
 
 <script>
 import ranking from "../svg/rankingText.vue";
-import back from "../svg/backButton.vue";
 export default {
   components: {
     ranking,
-    back,
   },
   data() {
     return {
@@ -94,33 +92,37 @@ export default {
         { name: "i", score: "9", time: "9" },
         { name: "j", score: "10", time: "10" },
       ],
-      audioInfo: true,
+      audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
     };
   },
   methods: {
-    audioChange() {
-      this.$root.audio.muted = !this.$root.audio.muted;
-      this.audioInfo = !this.audioInfo;
+    changeAudio() {
+      if (this.$root.audio.paused) {
+        this.$root.audio.play();
+      } else {
+        this.$root.audio.muted = !this.$root.audio.muted;
+      }
+      this.audioIcon =
+        this.audioIcon === "mdi-volume-high"
+          ? "mdi-volume-off"
+          : "mdi-volume-high";
     },
-    moveBack() {
-      this.$router.go(-1);
+    moveHome() {
+      this.$router.push({ path: "/" });
     },
   },
   async mounted() {
     if (this.$root.audio.paused) {
       this.$root.audio.play();
     }
-    this.audioInfo = !this.$root.audio.muted;
 
     let response = await this.$api(
       "http://34.64.169.197/api/v1/score/read",
-      "GET",
-    )
-    console.log(response)
+      "GET"
+    );
+    console.log(response);
   },
 };
-
-
 </script>
 
 <style scoped>
