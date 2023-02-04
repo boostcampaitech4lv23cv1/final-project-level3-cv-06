@@ -10,7 +10,7 @@ def read_all_score(db: Session):
     correct_cnt 내림차순
     play_time 오름차순
     """
-    return db.query(Score).order_by(Score.correct_cnt.desc(), Score.play_time.asc())
+    return db.query(Score).order_by(Score.correct_cnt.desc(), Score.play_time.asc()).all()
 
 def create_score(db: Session, user_name, play_time, correct_cnt):
     now = datetime.now()
