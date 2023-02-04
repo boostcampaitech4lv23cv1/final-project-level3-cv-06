@@ -201,9 +201,6 @@ export default {
   mounted() {
     this.checkOrientation();
     window.addEventListener("orientationchange", this.checkOrientation);
-    if (this.$root.audio.paused) {
-      this.$root.audio.play();
-    }
   },
 };
 </script>

@@ -41,7 +41,8 @@
           <!-- dialog close 버튼 -->
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="tonal" color="primary" @click="showDialog = false">확인</v-btn>
+            <v-btn variant="tonal" color="orange" @click="showDialog = false"
+              >확인</v-btn>
             <v-spacer />
           </v-card-actions>
         </v-card>
@@ -141,12 +142,14 @@
       <v-dialog v-model="showDialog">
         <v-card>
           <!-- description text -->
-          <v-card-title class="text-center" height="3vh">이미지를 밑 사진처럼 변합니다!</v-card-title>
-
+          <v-card-title class="text-center" height="3vh"
+            >이미지를 아래처럼 변환해요!</v-card-title>
           <!-- dialog close 버튼 -->
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="tonal" color="primary" @click="showDialog = false">확인</v-btn>
+            <v-btn variant="tonal" color="orange" @click="showDialog = false"
+              >확인</v-btn
+            >
             <v-spacer />
           </v-card-actions>
         </v-card>
@@ -239,9 +242,6 @@ export default {
   mounted() {
     this.checkOrientation();
     window.addEventListener("orientationchange", this.checkOrientation);
-    if (this.$root.audio.paused) {
-      this.$root.audio.play();
-    }
   },
   methods: {
     /**

@@ -15,7 +15,7 @@
             rounded
             variant="plain"
             color="transparent"
-            @click="movePage('/select')"
+            @click="[movePage('/select'), playBGM()]"
           >
             <game :style="{ height: '7vh' }" />
           </v-btn>
@@ -27,7 +27,7 @@
             rounded
             variant="plain"
             color="transparent"
-            @click="movePage('/transform')"
+            @click="[movePage('/transform'), playBGM()]"
           >
             <transform :style="{ height: '7vh' }" />
           </v-btn>
@@ -44,14 +44,12 @@
             rounded
             variant="plain"
             color="transparent"
-            @click="movePage('/leaderboard')"
+            @click="[movePage('/leaderboard'), playBGM()]"
           >
             <ranking :style="{ height: '7vh' }" />
           </v-btn>
         </v-col>
       </v-row>
-
-
     </v-container>
   </v-app>
 </template>
@@ -80,6 +78,11 @@ export default {
       this.$router.push({
         path: route,
       });
+    },
+    playBGM() {
+      if (this.$root.audio.paused) {
+        this.$root.audio.play();
+      }
     },
   },
 };

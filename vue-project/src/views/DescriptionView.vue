@@ -324,9 +324,6 @@ export default {
    */
   mounted() {
     this.overlay = true;
-    if (this.$root.audio.paused) {
-      this.$root.audio.play();
-    }
     this.checkOrientation();
     window.addEventListener("orientationchange", this.checkOrientation);
   },
