@@ -10,7 +10,11 @@ from model import *
 from scheme import *
 
 def read_all_score(db: Session):
-    return db.query(Score).all()
+    """
+    correct_cnt 내림차순
+    play_time 오름차순
+    """
+    return db.query(Score).all().order_by(Score.correct_cnt.desc(), Score.play_time.asc())
 
 def create_score(db: Session, user_name, play_time, correct_cnt):
     now = datetime.now()
