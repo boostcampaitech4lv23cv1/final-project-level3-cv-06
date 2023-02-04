@@ -37,7 +37,7 @@ async def create(score_in: ScoreIn, db: Session = Depends(get_db)):
     
 
 
-@router.get('/read', response_model=List[Union[ScoreOut, None]])
+@router.get('/read', response_model=List[ScoreOut])
 async def read_score(db: Session = Depends(get_db)):
     """
     전체 점수 정보 가져오는 API
