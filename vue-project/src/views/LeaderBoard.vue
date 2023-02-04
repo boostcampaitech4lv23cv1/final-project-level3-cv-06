@@ -25,20 +25,14 @@
         </v-col>
       </v-row>
 
-      <v-row
-        class="d-none d-sm-flex justify-end"
-        :style="{ margin: '3vh 0vw 0vh 0vw' }"
-      >
+      <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <!-- 음향 버튼 -->
         <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
           <v-icon :icon="audioIcon" size="5vh"> </v-icon>
         </v-btn>
       </v-row>
 
-      <v-row
-        class="d-none d-sm-flex justify-end"
-        :style="{ margin: '3vh 0vw 0vh 0vw' }"
-      >
+      <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <!-- 홈 이동 버튼 -->
         <v-btn rounded variant="plain" @click="moveHome" height="5vh">
           <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
@@ -59,9 +53,9 @@
               </thead>
               <tbody>
                 <tr v-for="item in ranking" :key="item.name">
-                  <td class="text-center">{{ item.name }}</td>
-                  <td class="text-center">{{ item.score }}</td>
-                  <td class="text-center">{{ item.time }}</td>
+                  <td class="text-center">{{ item.user_name }}</td>
+                  <td class="text-center">{{ item.correct_cnt }}</td>
+                  <td class="text-center">{{ item.play_time }}</td>
                 </tr>
               </tbody>
             </v-table>
@@ -80,18 +74,7 @@ export default {
   },
   data() {
     return {
-      ranking: [
-        { name: "a", score: "1", time: "1" },
-        { name: "b", score: "2", time: "2" },
-        { name: "c", score: "3", time: "3" },
-        { name: "d", score: "4", time: "4" },
-        { name: "e", score: "5", time: "5" },
-        { name: "f", score: "6", time: "6" },
-        { name: "g", score: "7", time: "7" },
-        { name: "h", score: "8", time: "8" },
-        { name: "i", score: "9", time: "9" },
-        { name: "j", score: "10", time: "10" },
-      ],
+      ranking: [],
       audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
     };
   },
@@ -120,7 +103,7 @@ export default {
       "http://34.64.169.197/api/v1/score/read",
       "GET"
     );
-    console.log(response);
+    this.ranking = response
   },
 };
 </script>

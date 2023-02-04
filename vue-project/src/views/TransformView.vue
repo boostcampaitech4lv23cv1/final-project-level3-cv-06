@@ -291,8 +291,9 @@ export default {
       //   "POST",
       //   formData
       // );
-      // this.returnImg = response;
-      // this.transform = false;
+      this.returnImg = response;
+      this.transform = false;
+
     },
 
     /**

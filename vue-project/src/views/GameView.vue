@@ -116,7 +116,7 @@
 
       <!-- default 이미지 및 gif 게임 이미지 출력 -->
       <v-col cols="12">
-        <v-img src="../assets/example.jpg" height="30vh" width="100vw" class="mx-auto" v-show="gameStatus === 0" />
+        <v-img src="../assets/example.jpg" height="45vh" width="100vw" class="mx-auto" v-show="gameStatus === 0" />
         <v-img v-show="gameStatus != 0" v-bind:src="paintImg[gameStatus - 1]" class="mx-auto" height="45vh"
           width="100vw" @load="loaded = 1" />
       </v-col>
@@ -315,10 +315,13 @@ function enter() {
  * @function gameover
  */
 async function gameOver() {
-  let response = await this.$api(
+  const headers = { "Content-Type": "application/json" };
+  const params = { category: store._state.data.category, img_paths: store._state.data.imgPath, correct_list: store._state.data.correctList };
+
+  let response = await axios.post(
     "http://34.64.169.197/api/v1/game/gameover",
-    "POST",
-    { category: store._state.data.category, img_paths: store._state.data.imgPath, correct_list: store._state.data.correctList }
+    params,
+    { headers }
   );
 }
 
@@ -354,7 +357,6 @@ onMounted(async () => {
 
     let tmp = response.data[i]['img_path'].split('.')
     tmp[1] = 'ani.webp'
-    console.log(tmp)
     paintImg.value.push(response.data[i]['base_url'] + tmp.join('_'))
   }
   console.log(answerList.value)
@@ -366,12 +368,6 @@ onMounted(async () => {
 
   checkOrientation();
   window.addEventListener("orientationchange", checkOrientation);
-
-
-
-  console.log(window.innerHeight, screen.orientation.type)
-
-  window.addEventListener('orientationchange', handleOrientationChange)
 });
 
 
@@ -393,7 +389,7 @@ watch(imgTimer, (newVal) => {
 });
 watch(totalTimer, (newVal) => {
   if (Math.floor(newVal) == 100) {
-    store.commit("setCleartime", 0);
+    store.commit("setCleartime", 100);
     store.commit("setCorrect", correctList.value)
     gameOver()
     router.push({ path: "/rank" });

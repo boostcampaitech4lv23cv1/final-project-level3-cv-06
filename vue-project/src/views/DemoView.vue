@@ -27,10 +27,10 @@
       </v-row>
       <v-row class="d-flex justify-center text-center">
         <v-col>
-          <v-progress-circular v-show="gameStatus > 0" height="4vh" :size="65" :style="{ color: progressColor }"
+          <v-progress-circular v-show="gameStatus > 0" height="2vh" :size="40" :style="{ color: progressColor }"
             :width="8" model-value="100">
             <div :style="{
-              'font-size': '3vh',
+              'font-size': '1vh',
               color: 'black',
             }">
               {{ imgTimer }}

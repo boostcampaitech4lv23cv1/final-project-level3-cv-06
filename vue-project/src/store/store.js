@@ -72,7 +72,7 @@ const store = createStore({
         setCorrect(state,correct){
             state.correctList=correct
             state.correctAnswer=0
-            for(let i=0; i<9; i++){
+            for(let i=0; i<correct.length; i++){
                 if(correct[i]==true){
                     state.correctAnswer+=1
                 }
