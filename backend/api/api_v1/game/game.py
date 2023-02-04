@@ -8,7 +8,6 @@ from scheme import *
 from crud import *
 from db import *
 
-
 router = APIRouter()
     
     

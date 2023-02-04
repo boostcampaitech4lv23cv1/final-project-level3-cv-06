@@ -51,7 +51,7 @@ def predict(category):
     origin_image = cv2.cvtColor(origin_image, cv2.COLOR_BGR2RGB)
     origin_image = origin_image.tolist()
 
-    output_dir_root= "output/"
+    output_dir_root = "output/"
 
     label = selected.split("_")[0]
     # start = time.time()
@@ -65,9 +65,9 @@ def predict(category):
         stroke_num=stroke_num,
         patch_size=patch_size,
         K=K,
-        need_animation=True,        # whether need intermediate results for animation.
-        resize_l=resize_l,          # resize original input to this size. (max(w, h) = resize_l)
-        serial=True,                # if need animation, serial must be True.
+        need_animation=True,  # whether need intermediate results for animation.
+        resize_l=resize_l,  # resize original input to this size. (max(w, h) = resize_l)
+        serial=True,  # if need animation, serial must be True.
     )
 
     # print(time.time() - start)
@@ -103,8 +103,8 @@ def predict_by_img(img):
         stroke_num=stroke_num,
         patch_size=patch_size,
         K=K,
-        resize_l=resize_l,          # resize original input to this size. (max(w, h) = resize_l)
-        serial=False,                # if need animation, serial must be True.
+        resize_l=resize_l,  # resize original input to this size. (max(w, h) = resize_l)
+        serial=False,  # if need animation, serial must be True.
     )
 
     return final_img
