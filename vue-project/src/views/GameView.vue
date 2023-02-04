@@ -318,7 +318,6 @@ async function gameOver() {
   let response = await this.$api(
     "http://34.64.169.197/api/v1/game/gameover",
     "POST",
-
     { category: store._state.data.category, img_paths: store._state.data.imgPath, correct_list: store._state.data.correctList }
   );
 }
@@ -394,9 +393,6 @@ watch(imgTimer, (newVal) => {
 });
 watch(totalTimer, (newVal) => {
   if (Math.floor(newVal) == 100) {
-    for (let i = 0; i < 9 - correctList.value.length; i++) {
-      correctList.value.push(false)
-    }
     store.commit("setCleartime", 0);
     store.commit("setCorrect", correctList.value)
     gameOver()
