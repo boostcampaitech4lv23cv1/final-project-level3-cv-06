@@ -33,7 +33,7 @@ async def create(score_in: ScoreIn, db: Session = Depends(get_db)):
     # if not valid:
     #     return HTTPException(status_code=400, detail="user name already exists")
     create_score(db, score_in.user_name, score_in.play_time, score_in.correct_cnt)
-    LOGGER.info('upload score')
+    LOGGER.debug('upload score')
     
 
 
@@ -45,8 +45,6 @@ async def read_score(db: Session = Depends(get_db)):
     """
     
     data = read_all_score(db)
-    print(data)
-    print(len(data))
     return data
     
     

@@ -77,7 +77,7 @@ async def crawling_create(
         data = pd.read_feather(BytesIO(file_content))
         create_from_df(db, data, category)
     except Exception as e:
-        LOGGER.warning(e)
+        LOGGER.error(e)
         return HTTPException(status_code=400, detail="file type error(please check whether file format is feather)")
     
     return {"messege": "success"}
@@ -101,7 +101,7 @@ async def crawling_update(
         file_content = await file.read()
         data = pd.read_feather(BytesIO(file_content))
     except Exception as e:
-        LOGGER.warning(e)
+        LOGGER.error(e)
         return HTTPException(status_code=400, detail="file type error(please check whether file format is feather)")
         
     for idx, row in data.iterrows():
