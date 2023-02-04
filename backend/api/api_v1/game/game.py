@@ -14,18 +14,15 @@ router = APIRouter()
     
 @router.post('/gamestart', response_model=List[SavePaintOut])
 async def gamestart(game_start: GameStart, db: Session = Depends(get_db)) -> List:
-    """게임 시작 시 카테고리에 맞는 gcs경로 랜덤으로 전송
+    """
+    게임 시작 API\n
+    GCS로 부터 전체 경로를 받아 랜덤으로 9개를 리스트로 전송
 
-    Args:
-        game_start (GameStart): game start 
-        db (Session, optional): DB. Defaults to Depends(get_db).
-
-    Returns:
-        List: 랜덤한 경로
+    **game_start**
+    - category: str
     """
     
     img_paths = read_game_data(db, game_start.category)
-    LOGGER.info('someone start game')
     try:
         random_list = random.sample(img_paths, 9)
     except Exception as e:
@@ -37,7 +34,13 @@ async def gamestart(game_start: GameStart, db: Session = Depends(get_db)) -> Lis
 
 @router.post('/gameover')
 async def gameover(game_over: GameOver, db: Session = Depends(get_db)):
-    """게임 종료시 이미지 정답, 오답 기록
+    """
+    게임 종료시 이미지 정답, 오답 여부 DB에 기록
+    
+    **game_over**
+    - category: str
+    - img_paths: list[str]
+    - correct_list: list[str]
     
     """
     category = game_over.category

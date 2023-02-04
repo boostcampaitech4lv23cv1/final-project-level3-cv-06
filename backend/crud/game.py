@@ -35,19 +35,22 @@ def read_category_and_path(db: Session, path: str, category: str):
 
 def create_from_df(db: Session, df, category):
     datas = []
-    for idx, row in df.iterrows():
-        datas.append(
-            GameData(
-                created_time=row.crawled_time,
-                tag=row.tag,
-                label=row.label,
-                category=category,
-                img_height=row.img_height,
-                img_width=row.img_width,
-                img_path=row.img_path
+    try:
+        for idx, row in df.iterrows():
+            datas.append(
+                GameData(
+                    created_time=row.crawled_time,
+                    tag=row.tag,
+                    label=row.label,
+                    category=category,
+                    img_height=row.img_height,
+                    img_width=row.img_width,
+                    img_path=row.img_path
+                )
             )
-        )
-    db.add_all(datas)
-    db.commit()
-    LOGGER.debug("add crawling data to DB")
+        db.add_all(datas)
+        db.commit()
+        LOGGER.debug("add crawling data to DB")
+    except Exception as e:
+        LOGGER.error(e)
     

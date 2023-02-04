@@ -11,16 +11,13 @@ from fastapi import File, UploadFile, Response
 router = APIRouter()
 router.redirect_slashes = False
 
-@router.post("")
+@router.post("", include_in_schema=False)
 async def inference(
-    file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks()
-):
-    """사용자의 사진 inference 및 사진 gcs에 저장
-
-    Args:
-        file (UploadFile, optional): image. Defaults to File(...).
-        background_tasks (BackgroundTasks, optional): 백그라운드 task(사진 저장). Defaults to BackgroundTasks().
-
+    file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks(), 
+    ):
+    """
+    사용자의 사진 Inference 진행 및 백그라운드 작업으로 GCS에 사진 저장\n
+    현재 사용 안함
     """
     # 사진 하나만 가능
     # print(uf.filename)

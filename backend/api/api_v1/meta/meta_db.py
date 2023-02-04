@@ -25,12 +25,18 @@ async def duplicate_check(
     id: str = Body(embed=True),
     category: str = Body(embed=True),
     db: Session = Depends(get_db)):
-    """이미지 크롤링 하기 전 meta db에 같은 이미지가 있는지 확인하는 api
+    """
+    meta db에 같은 이미지가 있는지 확인하는 api
 
-    Args:
-        id (str, optional): 이미지 고유 아이디. Defaults to Body(embed=True).
-        category (str, optional): 이미지 카테고리. Defaults to Body(embed=True).
-        db (Session, optional): DB. Defaults to Depends(get_db).
+    **id**: str(=path)
+   
+    **category**: str
+    
+    ---
+    
+    Return
+    
+    **valid**: Boolean
 
     """
     
@@ -54,12 +60,12 @@ async def crawling_create(
     file: UploadFile = File(),
     category: str = Body(),
     db: Session = Depends(get_db)):
-    """크롤링 후 데이터 생성
-
-    Args:
-        file (UploadFile, optional): feather 파일(data frame). Defaults to File().
-        category (str, optional): 카테고리. Defaults to Body().
-        db (Session, optional): DB. Defaults to Depends(get_db).
+    """
+    다른 VM에서 크롤링한 데이터 feather file(data frame)로 받아서 DB에 저장
+    
+    **file**: format - feather
+    
+    **category**: str
 
     """
     
@@ -79,13 +85,13 @@ async def crawling_update(
     file: UploadFile = File(),
     category: str = Body(),
     db: Session = Depends(get_db)):
-    """ 추론 서버에서 추론 후 label 업데이트 하는 API
-
-    Args:
-        file (UploadFile, optional): feather file(pandas frame). Defaults to File().
-        category (str, optional): 카테고리. Defaults to Body().
-        db (Session, optional): DB. Defaults to Depends(get_db).
-
+    """
+    추론 서버에서 label 추론후 DB에 저장
+    
+    **file**: format - feather
+    
+    **category**: str
+    
     """
     
     try:

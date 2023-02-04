@@ -19,6 +19,15 @@ router.redirect_slashes = False
 
 @router.post('/create')
 async def create(score_in: ScoreIn, db: Session = Depends(get_db)):
+    """
+    유저 점수 등록 API
+    
+    **socre_in**
+    - user_name: str
+    - play_time: float
+    - correc_cnt: int
+    
+    """
     # validation check
     # valid = user_name_check(score_in.user_name, db)
     # if not valid:
@@ -30,6 +39,11 @@ async def create(score_in: ScoreIn, db: Session = Depends(get_db)):
 
 @router.get('/read', response_model=List[ScoreOut])
 async def read_score(db: Session = Depends(get_db)):
+    """
+    전체 점수 정보 가져오는 API
+    
+    """
+    
     data = read_all_score(db)
     return data
     
