@@ -41,7 +41,7 @@ async def inference(
         img_byte = img_byte.getvalue()
         encoded = base64.b64encode(img_byte)
         
-        LOGGER.info(f"Inference(process time: {time.time() - start_time})")
+        LOGGER.debug(f"Inference(process time: {time.time() - start_time})")
         return Response(content=encoded)
     except Exception as e:
         LOGGER.error(e)

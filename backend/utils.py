@@ -152,7 +152,7 @@ def save_user_img(img, file_name):
 def set_logger(name):
     logger = logging.getLogger(name)
     formatter = logging.Formatter('%(asctime)s - %(filename)s:%(lineno)s - %(funcName)s - %(levelname)s - %(message)s')
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     file_handler = logging.FileHandler(name + ".log", encoding='utf-8')
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)

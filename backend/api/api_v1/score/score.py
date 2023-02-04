@@ -41,7 +41,13 @@ async def create(score_in: ScoreIn, db: Session = Depends(get_db)):
 async def read_score(db: Session = Depends(get_db)):
     """
     전체 점수 정보 가져오는 API
+
+    ---
     
+    Return
+    - correct_cnt 높은 순
+    - play_time 작은 순
+    정렬 후 전송
     """
     
     data = read_all_score(db)
