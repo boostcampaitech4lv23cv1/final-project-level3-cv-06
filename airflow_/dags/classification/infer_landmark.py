@@ -2,9 +2,13 @@ import os
 import sys
 
 import pandas as pd
+import pyarrow as pa
+import pyarrow.feather as feather
+import requests
+import yaml
 from geopy.geocoders import Nominatim
 from google.cloud import storage, vision
-from infer_animal import make_duration_list, send_metadata2api
+from infer_animal import make_duration_list
 from PaintTransformer.inference import inference, init
 from PIL import Image
 from tqdm import tqdm
@@ -14,6 +18,8 @@ AIRFLOW_HOME = os.path.abspath(
 )
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
 
+with open(f"{AIRFLOW_HOME}/secret.yml", "r") as f:
+    secret = yaml.load(f, Loader=yaml.FullLoader)
 
 os.environ["GCLOUD_PROJECT"] = "CV-NOOPS"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f"{AIRFLOW_HOME}/m2-key.json"
@@ -130,13 +136,35 @@ def img2ani(df: pd.DataFrame) -> None:
 
 def download_gcs_filter(blobs, file_names, df):
     dest = "/opt/ml/final-project-level3-cv-06/airflow_/dags/classification/data"
+    os.makedirs(
+        f"{dest}/{'/'.join(blobs[1].name.split('.')[0].split('/')[:-1])}", exist_ok=True
+    )
+
     all_files = {file_name: False for file_name in file_names[1:]}
     to_be_downloaded_files = df[df["label"] != "NaN"]["img_path"].to_list()
     for file in to_be_downloaded_files:
         all_files[file] = True
-    for blob in blobs:
+    for blob in blobs[1:]:
         if all_files[blob.name]:
             blob.download_to_filename(f"{dest}/{blob.name}")
+
+
+def send_metadata2api(df, KEYWORD):
+    url = f"{secret['api_url']}/api/v1/meta/create"
+
+    buffer = pa.BufferOutputStream()
+    feather.write_feather(df, buffer)
+
+    file = {"file": buffer.getvalue().to_pybytes()}
+    category = {"category": KEYWORD}
+
+    res = requests.post(url, files=file, data=category)
+
+    # Check the status code of the response
+    if res.status_code == 200:
+        print("metadata sent successfully")
+    else:
+        print("Failed to send data")
 
 
 if __name__ == "__main__":
