@@ -68,10 +68,15 @@
 
 
     <v-container v-if="isPortrait">
-      <v-row class="justify-center">
+      <v-row class="d-flex justify-center" v-if="gameStatus == 0">
         <v-col cols="8" class="d-flex justify-center">
-          <logo v-if="gameStatus === 0" :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }" />
-          <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '10vw', height: '15vh' }">
+          <logo :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }" />
+        </v-col>
+      </v-row>
+
+      <v-row class="d-flex justify-center" v-if="gameStatus != 0">
+        <v-col cols="8" class="d-flex justify-center">
+          <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '10vw', height: '7vh' }">
             {{ headText }}
           </div>
         </v-col>
@@ -87,7 +92,7 @@
 
         <v-col cols="12">
           <v-img src="../assets/example.jpg" height="30vh" width="100vw" class="mx-auto" v-show="gameStatus === 0" />
-          <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="50vh" width="100vw"
+          <v-img v-show="gameStatus != 0" v-bind:src="currentImg" class="mx-auto" height="45vh" width="100vw"
             @load="timeStart" />
         </v-col>
 
@@ -95,10 +100,10 @@
       </v-row>
       <v-row class="d-flex justify-center text-center">
         <v-col>
-          <v-progress-circular v-show="gameStatus > 0" height="4vh" :size="65" :width="8"
+          <v-progress-circular v-show="gameStatus > 0" height="3vh" :size="65" :width="8"
             :style="{ color: progressColor }" model-value="100">
             <div :style="{
-              'font-size': '3vh',
+              'font-size': '2vh',
               color: 'black',
             }">
               {{ imgTimer }}
@@ -110,7 +115,7 @@
       <v-row class="d-flex justify-center" v-if="(gameStatus != 0) & (gameStatus != 10)"
         :style="{ 'margin-top': '1vh' }">
         <v-sheet v-for="i in answer[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="6vh"
-          width="6vh" rounded :style="{ 'margin-left': '0.5vw' }"></v-sheet>
+          width="6vh" rounded :style="{ 'margin-left': '0.5vw', 'margin-bottom': '1vh' }"></v-sheet>
       </v-row>
 
       <v-row class="d-flex justify-center">
