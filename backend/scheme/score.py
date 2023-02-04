@@ -11,3 +11,5 @@ class ScoreOut(BaseModel):
     user_name: str
     play_time: float
     correct_cnt: int
+    class Config:
+        orm_mode = True
