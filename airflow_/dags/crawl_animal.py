@@ -8,22 +8,11 @@ from airflow import DAG
 
 # Operators; we need this to operate!
 from airflow.operators.bash import BashOperator
-from airflow.operators.python import PythonOperator
-from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
-from airflow.providers.google.cloud.transfers.gcs_to_sftp import GCSToSFTPOperator
-from airflow.providers.google.cloud.transfers.local_to_gcs import (
-    LocalFilesystemToGCSOperator,
-)
-from airflow.providers.google.cloud.transfers.postgres_to_gcs import (
-    PostgresToGCSOperator,
-)
 from airflow.providers.google.cloud.transfers.sftp_to_gcs import SFTPToGCSOperator
-from airflow.providers.sftp.sensors.sftp import SFTPSensor
 from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
 from airflow.providers.ssh.operators.ssh import SSHOperator
 from airflow.utils.dates import days_ago
 from callback.slack_noti import send_slack_task_failure, send_slack_task_retry
-from database.metadata2db import df2db
 from pytz import timezone
 
 # package for tasks
@@ -93,11 +82,11 @@ with DAG("crawling_animal", default_args=default_args, schedule="@once") as dag:
         gcp_conn_id="gcs_connection",
         sftp_conn_id="sftp_connection",
     )
-    # remove_dir = SSHOperator(
-    #     task_id="remove_dir",
-    #     ssh_conn_id="ssh_connection",
-    #     command=f"rm -rf {ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}",
-    # )
+    remove_dir = SSHOperator(
+        task_id="remove_dir",
+        ssh_conn_id="ssh_connection",
+        command=f"rm -rf {ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}",
+    )
     slack_success_noti = SlackWebhookOperator(
         task_id="slack_success_noti",
         slack_webhook_conn_id="slack_connection",
@@ -109,7 +98,7 @@ with DAG("crawling_animal", default_args=default_args, schedule="@once") as dag:
         >> load_data_from_gcs2ssh
         >> infer_label
         >> ani2gcs
-        # >> remove_dir
+        >> remove_dir
         >> slack_success_noti
     )
 

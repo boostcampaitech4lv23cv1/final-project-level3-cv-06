@@ -76,7 +76,7 @@ def make_df(SCRAPED_TIME, file_names, countries):
     return pd.DataFrame(
         {
             "tag": "landmark",
-            "img_path": file_names[1:],
+            "img_path": file_names,
             "img_width": 0,
             "img_height": 0,
             "crawled_time": SCRAPED_TIME,
@@ -96,7 +96,7 @@ def img2ani(df: pd.DataFrame) -> None:
         df (pd.DataFrame): metadata dataframe
     """
 
-    base_path = f"{AIRFLOW_HOME}/data/"
+    base_path = f"{AIRFLOW_HOME}/dags/classification/data/"
     time_consume = make_duration_list(num_frame=200, total_time=10, mode="LINEAR")
 
     resize_l = 1024
@@ -127,7 +127,7 @@ def img2ani(df: pd.DataFrame) -> None:
                 save_path,
                 format="WEBP",
                 save_all=True,
-                append_images=output[1:],
+                append_images=output,
                 optimize=True,
                 duration=time_consume,
                 loop=1,
@@ -136,15 +136,13 @@ def img2ani(df: pd.DataFrame) -> None:
 
 def download_gcs_filter(blobs, file_names, df):
     dest = "/opt/ml/final-project-level3-cv-06/airflow_/dags/classification/data"
-    os.makedirs(
-        f"{dest}/{'/'.join(blobs[1].name.split('.')[0].split('/')[:-1])}", exist_ok=True
-    )
+    os.makedirs(f"{dest}/{'/'.join(blobs[1].name.split('.')[0].split('/')[:-1])}", exist_ok=True)
 
-    all_files = {file_name: False for file_name in file_names[1:]}
+    all_files = {file_name: False for file_name in file_names}
     to_be_downloaded_files = df[df["label"] != "NaN"]["img_path"].to_list()
     for file in to_be_downloaded_files:
         all_files[file] = True
-    for blob in blobs[1:]:
+    for blob in blobs:
         if all_files[blob.name]:
             blob.download_to_filename(f"{dest}/{blob.name}")
 
@@ -169,13 +167,13 @@ def send_metadata2api(df, KEYWORD):
 
 if __name__ == "__main__":
     client = storage.Client()
-    dir_name = "landmark/"
+    dir_name = f"{KEYWORD}/{SITE}/{SCRAPED_TIME}"
     bucket_name = "scraped-img"
     bucket = client.get_bucket(bucket_name)
     blobs = list(bucket.list_blobs(prefix=dir_name))
     file_names = [str(blob).split(",")[1].strip() for blob in blobs]
 
-    countries = get_country_landmark_gcs(bucket_name, file_names[1:])
+    countries = get_country_landmark_gcs(bucket_name, file_names)
     df = make_df(SCRAPED_TIME, file_names, countries)
     send_metadata2api(df, KEYWORD)
     download_gcs_filter(blobs, file_names, df)
