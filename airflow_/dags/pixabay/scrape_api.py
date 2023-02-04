@@ -65,7 +65,7 @@ class PixabayCrawler:
 
     def get_available_images(self):
         self.params["page"] = 1
-        self.params["per_page"] = MIN_IMG_PER_PAGE
+        # self.params["per_page"] = MIN_IMG_PER_PAGE
         j_response = self.get_json().json()
         return j_response["total"]
 
@@ -386,7 +386,16 @@ if __name__ == "__main__":
     bucket_name = "scraped-img"
     bucket = storage_client.bucket(bucket_name)
 
-    keyword = [KEYWORD]
+    keyword = [KEYWORD,"mammal"]
+    #     '금붕어', '상어', '가오리', '닭', '타조', '까치', '독수리', '올빼미', '개구리', '거북이',
+    #    '도마뱀', '카멜레온', '악어', '뱀', '전갈', '거미', '공작', '앵무새', '오리', '거위',
+    #    '백조', '코끼리', '오리너구리', '캥거루', '코알라', '해파리', '말미잘', '달팽이', '게', '홍학',
+    #    '펠리컨', '펭귄', '고래', '범고래', '바다사자', '개', '늑대', '하이에나', '여우', '고양이',
+    #    '퓨마', '표범', '재규어', '사자', '호랑이', '치타', '곰', '미어캣', '무당벌레', '벌',
+    #    '개미', '메뚜기', '사마귀', '잠자리', '나비', '불가사리', '성게', '해삼', '토끼', '햄스터',
+    #    '호저', '다람쥐', '비버', '기니피그', '얼룩말', '돼지', '멧돼지', '하마', '소', '양',
+    #    '낙타', '족제비', '수달', '스컹크', '오소리', '아르마딜로', '나무늘보', '오랑우탄', '고릴라',
+    #    '침팬지', '원숭이', '레서판다', '판다', '복어'
     scraper = PixabayCrawler(keyword, params, bucket)
     df, n_imgs2gcs = scraper.scraper(n_imgs=N_IMGS)
     print(f"Number of img2gcs is {n_imgs2gcs}")
