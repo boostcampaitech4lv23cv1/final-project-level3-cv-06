@@ -10,6 +10,78 @@ from .utils.network import *
 from .utils.miscellaneous import *
 
 
+def partial_render(
+    this_canvas,
+    patch_coord_y,
+    patch_coord_x,
+    stroke_id,
+    patch_size_y,
+    patch_size_x,
+    h,
+    w,
+    param,
+    decision,
+    b,
+    p,
+    meta_brushes,
+):
+    canvas_patch = F.unfold(
+        this_canvas,
+        (patch_size_y, patch_size_x),
+        stride=(patch_size_y // 2, patch_size_x // 2),
+    )
+    # canvas_patch: b, 3 * py * px, h * w
+    canvas_patch = canvas_patch.reshape(b, 3, patch_size_y, patch_size_x, h, w)
+    canvas_patch = canvas_patch.permute(0, 4, 5, 1, 2, 3).contiguous()
+    # canvas_patch: b, h, w, 3, py, px
+    selected_canvas_patch = canvas_patch[:, patch_coord_y, patch_coord_x, :, :, :]
+    selected_h, selected_w = selected_canvas_patch.shape[1:3]
+    selected_param = param[:, patch_coord_y, patch_coord_x, stroke_id, :].reshape(-1, p)
+    selected_decision = decision[:, patch_coord_y, patch_coord_x, stroke_id].reshape(-1)
+    selected_foregrounds = torch.zeros(
+        selected_param.shape[0],
+        3,
+        patch_size_y,
+        patch_size_x,
+        device=this_canvas.device,
+    )
+    selected_alphas = torch.zeros(
+        selected_param.shape[0],
+        3,
+        patch_size_y,
+        patch_size_x,
+        device=this_canvas.device,
+    )
+    if selected_param[selected_decision, :].shape[0] > 0:
+        (
+            selected_foregrounds[selected_decision, :, :, :],
+            selected_alphas[selected_decision, :, :, :],
+        ) = param2stroke(
+            selected_param[selected_decision, :],
+            patch_size_y,
+            patch_size_x,
+            meta_brushes,
+        )
+    selected_foregrounds = selected_foregrounds.reshape(
+        b, selected_h, selected_w, 3, patch_size_y, patch_size_x
+    )
+    selected_alphas = selected_alphas.reshape(
+        b, selected_h, selected_w, 3, patch_size_y, patch_size_x
+    )
+    selected_decision = selected_decision.reshape(b, selected_h, selected_w, 1, 1, 1)
+    selected_canvas_patch = (
+        selected_foregrounds * selected_alphas * selected_decision
+        + selected_canvas_patch * (1 - selected_alphas * selected_decision)
+    )
+    this_canvas = selected_canvas_patch.permute(0, 3, 1, 4, 2, 5).contiguous()
+    # this_canvas: b, 3, selected_h, py, selected_w, px
+    this_canvas = this_canvas.reshape(
+        b, 3, selected_h * patch_size_y, selected_w * patch_size_x
+    )
+    # this_canvas: b, 3, selected_h * py, selected_w * px
+    return this_canvas
+
+
 def get_path_from_current_file(path):
     path_from_current_file = os.path.join(
         os.path.split(os.path.realpath(__file__))[0], path
@@ -61,9 +133,7 @@ def make_img_patch(patch_size, original_img_pad, layer_size, pad=False):
 
     img_patch = F.unfold(img, (patch_size, patch_size), stride=(patch_size, patch_size))
     img_patch = (
-        img_patch.permute(0, 2, 1)
-        .contiguous()
-        .reshape(-1, 3, patch_size, patch_size)
+        img_patch.permute(0, 2, 1).contiguous().reshape(-1, 3, patch_size, patch_size)
     )
 
     return img_patch, img
@@ -124,10 +194,18 @@ def param2img_serial(
     even_idx_x = torch.arange(0, w, 2, device=cur_canvas.device)
     odd_idx_y = torch.arange(1, h, 2, device=cur_canvas.device)
     odd_idx_x = torch.arange(1, w, 2, device=cur_canvas.device)
-    even_y_even_x_coord_y, even_y_even_x_coord_x = torch.meshgrid([even_idx_y, even_idx_x], indexing='ij')
-    odd_y_odd_x_coord_y, odd_y_odd_x_coord_x = torch.meshgrid([odd_idx_y, odd_idx_x], indexing='ij')
-    even_y_odd_x_coord_y, even_y_odd_x_coord_x = torch.meshgrid([even_idx_y, odd_idx_x], indexing='ij')
-    odd_y_even_x_coord_y, odd_y_even_x_coord_x = torch.meshgrid([odd_idx_y, even_idx_x], indexing='ij')
+    even_y_even_x_coord_y, even_y_even_x_coord_x = torch.meshgrid(
+        [even_idx_y, even_idx_x], indexing="ij"
+    )
+    odd_y_odd_x_coord_y, odd_y_odd_x_coord_x = torch.meshgrid(
+        [odd_idx_y, odd_idx_x], indexing="ij"
+    )
+    even_y_odd_x_coord_y, even_y_odd_x_coord_x = torch.meshgrid(
+        [even_idx_y, odd_idx_x], indexing="ij"
+    )
+    odd_y_even_x_coord_y, odd_y_even_x_coord_x = torch.meshgrid(
+        [odd_idx_y, even_idx_x], indexing="ij"
+    )
     cur_canvas = F.pad(
         cur_canvas,
         [
@@ -142,77 +220,23 @@ def param2img_serial(
         ],
     )
 
-    def partial_render(this_canvas, patch_coord_y, patch_coord_x, stroke_id):
-        canvas_patch = F.unfold(
-            this_canvas,
-            (patch_size_y, patch_size_x),
-            stride=(patch_size_y // 2, patch_size_x // 2),
-        )
-        # canvas_patch: b, 3 * py * px, h * w
-        canvas_patch = canvas_patch.reshape(
-            b, 3, patch_size_y, patch_size_x, h, w
-        )
-        canvas_patch = canvas_patch.permute(0, 4, 5, 1, 2, 3).contiguous()
-        # canvas_patch: b, h, w, 3, py, px
-        selected_canvas_patch = canvas_patch[:, patch_coord_y, patch_coord_x, :, :, :]
-        selected_h, selected_w = selected_canvas_patch.shape[1:3]
-        selected_param = (
-            param[:, patch_coord_y, patch_coord_x, stroke_id, :]
-            .reshape(-1, p)
-        )
-        selected_decision = (
-            decision[:, patch_coord_y, patch_coord_x, stroke_id].reshape(-1)
-        )
-        selected_foregrounds = torch.zeros(
-            selected_param.shape[0],
-            3,
-            patch_size_y,
-            patch_size_x,
-            device=this_canvas.device,
-        )
-        selected_alphas = torch.zeros(
-            selected_param.shape[0],
-            3,
-            patch_size_y,
-            patch_size_x,
-            device=this_canvas.device,
-        )
-        if selected_param[selected_decision, :].shape[0] > 0:
-            (
-                selected_foregrounds[selected_decision, :, :, :],
-                selected_alphas[selected_decision, :, :, :],
-            ) = param2stroke(
-                selected_param[selected_decision, :],
-                patch_size_y,
-                patch_size_x,
-                meta_brushes,
-            )
-        selected_foregrounds = selected_foregrounds.reshape(
-            b, selected_h, selected_w, 3, patch_size_y, patch_size_x
-        )
-        selected_alphas = selected_alphas.reshape(
-            b, selected_h, selected_w, 3, patch_size_y, patch_size_x
-        )
-        selected_decision = selected_decision.reshape(
-            b, selected_h, selected_w, 1, 1, 1
-        )
-        selected_canvas_patch = (
-            selected_foregrounds * selected_alphas * selected_decision
-            + selected_canvas_patch * (1 - selected_alphas * selected_decision)
-        )
-        this_canvas = selected_canvas_patch.permute(0, 3, 1, 4, 2, 5).contiguous()
-        # this_canvas: b, 3, selected_h, py, selected_w, px
-        this_canvas = this_canvas.reshape(
-            b, 3, selected_h * patch_size_y, selected_w * patch_size_x
-        )
-        # this_canvas: b, 3, selected_h * py, selected_w * px
-        return this_canvas
-
     factor = 2 if has_border else 4
     if even_idx_y.shape[0] > 0 and even_idx_x.shape[0] > 0:
         for i in range(s):
             canvas = partial_render(
-                cur_canvas, even_y_even_x_coord_y, even_y_even_x_coord_x, i
+                cur_canvas,
+                even_y_even_x_coord_y,
+                even_y_even_x_coord_x,
+                i,
+                patch_size_y,
+                patch_size_x,
+                h,
+                w,
+                param,
+                decision,
+                b,
+                p,
+                meta_brushes,
             )
             if not is_odd_y:
                 canvas = torch.cat(
@@ -241,7 +265,19 @@ def param2img_serial(
     if odd_idx_y.shape[0] > 0 and odd_idx_x.shape[0] > 0:
         for i in range(s):
             canvas = partial_render(
-                cur_canvas, odd_y_odd_x_coord_y, odd_y_odd_x_coord_x, i
+                cur_canvas,
+                odd_y_odd_x_coord_y,
+                odd_y_odd_x_coord_x,
+                i,
+                patch_size_y,
+                patch_size_x,
+                h,
+                w,
+                param,
+                decision,
+                b,
+                p,
+                meta_brushes,
             )
             canvas = torch.cat(
                 [cur_canvas[:, :, : patch_size_y // 2, -canvas.shape[3] :], canvas],
@@ -277,7 +313,19 @@ def param2img_serial(
     if odd_idx_y.shape[0] > 0 and even_idx_x.shape[0] > 0:
         for i in range(s):
             canvas = partial_render(
-                cur_canvas, odd_y_even_x_coord_y, odd_y_even_x_coord_x, i
+                cur_canvas,
+                odd_y_even_x_coord_y,
+                odd_y_even_x_coord_x,
+                i,
+                patch_size_y,
+                patch_size_x,
+                h,
+                w,
+                param,
+                decision,
+                b,
+                p,
+                meta_brushes,
             )
             canvas = torch.cat(
                 [cur_canvas[:, :, : patch_size_y // 2, : canvas.shape[3]], canvas],
@@ -309,7 +357,19 @@ def param2img_serial(
     if even_idx_y.shape[0] > 0 and odd_idx_x.shape[0] > 0:
         for i in range(s):
             canvas = partial_render(
-                cur_canvas, even_y_odd_x_coord_y, even_y_odd_x_coord_x, i
+                cur_canvas,
+                even_y_odd_x_coord_y,
+                even_y_odd_x_coord_x,
+                i,
+                patch_size_y,
+                patch_size_x,
+                h,
+                w,
+                param,
+                decision,
+                b,
+                p,
+                meta_brushes,
             )
             canvas = torch.cat(
                 [cur_canvas[:, :, : canvas.shape[2], : patch_size_x // 2], canvas],
@@ -481,33 +541,25 @@ def inference(
             shape_param, stroke_decision = model(img_patch, result_patch)
             stroke_decision = SignWithSigmoidGrad.apply(stroke_decision)
 
-            grid = (
-                shape_param[:, :, :2]
-                .reshape(img_patch.shape[0] * stroke_num, 1, 1, 2)
-                
+            grid = shape_param[:, :, :2].reshape(
+                img_patch.shape[0] * stroke_num, 1, 1, 2
             )
             img_temp = (
                 img_patch.unsqueeze(1)
                 .contiguous()
                 .repeat(1, stroke_num, 1, 1, 1)
                 .reshape(img_patch.shape[0] * stroke_num, 3, patch_size, patch_size)
-                
             )
-            color = (
-                F.grid_sample(img_temp, 2 * grid - 1, align_corners=False)
-                .reshape(img_patch.shape[0], stroke_num, 3)
-                
+            color = F.grid_sample(img_temp, 2 * grid - 1, align_corners=False).reshape(
+                img_patch.shape[0], stroke_num, 3
             )
             stroke_param = torch.cat([shape_param, color], dim=-1)
             # stroke_param: b * h * w, stroke_per_patch, param_per_stroke
             # stroke_decision: b * h * w, stroke_per_patch, 1
-            param = stroke_param.reshape(
-                1, patch_num, patch_num, stroke_num, 8
-            )
-            decision = (
-                stroke_decision.reshape(1, patch_num, patch_num, stroke_num)
-                .bool()
-            )
+            param = stroke_param.reshape(1, patch_num, patch_num, stroke_num, 8)
+            decision = stroke_decision.reshape(
+                1, patch_num, patch_num, stroke_num
+            ).bool()
             # param: b, h, w, stroke_per_patch, 8
             # decision: b, h, w, stroke_per_patch
             param[..., :2] = param[..., :2] / 2 + 0.25
@@ -540,19 +592,15 @@ def inference(
         w = (img.shape[3] - patch_size) // patch_size + 1
         shape_param, stroke_decision = model(img_patch, result_patch)
 
-        grid = (
-            shape_param[:, :, :2]
-            .reshape(img_patch.shape[0] * stroke_num, 1, 1, 2)
-        )
+        grid = shape_param[:, :, :2].reshape(img_patch.shape[0] * stroke_num, 1, 1, 2)
         img_temp = (
             img_patch.unsqueeze(1)
             .contiguous()
             .repeat(1, stroke_num, 1, 1, 1)
             .reshape(img_patch.shape[0] * stroke_num, 3, patch_size, patch_size)
         )
-        color = (
-            F.grid_sample(img_temp, 2 * grid - 1, align_corners=False)
-            .reshape(img_patch.shape[0], stroke_num, 3)
+        color = F.grid_sample(img_temp, 2 * grid - 1, align_corners=False).reshape(
+            img_patch.shape[0], stroke_num, 3
         )
         stroke_param = torch.cat([shape_param, color], dim=-1)
         # stroke_param: b * h * w, stroke_per_patch, param_per_stroke
