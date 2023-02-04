@@ -95,8 +95,8 @@
       </v-row>
       <v-row class="d-flex justify-center text-center">
         <v-col>
-          <v-progress-circular v-show="gameStatus > 0" height="4vh" :size="65" :width="8" :style="{ color: progressColor }"
-            model-value="100">
+          <v-progress-circular v-show="gameStatus > 0" height="4vh" :size="65" :width="8"
+            :style="{ color: progressColor }" model-value="100">
             <div :style="{
               'font-size': '3vh',
               color: 'black',
@@ -234,7 +234,6 @@ function enter() {
 
     if (gameStatus.value === 9) {
       store.commit("setCleartime", totalTimer);
-      store.commit("setCorrectanswers", correctAnswers);
       router.push({ path: "/rank" });
       loaded.value = 0;
     }
@@ -299,7 +298,6 @@ watch(imgTimer, (newVal) => {
 watch(totalTimer, (newVal) => {
   if (Math.floor(newVal) == 100) {
     store.commit("setCleartime", 100);
-    store.commit("setCorrectanswers", correctAnswers);
     router.push({ path: "/rank" });
   }
 });

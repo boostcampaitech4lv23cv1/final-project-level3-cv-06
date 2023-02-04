@@ -22,21 +22,9 @@
         </v-btn>
       </v-row>
 
-      <v-row class="d-flex nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
+      <v-row class="d-flex align nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
         <!-- game result information -->
         <v-col cols="6" class="align-self-center">
-          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '0vh', 'font-size': '4vh' }">
-            <!-- profile icon & name input -->
-            <v-col cols="1" class="justify">
-              <profile />
-            </v-col>
-            <!-- name input area -->
-            <v-col cols="1"></v-col>
-            <v-col xs="10" sm="5" lg="3" class="d-flex align-start">
-              <v-text-field label="Enter name here!" v-model="name" single-line class="input"></v-text-field>
-            </v-col>
-          </v-row>
-
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
             <!-- check icon & correct number -->
             <v-col cols="1">
@@ -87,11 +75,29 @@
           <!-- register score and go leaderboard -->
           <v-btn class="text-center" :style="{
             margin: '15vh 0vw 0vh 0vw',
-          }" @click="registerScore">
-            Show Rank
+          }" @click="showDialog = true">
+            Register!
           </v-btn>
         </v-col>
       </v-row>
+
+
+      <v-dialog v-model="showDialog">
+        <v-row class="d-flex justify-center">
+          <v-col cols="12" sm="6">
+            <v-card>
+              <v-card-title> Register your score! </v-card-title>
+              <v-divider class="mx-4 mb-1"></v-divider>
+              <v-card-text>
+                <v-text-field density="compact" label="Enter your name!" single-line v-model="name"></v-text-field>
+              </v-card-text>
+              <v-card-actions class="d-flex justify-end">
+                <v-btn @click="registerScore"> Register </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-dialog>
     </v-container>
   </v-app>
 </template>
@@ -100,14 +106,12 @@
 import timer from "../svg/timerView.vue";
 import check from "../svg/rightAnswer.vue";
 import score from "../svg/scoreText.vue";
-import profile from "../svg/profileView.vue";
 
 export default {
   components: {
     score,
     timer,
     check,
-    profile,
   },
   data() {
     return {
@@ -116,8 +120,8 @@ export default {
       correctAnswer: this.$store.state.correctAnswer,
       audioInfo: true,
       correctNum: 0,
-      name: this.$store.state.name,
-      alert: false,
+      name: '',
+      showDialog: false
     };
   },
 
@@ -134,25 +138,21 @@ export default {
     },
 
     async registerScore() {
-      if (this.name === "") {
-        this.alert = true;
-      } else {
-        this.$store.commit("setName", this.name);
-        this.$router.push({ path: "leaderboard" });
+      this.$router.push({ path: "leaderboard" });
 
-        // let response = await this.$api(
-        //   "http://34.64.169.197/api/v1/score/create",
-        //   "POST",
-        //   { user_name: this.name, play_time: this.clearTime, correct_ctn: this.correctAnswer }
-        // );
-      }
+      let response = await this.$api(
+        "http://34.64.169.197/api/v1/score/create",
+        "POST",
+        { user_name: this.name, play_time: this.clearTime, correct_cnt: this.correctAnswer }
+      );
+      this.name = ""
     },
   },
   async mounted() {
     this.$root.audio.play();
     this.audioInfo = !this.$root.audio.muted;
     let correctList = this.$store.state.correctList;
-    let imgPath = this.$store.state.originImg;
+    let imgPath = this.$store.state.imgPath;
 
     for (let i = 0; i < 9; i++) {
       if (correctList[i] == 1) {
@@ -168,23 +168,6 @@ export default {
     } else if (Number(this.clearTime) <= 100) {
       this.rank = "C";
     }
-
-    console.log(this.$store.state.category)
-    console.log(imgPath)
-    console.log(correctList)
-    console.log(this.$store.state.correctAnswer)
-    // let response = await this.$api(
-    //   "http://34.64.169.197/api/v1/game/gameover",
-    //   "POST",
-
-    //   { category: this.$store.state.category, img_paths: imgPath, correct_list: correctList }
-    // );
-
-    // let response = await this.$api(
-    //   'http://127.0.0.1:8000/api/v1/game/gameover',
-    //   "POST",
-    //   { img_paths: imgPath, score_list: correctList }
-    // )
   },
 };
 </script>

@@ -4,12 +4,10 @@ import selectview from '../views/SelectView.vue'
 import gameview from '../views/GameView.vue'
 import descriptionview from '../views/DescriptionView'
 import resultview from '../views/ResultView'
-import detailview from '../views/DetailView'
 import transformview from '../views/TransformView'
 import rankview from '../views/RankView'
 import demoview from '../views/DemoView'
 import demoresult from '../views/DemoResult'
-import demodetail from '../views/DemoDetail'
 import leaderboard from '../views/LeaderBoard'
 
 

@@ -13,17 +13,9 @@
         <!-- mobile portrait 음향 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
           <v-btn rounded variant="plain" @click="audioChange" height="5vh">
-            <v-icon
-              icon="mdi-volume-high"
-              size="5vh"
-              v-show="audioInfo == true"
-            >
+            <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
             </v-icon>
-            <v-icon
-              icon="mdi-volume-off"
-              size="5vh"
-              v-show="audioInfo == false"
-            >
+            <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == false">
             </v-icon>
           </v-btn>
         </v-col>
@@ -36,10 +28,7 @@
         </v-col>
       </v-row>
 
-      <v-row
-        class="d-none d-sm-flex justify-end"
-        :style="{ margin: '3vh 0vw 0vh 0vw' }"
-      >
+      <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <!-- 음향 버튼 -->
         <v-btn rounded variant="plain" @click="audioChange" height="5vh">
           <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
@@ -49,10 +38,7 @@
         </v-btn>
       </v-row>
 
-      <v-row
-        class="d-none d-sm-flex justify-end"
-        :style="{ margin: '3vh 0vw 0vh 0vw' }"
-      >
+      <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
         <!-- 홈 이동 버튼 -->
         <v-btn rounded variant="plain" @click="moveBack" height="5vh">
           <back height="5vh" />
@@ -120,22 +106,21 @@ export default {
       this.$router.go(-1);
     },
   },
-  mounted() {
+  async mounted() {
     if (this.$root.audio.paused) {
       this.$root.audio.play();
     }
     this.audioInfo = !this.$root.audio.muted;
+
+    let response = await this.$api(
+      "http://34.64.169.197/api/v1/score/read",
+      "GET",
+    )
+    console.log(response)
   },
 };
 
-// async mounted() {
-//     let response = await this.$api(
-//         'http://127.0.0.1:8000/api/v1/game/gameover',
-//         "POST",
-//     )
-//     console.log(response)
-//     rank=response.rank
-// }
+
 </script>
 
 <style scoped>
