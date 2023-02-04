@@ -35,7 +35,7 @@ scraped_time = datetime.now(timezone("Asia/Seoul")).strftime("%m-%d_%H")
 
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 ssh_base = "/opt/ml/final-project-level3-cv-06"
-keyword = "animal"
+keyword = "landmark"
 site = "pixabay"
 n_imgs = 50
 bucket = "scraped-img"
@@ -65,7 +65,7 @@ default_args = {
     "tags": ["img", "crawler"],
 }
 ##################     DAGS     ##################
-with DAG("crawling", default_args=default_args, schedule="@once") as dag:
+with DAG("crawling_landmark", default_args=default_args, schedule="@once") as dag:
 
     #####################    JOBS    #######################
     crawl_img = BashOperator(
@@ -73,16 +73,11 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
         bash_command=f"python {AIRFLOW_HOME}/dags/pixabay/scrape_api.py {keyword} {site} {scraped_time} {n_imgs}",
     )
 
-    load_data_from_gcs2ssh = SSHOperator(
-        task_id="download_data_from_gcs2ssh",
-        ssh_conn_id="ssh_connection",
-        command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
-    )
     infer_label = SSHOperator(
         task_id="infer_label",
         ssh_conn_id="ssh_connection",
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
-            && python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
+            && python {ssh_base}/airflow_/dags/classification/infer_landmark.py {keyword} {site} {scraped_time}",
         cmd_timeout=600,
     )
     ani2gcs = SFTPToGCSOperator(
@@ -106,7 +101,6 @@ with DAG("crawling", default_args=default_args, schedule="@once") as dag:
     #####################    TASKS    #####################
     (
         crawl_img
-        >> load_data_from_gcs2ssh
         >> infer_label
         >> ani2gcs
         # >> remove_dir
