@@ -108,7 +108,7 @@ class PixabayCrawler:
                 Pbar = Progressbar(n_imgs)
 
                 # creating the params list for all pages
-                imgs_downloaded = 0
+                imgs_progress = 0
                 n_imgs2gcs = 0
 
                 run = True
@@ -123,7 +123,7 @@ class PixabayCrawler:
 
                         for img_dict in j_response["hits"]:
                             try:
-                                if imgs_downloaded >= n_imgs:
+                                if imgs_progress >= n_imgs:
                                     run = False
                                     break
                                 if self.is_valid(img_dict["id"]):
@@ -131,8 +131,8 @@ class PixabayCrawler:
                                     df = self.add_data2df(df, keyword, img_dict)
                                     n_imgs2gcs += 1
 
-                                imgs_downloaded += 1
-                                Pbar.set(imgs_downloaded)
+                                imgs_progress += 1
+                                Pbar.set(imgs_progress)
 
                             except Exception as err:
                                 logger.warning(err)
@@ -144,7 +144,7 @@ class PixabayCrawler:
                         logger.warning(err)
                         logger.warning(f"an error occured proccesing page {page}")
                         logger.warning(
-                            f"downloaded {imgs_downloaded} images from {keyword}"
+                            f"downloaded {imgs_progress} images from {keyword}"
                         )
                         break
             except Exception as err:
@@ -302,26 +302,6 @@ class Progressbar:
         self.print_bar()
 
 
-def send_metadata2gcs(keyword, df, bucket):
-    print("make_data_dir os.getcwd(): ", os.getcwd())
-    save_path = f"{AIRFLOW_HOME}/dags/data/{keyword[0]}/{SITE}/{SCRAPED_TIME}"
-
-    os.makedirs(save_path, exist_ok=True)
-    df["img_path"] = df["img_path"].astype(str)
-
-    buffer = pa.BufferOutputStream()
-    feather.write_feather(df, buffer)
-
-    file_name = f"{KEYWORD}/{SITE}/{SCRAPED_TIME}/metadata.feather"
-
-    blob = bucket.blob(file_name)
-    blob.upload_from_string(
-        buffer.getvalue().to_pybytes(), content_type="application/octet-stream"
-    )
-
-    print("saved metadata.feather to GCS")
-
-
 def send_metadata2api(df):
     url = f"{secret['api_url']}/api/v1/meta/create"
 
@@ -377,7 +357,7 @@ if __name__ == "__main__":
         "image_type": "photo",
         "page": 1,  # Returned search results are paginated. Use this parameter to select the page number.
         "per_page": MAX_IMG_PER_PAGE,  # Determine the number of results per page. Accepted values: 3 - 200. Default: 20.
-        "category": category[0],
+        "category": "None",
         "safesearch": "true",
         "order": "popular",
     }
@@ -386,20 +366,24 @@ if __name__ == "__main__":
     bucket_name = "scraped-img"
     bucket = storage_client.bucket(bucket_name)
 
-    keyword = [KEYWORD,"mammal"]
-    #     '금붕어', '상어', '가오리', '닭', '타조', '까치', '독수리', '올빼미', '개구리', '거북이',
-    #    '도마뱀', '카멜레온', '악어', '뱀', '전갈', '거미', '공작', '앵무새', '오리', '거위',
-    #    '백조', '코끼리', '오리너구리', '캥거루', '코알라', '해파리', '말미잘', '달팽이', '게', '홍학',
-    #    '펠리컨', '펭귄', '고래', '범고래', '바다사자', '개', '늑대', '하이에나', '여우', '고양이',
-    #    '퓨마', '표범', '재규어', '사자', '호랑이', '치타', '곰', '미어캣', '무당벌레', '벌',
-    #    '개미', '메뚜기', '사마귀', '잠자리', '나비', '불가사리', '성게', '해삼', '토끼', '햄스터',
-    #    '호저', '다람쥐', '비버', '기니피그', '얼룩말', '돼지', '멧돼지', '하마', '소', '양',
-    #    '낙타', '족제비', '수달', '스컹크', '오소리', '아르마딜로', '나무늘보', '오랑우탄', '고릴라',
-    #    '침팬지', '원숭이', '레서판다', '판다', '복어'
+    if KEYWORD == "animal":
+        keyword = [KEYWORD, "mammal"]
+        #     '금붕어', '상어', '가오리', '닭', '타조', '까치', '독수리', '올빼미', '개구리', '거북이',
+        #    '도마뱀', '카멜레온', '악어', '뱀', '전갈', '거미', '공작', '앵무새', '오리', '거위',
+        #    '백조', '코끼리', '오리너구리', '캥거루', '코알라', '해파리', '말미잘', '달팽이', '게', '홍학',
+        #    '펠리컨', '펭귄', '고래', '범고래', '바다사자', '개', '늑대', '하이에나', '여우', '고양이',
+        #    '퓨마', '표범', '재규어', '사자', '호랑이', '치타', '곰', '미어캣', '무당벌레', '벌',
+        #    '개미', '메뚜기', '사마귀', '잠자리', '나비', '불가사리', '성게', '해삼', '토끼', '햄스터',
+        #    '호저', '다람쥐', '비버', '기니피그', '얼룩말', '돼지', '멧돼지', '하마', '소', '양',
+        #    '낙타', '족제비', '수달', '스컹크', '오소리', '아르마딜로', '나무늘보', '오랑우탄', '고릴라',
+        #    '침팬지', '원숭이', '레서판다', '판다', '복어'
+        params["category"] = category[0]
+    elif KEYWORD == "landmark":
+        keyword = [KEYWORD, "places"]
+        params["category"] = category[10]
     scraper = PixabayCrawler(keyword, params, bucket)
     df, n_imgs2gcs = scraper.scraper(n_imgs=N_IMGS)
     print(f"Number of img2gcs is {n_imgs2gcs}")
     send_metadata2api(df)
-    # send_metadata2gcs(keyword, df, bucket)
     # TODO: 이전에 크롤링했던 사진 이후부터 크롤링
     # TODO: pixabay에서 url전부 뽑고 url리스트를 api에 전달해서 한번에 중복체크, 그 후 멀티프로세싱이나 비동기로 이미지 다운
