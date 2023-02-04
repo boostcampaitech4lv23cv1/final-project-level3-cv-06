@@ -203,11 +203,12 @@ def join_df2db(df: pd.DataFrame, host: str = "34.145.38.251"):
     new_df.to_sql(name=KEYWORD, con=engine, if_exists="replace", index=False)
 
 
-def send_metadata2api(df: pd.DataFrame) -> None:
+def send_metadata2api(df: pd.DataFrame, KEYWORD: str) -> None:
     """send metadata dataframe to api server
 
     Args:
         df (pd.DataFrame): metadata dataframe
+        KEYWORD (str): keyword for metadata
     """
     df = df.drop("tag", axis=1)
     url = f"{secret['api_url']}/api/v1/meta/update"
@@ -312,7 +313,7 @@ def img2ani(df: pd.DataFrame) -> None:
 if __name__ == "__main__":
 
     df = make_img_label()
-    img2ani(df)
     send_metadata2api(df)
+    img2ani(df)
     print("label: ", df["label"])
 # TODO animation 인메모리로 GCS 전송
