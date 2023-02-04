@@ -23,7 +23,7 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 print(f"AIRFLOW_HOME: {AIRFLOW_HOME}")
 KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
 N_IMGS = int(N_IMGS)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "{AIRFLOW_HOME}/m2-key.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f"{AIRFLOW_HOME}/m2-key.json"
 
 with open(f"{AIRFLOW_HOME}/secret.yml", "r") as f:
     secret = yaml.load(f, Loader=yaml.FullLoader)
