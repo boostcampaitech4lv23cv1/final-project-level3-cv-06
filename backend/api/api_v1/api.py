@@ -1,7 +1,5 @@
 from fastapi import APIRouter
 
-from .game import *
-from .inference import *
 from .game import game_router
 from .meta import db_router
 from .score import score_router
