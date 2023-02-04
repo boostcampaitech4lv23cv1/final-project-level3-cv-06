@@ -25,8 +25,10 @@ AIRFLOW_HOME = os.path.dirname(os.path.abspath(__file__))
 
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
-# KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "02-02_21"
-with open(f"{os.path.abspath(os.path.join(AIRFLOW_HOME, '..','..'))}/secret.yml", "r") as f:
+# KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "02-03_22"
+with open(
+    f"{os.path.abspath(os.path.join(AIRFLOW_HOME, '..','..'))}/secret.yml", "r"
+) as f:
     secret = yaml.load(f, Loader=yaml.FullLoader)
 
 
@@ -54,7 +56,9 @@ class ClassifyDataset(Dataset):
 class Model(LightningModule):
     def __init__(self):
         super().__init__()
-        self.model = timm.create_model(model_name="resnet50", pretrained=True)
+        self.model = timm.create_model(
+            model_name="eva_giant_patch14_336.m30m_ft_in22k_in1k", pretrained=True
+        )
 
     def forward(self, x):
         return self.model(x)
@@ -95,15 +99,21 @@ def inference_img(df: pd.DataFrame) -> np.ndarray:
     Returns:
         np.ndarray: prediction from model (imgnet class)
     """
-    transform = Compose([A.Resize(height=224, width=224), A.Normalize(), ToTensorV2()])
+    transform = Compose([A.Resize(height=336, width=336), A.Normalize(), ToTensorV2()])
     test_set = ClassifyDataset(df, transform)
-    test_loader = DataLoader(test_set, batch_size=1, shuffle=False, num_workers=4)
+    test_loader = DataLoader(
+        test_set, batch_size=set_batch_size(test_set, 4), shuffle=False, num_workers=4
+    )
     model = Model()
-    trainer = Trainer(accelerator="gpu")
+    trainer = Trainer(accelerator="gpu", logger=False)
     predictions = trainer.predict(model, test_loader)
     predictions = torch.concat(predictions).cpu().detach().numpy()
 
     return predictions
+
+
+def set_batch_size(data_set, batch_size):
+    return min(batch_size, len(data_set))
 
 
 def pred2imgnetlabel(predictions: np.array, imagenet_labels: pd.DataFrame) -> list:
