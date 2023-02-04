@@ -1,11 +1,12 @@
 from io import BytesIO
 import base64
+import time
+import requests as rq
 from PIL import Image
 
 from utils import predict_by_img, save_user_img, LOGGER
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from fastapi import File, UploadFile, Response
-import time
 
 router = APIRouter()
 router.redirect_slashes = False
@@ -42,6 +43,7 @@ async def inference(
         paint_img.save(img_byte, format=extend)
         img_byte = img_byte.getvalue()
         encoded = base64.b64encode(img_byte)
+        
         LOGGER.info(f"Inference(process time: {time.time() - start_time})")
         return Response(content=encoded)
     except Exception as e:
