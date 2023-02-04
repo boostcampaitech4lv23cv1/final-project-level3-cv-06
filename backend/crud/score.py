@@ -1,11 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
-from fastapi import HTTPException
 
-
-from utils import LOGGER
 from model import *
 from scheme import *
 
