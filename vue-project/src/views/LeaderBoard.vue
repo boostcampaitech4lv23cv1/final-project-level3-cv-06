@@ -95,10 +95,6 @@ export default {
     },
   },
   async mounted() {
-    if (this.$root.audio.paused) {
-      this.$root.audio.play();
-    }
-
     let response = await this.$api(
       "http://34.64.169.197/api/v1/score/read",
       "GET"

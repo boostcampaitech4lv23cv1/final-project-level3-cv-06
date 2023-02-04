@@ -82,11 +82,12 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <!-- dialog close 버튼 -->
-                <v-btn variant="tonal" @click="showDialog = false" :style="{ margin: '0vh 0vw 0vh 30vw' }">확인</v-btn>
-
+                <v-btn variant="tonal" @click="showDialog = false" :style="{ margin: '0vh 0vw 0vh 0vw' }"
+                  color="orange">확인</v-btn>
+                <v-spacer></v-spacer>
                 <!-- description 이동 버튼 -->
-                <v-btn variant="tonal" @click="movePage('/description')" :style="{ margin: '0vh 30vw 0vh 0vw' }">게임방법
-                  알아보기</v-btn>
+                <v-btn variant="tonal" @click="movePage('/description')" :style="{ margin: '0vh 0vw 0vh 0vw' }"
+                  color="orange">게임방법 알아보기</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -208,11 +209,6 @@ export default {
     moveHome() {
       this.$router.push({ path: "/" });
     },
-  },
-  mounted() {
-    if (this.$root.audio.paused) {
-      this.$root.audio.play();
-    }
   },
 };
 </script>

@@ -158,9 +158,6 @@ export default {
     },
   },
   async mounted() {
-    if (this.$root.audio.paused) {
-      this.$root.audio.play();
-    }
     let correctList = this.$store.state.correctList;
     let imgPath = this.$store.state.imgPath;
 
