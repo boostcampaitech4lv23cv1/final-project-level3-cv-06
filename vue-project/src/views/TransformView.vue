@@ -11,24 +11,26 @@
 
         <!-- 음향 버튼 -->
         <v-col cols="1" class="d-flex align-end">
-          <v-btn rounded variant="plain" @click="audioChange">
-            <v-icon icon="mdi-volume-high" size="5vh" v-if="audioInfo == true">
-            </v-icon>
-            <v-icon icon="mdi-volume-off" size="5vh" v-if="audioInfo == false">
-            </v-icon>
+          <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
+            <v-icon :icon="audioIcon" size="5vh"> </v-icon>
           </v-btn>
         </v-col>
 
         <!-- 홈 버튼 -->
         <v-col cols="1" class="d-flex align-end">
-          <v-btn rounded variant="plain" @click="moveHome">
+          <v-btn rounded variant="plain" @click="moveHome" height="5vh">
             <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
           </v-btn>
         </v-col>
 
         <!--dialog 출력 버튼 -->
         <v-col cols="1" class="d-flex align-end">
-          <v-btn rounded variant="plain" @click="showDialog = true">
+          <v-btn
+            rounded
+            variant="plain"
+            @click="showDialog = true"
+            height="5vh"
+          >
             <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
           </v-btn>
         </v-col>
@@ -38,13 +40,17 @@
       <v-dialog v-model="showDialog">
         <v-card>
           <!-- description text -->
-          <v-card-title class="text-center" height="3vh">변환하려는 이미지를 업로드하면, 그림으로 다시
-            그려드려요!</v-card-title>
+          <v-card-title class="text-center" height="3vh"
+            >변환하려는 이미지를 업로드하면, 그림으로 다시
+            그려드려요!</v-card-title
+          >
 
           <!-- dialog close 버튼 -->
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="tonal" color="primary" @click="showDialog = false">확인</v-btn>
+            <v-btn variant="tonal" color="primary" @click="showDialog = false"
+              >확인</v-btn
+            >
             <v-spacer />
           </v-card-actions>
         </v-card>
@@ -53,8 +59,19 @@
       <v-row :style="{ margin: '2vh 0vw 0vh 0vw' }">
         <!-- 이전 이미지 출력 -->
         <v-col cols="5">
-          <v-img src="../assets/tower-bridge.jpg" width="30vw" class="mx-auto" v-show="uploaded == false" />
-          <v-img max-height="25vh" class="mx-auto" max-width="30vw" :src="imageUrl" v-show="uploaded == true" />
+          <v-img
+            src="../assets/tower-bridge.jpg"
+            width="30vw"
+            class="mx-auto"
+            v-show="uploaded == false"
+          />
+          <v-img
+            max-height="25vh"
+            class="mx-auto"
+            max-width="30vw"
+            :src="imageUrl"
+            v-show="uploaded == true"
+          />
         </v-col>
 
         <!-- 화살표 -->
@@ -64,10 +81,24 @@
 
         <!-- 결과 이미지 출력 & 로딩 표시-->
         <v-col cols="5">
-          <v-img src="../assets/tower-bridge-paint.jpg" width="30vw" class="mx-auto" v-show="uploaded == false" />
-          <v-img max-height="25vh" class="mx-auto" max-width="30vw" :src="`data:image/gif;base64,${returnImg}`">
-            <v-progress-circular v-if="transform == true" class="loading" color="grey-lighten-4"
-              indeterminate></v-progress-circular>
+          <v-img
+            src="../assets/tower-bridge-paint.jpg"
+            width="30vw"
+            class="mx-auto"
+            v-show="uploaded == false"
+          />
+          <v-img
+            max-height="25vh"
+            class="mx-auto"
+            max-width="30vw"
+            :src="`data:image/gif;base64,${returnImg}`"
+          >
+            <v-progress-circular
+              v-if="transform == true"
+              class="loading"
+              color="grey-lighten-4"
+              indeterminate
+            ></v-progress-circular>
           </v-img>
         </v-col>
       </v-row>
@@ -75,15 +106,22 @@
       <v-row :style="{ margin: '5vh 0vw 0vh 0vw' }">
         <!-- file upload block -->
         <v-col cols="6" class="mx-auto">
-          <v-file-input clearable label="Upload your own image!" variant="solo" v-on:change="setImg"
-            density="compact"></v-file-input>
+          <v-file-input
+            clearable
+            label="Upload your own image!"
+            variant="solo"
+            v-on:change="setImg"
+            density="compact"
+          ></v-file-input>
         </v-col>
       </v-row>
 
       <v-row class="d-flex justify-center">
         <v-col cols="auto">
           <!-- transform 버튼 출력 -이미지 없으면 block -->
-          <v-btn @click="transformImg" :disabled="image == null">Transform!</v-btn>
+          <v-btn @click="transformImg" :disabled="image == null"
+            >Transform!</v-btn
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -93,35 +131,39 @@
       <v-row>
         <!-- save paint 로고 출력 -->
         <v-col cols="12" class="d-flex justify-center">
-          <logo :style="{
-            width: '90vw',
-            height: '15vh',
-            margin: '1vh 0vw 0vh 0vw',
-          }" />
+          <logo
+            :style="{
+              width: '90vw',
+              height: '15vh',
+              margin: '1vh 0vw 0vh 0vw',
+            }"
+          />
         </v-col>
       </v-row>
 
       <v-row class="d-flex justify-center">
         <!-- 음향 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
-          <v-btn rounded variant="plain" @click="audioChange">
-            <v-icon icon="mdi-volume-high" size="5vh" v-if="audioInfo == true">
-            </v-icon>
-            <v-icon icon="mdi-volume-off" size="5vh" v-if="audioInfo == false">
-            </v-icon>
+          <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
+            <v-icon :icon="audioIcon" size="5vh"> </v-icon>
           </v-btn>
         </v-col>
 
         <!-- 홈 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
-          <v-btn rounded variant="plain" @click="moveHome">
+          <v-btn rounded variant="plain" @click="moveHome" height="5vh">
             <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
           </v-btn>
         </v-col>
 
         <!--dialog 출력 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
-          <v-btn rounded variant="plain" @click="showDialog = true">
+          <v-btn
+            rounded
+            variant="plain"
+            @click="showDialog = true"
+            height="5vh"
+          >
             <v-icon icon="mdi-information-outline" size="5vh"> </v-icon>
           </v-btn>
         </v-col>
@@ -131,12 +173,16 @@
       <v-dialog v-model="showDialog">
         <v-card>
           <!-- description text -->
-          <v-card-title class="text-center" height="3vh">이미지를 밑 사진처럼 변합니다!</v-card-title>
+          <v-card-title class="text-center" height="3vh"
+            >이미지를 밑 사진처럼 변합니다!</v-card-title
+          >
 
           <!-- dialog close 버튼 -->
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="tonal" color="primary" @click="showDialog = false">확인</v-btn>
+            <v-btn variant="tonal" color="primary" @click="showDialog = false"
+              >확인</v-btn
+            >
             <v-spacer />
           </v-card-actions>
         </v-card>
@@ -145,25 +191,51 @@
       <v-row :style="{ margin: '2vh 0vw 0vh 0vw' }">
         <!-- file input block -->
         <v-col cols="12">
-          <v-file-input clearable label="Upload your own image!" variant="solo" v-on:change="setImg"
-            density="compact"></v-file-input>
+          <v-file-input
+            clearable
+            label="Upload your own image!"
+            variant="solo"
+            v-on:change="setImg"
+            density="compact"
+          ></v-file-input>
         </v-col>
       </v-row>
 
-      <v-row class="d-flex justify-center" :style="{ margin: '0vh 0vw 0vh 0vw' }">
+      <v-row
+        class="d-flex justify-center"
+        :style="{ margin: '0vh 0vw 0vh 0vw' }"
+      >
         <!-- transform 버튼 -이미지 없으면 block -->
         <v-col cols="auto">
-          <v-btn @click="transformImg" :disabled="image == null">Transform!</v-btn>
+          <v-btn @click="transformImg" :disabled="image == null"
+            >Transform!</v-btn
+          >
         </v-col>
       </v-row>
 
       <v-row>
         <!-- default:예시 이미지 출력 -> 결과 이미지 출력 / 로딩표시 -->
-        <v-col cols="12" class="d-flex justify-center" :style="{ margin: '2vh 0vw 0vh 0vw' }">
-          <v-img src="../assets/tower-bridge-paint.jpg" width="100vw" v-show="uploaded == false" />
-          <v-img max-width="100vw" class="mx-auto" :src="`data:image/gif;base64,${returnImg}`">
-            <v-progress-circular v-if="transform == true" class="loading-mobile" color="grey-lighten-4"
-              indeterminate></v-progress-circular>
+        <v-col
+          cols="12"
+          class="d-flex justify-center"
+          :style="{ margin: '2vh 0vw 0vh 0vw' }"
+        >
+          <v-img
+            src="../assets/tower-bridge-paint.jpg"
+            width="100vw"
+            v-show="uploaded == false"
+          />
+          <v-img
+            max-width="100vw"
+            class="mx-auto"
+            :src="`data:image/gif;base64,${returnImg}`"
+          >
+            <v-progress-circular
+              v-if="transform == true"
+              class="loading-mobile"
+              color="grey-lighten-4"
+              indeterminate
+            ></v-progress-circular>
           </v-img>
         </v-col>
       </v-row>
@@ -199,7 +271,7 @@ export default {
       returnImg: null,
       uploaded: false,
       imageUrl: "",
-      audioInfo: true,
+      audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
       dialog: false,
       isPortrait: true,
       showDialog: false,
@@ -215,7 +287,6 @@ export default {
     if (this.$root.audio.paused) {
       this.$root.audio.play();
     }
-    this.audioInfo = !this.$root.audio.muted;
   },
   methods: {
     /**
@@ -264,12 +335,19 @@ export default {
     },
 
     /**
-     * 오디오 변경 감지 후 재생 및 멈춤
-     * @function audioChange
+     * 오디오 버튼 클릭으로 오디오를 끄거나 키는 이벤트 함수
+     * @function changeAudio
      */
-    audioChange() {
-      this.$root.audio.muted = !this.$root.audio.muted;
-      this.audioInfo = !this.audioInfo;
+    changeAudio() {
+      if (this.$root.audio.paused) {
+        this.$root.audio.play();
+      } else {
+        this.$root.audio.muted = !this.$root.audio.muted;
+      }
+      this.audioIcon =
+        this.audioIcon === "mdi-volume-high"
+          ? "mdi-volume-off"
+          : "mdi-volume-high";
     },
 
     /**

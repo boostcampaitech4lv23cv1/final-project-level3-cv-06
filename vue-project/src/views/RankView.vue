@@ -9,11 +9,8 @@
       </v-row>
 
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <v-btn rounded variant="plain" @click="audioChange" height="5vh">
-          <v-icon icon="mdi-volume-high" size="5vh" v-show="audioInfo == true">
-          </v-icon>
-          <v-icon icon="mdi-volume-off" size="5vh" v-show="audioInfo == false">
-          </v-icon>
+        <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
+          <v-icon :icon="audioIcon" size="5vh"> </v-icon>
         </v-btn>
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
@@ -22,10 +19,16 @@
         </v-btn>
       </v-row>
 
-      <v-row class="d-flex align nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
+      <v-row
+        class="d-flex align nums"
+        :style="{ height: '30vh', 'margin-top': '0vh' }"
+      >
         <!-- game result information -->
         <v-col cols="6" class="align-self-center">
-          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+          <v-row
+            class="d-flex justify-end"
+            :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }"
+          >
             <!-- check icon & correct number -->
             <v-col cols="1">
               <check />
@@ -37,7 +40,10 @@
             </v-col>
           </v-row>
 
-          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+          <v-row
+            class="d-flex justify-end"
+            :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }"
+          >
             <!--timer icon show & clear time-->
             <v-col cols="1">
               <timer />
@@ -51,12 +57,15 @@
         </v-col>
 
         <!-- show rank emoji -->
-        <v-col cols="4" :style="{
-          'margin-left': '7vh',
-          'margin-top': '2vh',
-          'font-size': '23vh',
-          color: 'gold',
-        }">
+        <v-col
+          cols="4"
+          :style="{
+            'margin-left': '7vh',
+            'margin-top': '2vh',
+            'font-size': '23vh',
+            color: 'gold',
+          }"
+        >
           {{ rank }}
         </v-col>
       </v-row>
@@ -64,23 +73,30 @@
       <v-row class="justify-center">
         <v-col cols="5" class="d-flex justify-end">
           <!-- go result button -->
-          <v-btn class="text-center" :style="{
-            margin: '15vh 0vw 0vh 0vw',
-          }" @click="goResult">
+          <v-btn
+            class="text-center"
+            :style="{
+              margin: '15vh 0vw 0vh 0vw',
+            }"
+            @click="goResult"
+          >
             Show Result!
           </v-btn>
         </v-col>
         <v-col cols="1"></v-col>
         <v-col cols="5">
           <!-- register score and go leaderboard -->
-          <v-btn class="text-center" :style="{
-            margin: '15vh 0vw 0vh 0vw',
-          }" @click="showDialog = true">
+          <v-btn
+            class="text-center"
+            :style="{
+              margin: '15vh 0vw 0vh 0vw',
+            }"
+            @click="showDialog = true"
+          >
             Register!
           </v-btn>
         </v-col>
       </v-row>
-
 
       <v-dialog v-model="showDialog">
         <v-row class="d-flex justify-center">
@@ -89,7 +105,12 @@
               <v-card-title> Register your score! </v-card-title>
               <v-divider class="mx-4 mb-1"></v-divider>
               <v-card-text>
-                <v-text-field density="compact" label="Enter your name!" single-line v-model="name"></v-text-field>
+                <v-text-field
+                  density="compact"
+                  label="Enter your name!"
+                  single-line
+                  v-model="name"
+                ></v-text-field>
               </v-card-text>
               <v-card-actions class="d-flex justify-end">
                 <v-btn @click="registerScore"> Register </v-btn>
@@ -118,10 +139,10 @@ export default {
       rank: "",
       clearTime: this.$store.state.clearTime.toString().substr(0, 5),
       correctAnswer: this.$store.state.correctAnswer,
-      audioInfo: true,
+      audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
       correctNum: 0,
-      name: '',
-      showDialog: false
+      name: "",
+      showDialog: false,
     };
   },
 
@@ -129,10 +150,18 @@ export default {
     goResult() {
       this.$router.push({ path: "/demoresult" });
     },
-    audioChange() {
-      this.$root.audio.muted = !this.$root.audio.muted;
-      this.audioInfo = !this.audioInfo;
+    changeAudio() {
+      if (this.$root.audio.paused) {
+        this.$root.audio.play();
+      } else {
+        this.$root.audio.muted = !this.$root.audio.muted;
+      }
+      this.audioIcon =
+        this.audioIcon === "mdi-volume-high"
+          ? "mdi-volume-off"
+          : "mdi-volume-high";
     },
+
     moveHome() {
       this.$router.push({ path: "/" });
     },
@@ -143,14 +172,19 @@ export default {
       let response = await this.$api(
         "http://34.64.169.197/api/v1/score/create",
         "POST",
-        { user_name: this.name, play_time: this.clearTime, correct_cnt: this.correctAnswer }
+        {
+          user_name: this.name,
+          play_time: this.clearTime,
+          correct_cnt: this.correctAnswer,
+        }
       );
-      this.name = ""
+      this.name = "";
     },
   },
   async mounted() {
-    this.$root.audio.play();
-    this.audioInfo = !this.$root.audio.muted;
+    if (this.$root.audio.paused) {
+      this.$root.audio.play();
+    }
     let correctList = this.$store.state.correctList;
     let imgPath = this.$store.state.imgPath;
 
