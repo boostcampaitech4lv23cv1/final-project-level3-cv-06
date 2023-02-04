@@ -24,7 +24,6 @@ from PaintTransformer.inference import init, inference
 from PaintTransformer.inference_only_final import inference as inference_by_img
 
 KEY_PATH = 'env/key_v1.json'
-DATA_PATH = 'dataset'
 model_path = "PaintTransformer/model.pth" # main.py 기준으로 경로 설정해야 함
 bucket_name = "scraped-img"
 
