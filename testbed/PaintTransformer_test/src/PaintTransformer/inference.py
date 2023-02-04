@@ -249,18 +249,20 @@ def param2img_serial(
                     dim=3,
                 )
             cur_canvas = canvas
+            
 
-            frame = crop(
-                cur_canvas[
-                    :,
-                    :,
-                    patch_size_y // factor : -patch_size_y // factor,
-                    patch_size_x // factor : -patch_size_x // factor,
-                ],
-                original_h,
-                original_w,
-            )
-            frame_list.append(frame[0])
+            for i in range(cur_canvas.shape[0]):
+                frame = crop(
+                    cur_canvas[
+                        [i],
+                        :,
+                        patch_size_y // factor : -patch_size_y // factor,
+                        patch_size_x // factor : -patch_size_x // factor,
+                    ],
+                    original_h[i],
+                    original_w[i],
+                )
+                frame_list[i].append(frame)
 
     if odd_idx_y.shape[0] > 0 and odd_idx_x.shape[0] > 0:
         for i in range(s):
@@ -298,17 +300,29 @@ def param2img_serial(
                     dim=3,
                 )
             cur_canvas = canvas
-            frame = crop(
-                cur_canvas[
-                    :,
-                    :,
-                    patch_size_y // factor : -patch_size_y // factor,
-                    patch_size_x // factor : -patch_size_x // factor,
-                ],
-                original_h,
-                original_w,
-            )
-            frame_list.append(frame[0])
+            # frame = crop(
+            #     cur_canvas[
+            #         :,
+            #         :,
+            #         patch_size_y // factor : -patch_size_y // factor,
+            #         patch_size_x // factor : -patch_size_x // factor,
+            #     ],
+            #     original_h[0],
+            #     original_w[0],
+            # )
+            # frame_list.append(frame[0])
+            for i in range(cur_canvas.shape[0]):
+                frame = crop(
+                    cur_canvas[
+                        [i],
+                        :,
+                        patch_size_y // factor : -patch_size_y // factor,
+                        patch_size_x // factor : -patch_size_x // factor,
+                    ],
+                    original_h[i],
+                    original_w[i],
+                )
+                frame_list[i].append(frame)
 
     if odd_idx_y.shape[0] > 0 and even_idx_x.shape[0] > 0:
         for i in range(s):
@@ -342,17 +356,29 @@ def param2img_serial(
                     dim=3,
                 )
             cur_canvas = canvas
-            frame = crop(
-                cur_canvas[
-                    :,
-                    :,
-                    patch_size_y // factor : -patch_size_y // factor,
-                    patch_size_x // factor : -patch_size_x // factor,
-                ],
-                original_h,
-                original_w,
-            )
-            frame_list.append(frame[0])
+            # frame = crop(
+            #     cur_canvas[
+            #         :,
+            #         :,
+            #         patch_size_y // factor : -patch_size_y // factor,
+            #         patch_size_x // factor : -patch_size_x // factor,
+            #     ],
+            #     original_h[0],
+            #     original_w[0],
+            # )
+            # frame_list.append(frame[0])
+            for i in range(cur_canvas.shape[0]):
+                frame = crop(
+                    cur_canvas[
+                        [i],
+                        :,
+                        patch_size_y // factor : -patch_size_y // factor,
+                        patch_size_x // factor : -patch_size_x // factor,
+                    ],
+                    original_h[i],
+                    original_w[i],
+                )
+                frame_list[i].append(frame)
 
     if even_idx_y.shape[0] > 0 and odd_idx_x.shape[0] > 0:
         for i in range(s):
@@ -389,17 +415,29 @@ def param2img_serial(
                     dim=3,
                 )
             cur_canvas = canvas
-            frame = crop(
-                cur_canvas[
-                    :,
-                    :,
-                    patch_size_y // factor : -patch_size_y // factor,
-                    patch_size_x // factor : -patch_size_x // factor,
-                ],
-                original_h,
-                original_w,
-            )
-            frame_list.append(frame[0])
+            # frame = crop(
+            #     cur_canvas[
+            #         :,
+            #         :,
+            #         patch_size_y // factor : -patch_size_y // factor,
+            #         patch_size_x // factor : -patch_size_x // factor,
+            #     ],
+            #     original_h[0],
+            #     original_w[0],
+            # )
+            # frame_list.append(frame[0])
+            for i in range(cur_canvas.shape[0]):
+                frame = crop(
+                    cur_canvas[
+                        [i],
+                        :,
+                        patch_size_y // factor : -patch_size_y // factor,
+                        patch_size_x // factor : -patch_size_x // factor,
+                    ],
+                    original_h[i],
+                    original_w[i],
+                )
+                frame_list[i].append(frame)
 
     cur_canvas = cur_canvas[
         :,
@@ -520,16 +558,29 @@ def inference(
     return: List[PIL.Image.Image]
     """
     with torch.no_grad():
-        frame_list = []
+        frame_list = [[] for _ in range(len(image))]
+        img_list = []
+        original_h = []
+        original_w = []
 
-        original_img = set_image(image, "RGB", resize_l).to(device)
-        original_h, original_w = original_img.shape[-2:]
+        for img in image:
+            img_list.append(set_image(img, "RGB", resize_l).to(device))
+            original_h.append(img_list[-1].shape[-2])
+            original_w.append(img_list[-1].shape[-1])
+
+        # original_h, original_w = original_img.shape[-2:]
         if K == None:
             K = max(math.ceil(math.log2(max(original_h, original_w) / patch_size)), 0)
         original_img_pad_size = patch_size * (2**K)
-        original_img_pad = pad(
-            original_img, original_img_pad_size, original_img_pad_size
-        )
+        original_img_pad_list = []
+        for img in img_list:
+            # original_img_pad = pad(
+            #     img, original_img_pad_size, original_img_pad_size
+            # )
+            original_img_pad_list.append(pad(
+                img, original_img_pad_size, original_img_pad_size
+            ))
+        original_img_pad = torch.cat(original_img_pad_list, dim=0)
         final_result = torch.zeros_like(original_img_pad).to(device)
         for layer in range(K + 1):
             layer_size = patch_size * (2**layer)
@@ -556,9 +607,9 @@ def inference(
             stroke_param = torch.cat([shape_param, color], dim=-1)
             # stroke_param: b * h * w, stroke_per_patch, param_per_stroke
             # stroke_decision: b * h * w, stroke_per_patch, 1
-            param = stroke_param.reshape(1, patch_num, patch_num, stroke_num, 8)
+            param = stroke_param.reshape(len(image), patch_num, patch_num, stroke_num, 8)
             decision = stroke_decision.reshape(
-                1, patch_num, patch_num, stroke_num
+                len(image), patch_num, patch_num, stroke_num
             ).bool()
             # param: b, h, w, stroke_per_patch, 8
             # decision: b, h, w, stroke_per_patch
@@ -605,8 +656,8 @@ def inference(
         stroke_param = torch.cat([shape_param, color], dim=-1)
         # stroke_param: b * h * w, stroke_per_patch, param_per_stroke
         # stroke_decision: b * h * w, stroke_per_patch, 1
-        param = stroke_param.reshape(1, h, w, stroke_num, 8)
-        decision = stroke_decision.reshape(1, h, w, stroke_num).bool()
+        param = stroke_param.reshape(len(image), h, w, stroke_num, 8)
+        decision = stroke_decision.reshape(len(image), h, w, stroke_num).bool()
         # param: b, h, w, stroke_per_patch, 8
         # decision: b, h, w, stroke_per_patch
         param[..., :2] = param[..., :2] / 2 + 0.25
@@ -626,12 +677,15 @@ def inference(
             :, :, border_size:-border_size, border_size:-border_size
         ]
 
-        final_result = crop(final_result, original_h, original_w)
-        frame_list = torch.stack(frame_list).cpu().numpy()
-        # frame_list = np.array(frame_list)
-        frame_list = frame_list.transpose((0, 2, 3, 1))
-        frame_list = (255 * np.clip(frame_list, 0, 1)).astype(np.uint8)
-        img_list = []
-        for n in range(len(frame_list)):
-            img_list.append(Image.fromarray(frame_list[n]))
+        final_result = crop(final_result, original_h[0], original_w[0])
+
+        img_list = [[] for _ in range(len(frame_list))]
+        for i in range(len(frame_list)):
+            frame_nparray = torch.cat(frame_list[i]).cpu().numpy()
+            # frame_list = np.array(frame_list)
+            frame_nparray = frame_nparray.transpose((0, 2, 3, 1))
+            frame_nparray = (255 * np.clip(frame_nparray, 0, 1)).astype(np.uint8)
+            
+            for n in range(frame_nparray.shape[0]):
+                img_list[i].append(Image.fromarray(frame_nparray[n]))
         return img_list

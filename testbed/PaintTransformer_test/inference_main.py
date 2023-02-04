@@ -8,13 +8,18 @@ import os
 import numpy as np
 
 resize_l = 1024
-K = 4
-stroke_num = 6
+K = 5
+stroke_num = 8
 patch_size = 32
 
-model, meta_brushes, device = init(stroke_num, model_path="model_06.pth")
+model, meta_brushes, device = init(stroke_num, model_path="model.pth")
 
-image = Image.open("dataset/original/entertainer/iu/iu_01.jpg")
+image1 = Image.open("dataset/original/entertainer/iu/iu_01.jpg")
+image2 = Image.open("dataset/original/entertainer/u0u/u0u.jpg")
+image3 = Image.open("dataset/original/animal/cat/cat_1.jpg")
+image4 = Image.open("dataset/original/entertainer/iu/iu_01.jpg")
+image5 = Image.open("dataset/original/entertainer/iu/iu_01.jpg")
+image = [image1, image2, image3, image4, image5]
 output = inference(
     image=image,
     resize_l=resize_l,  # resize original input to this size. (max(w, h) = resize_l)
@@ -26,7 +31,7 @@ output = inference(
     patch_size=patch_size,
 )
 
-num_frame = len(output)
+num_frame = len(output[0])
 
 
 def make_duration_list(
@@ -63,17 +68,18 @@ def make_duration_list(
         return list(duration_list)
 
 
-fn = "output_iu_06_dummy"
+fn = ["output_iu_06_dummy", "u0u", "cat", "iu2", "iu3"]
 
 timestep_list = make_duration_list(num_frame=num_frame, mode="LINEAR")
 
-output[0].save(
-        fn+".webp",
-        format="WEBP",
-        save_all=True,
-        append_images=output[1:],
-        optimize=True,
-        duration=timestep_list,
-        loop=1,
-    )
-output[-1].save(fn+"_final.webp")
+for i in range(len(image)):
+    output[i][0].save(
+            fn[i]+".webp",
+            format="WEBP",
+            save_all=True,
+            append_images=output[i][1:],
+            optimize=True,
+            duration=timestep_list,
+            loop=1,
+        )
+    output[i][-1].save(fn[i]+"_final.webp")
