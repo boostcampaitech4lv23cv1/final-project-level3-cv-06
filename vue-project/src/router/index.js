@@ -4,7 +4,7 @@ import selectview from '../views/SelectView.vue'
 import gameview from '../views/GameView.vue'
 import descriptionview from '../views/DescriptionView'
 import resultview from '../views/ResultView'
-import transformview from '../views/TransformView'
+import transformview from '../views/TransformView.vue'
 import rankview from '../views/RankView'
 import demoview from '../views/DemoView'
 import demoresult from '../views/DemoResult'
@@ -62,6 +62,10 @@ const routes = [
     path: "/leaderboard",
     name: "leaderboard",
     component: leaderboard
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/'
   }
 ];
 
@@ -69,5 +73,16 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+
+
+let firstVisit = true
+
+router.beforeEach((to, from, next) => {
+  if (firstVisit && to.path !== '/') {
+    firstVisit = false
+    return next('/')
+  }
+  next()
+})
 
 export default router;

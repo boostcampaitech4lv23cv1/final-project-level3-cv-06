@@ -90,18 +90,22 @@
     <v-container v-if="isPortrait">
 
 
-      <v-row class="justify-center">
-        <!-- Head Text -->
+      <v-row class="d-flex justify-center" v-if="gameStatus == 0">
+        <!-- save paint logo 출력 -->
         <v-col cols="8" class="d-flex justify-center">
-          <!-- Save Paint! 로고 출력 -->
-          <logo v-if="gameStatus === 0" :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }" />
-          <!-- 문제 번호 / 문제 수 출력-->
-          <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '10vw', height: '15vh' }">
+          <logo :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }" />
+        </v-col>
+      </v-row>
+
+
+      <!-- 문제 번호 출력 -->
+      <v-row class="d-flex justify-center" v-if="gameStatus != 0">
+        <v-col cols="8" class="d-flex justify-center">
+          <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '10vw', height: '7vh' }">
             {{ headText }}
           </div>
         </v-col>
       </v-row>
-
 
       <v-row>
         <!-- 전체 타이머에 대한 프로그레스 바-->
@@ -113,7 +117,7 @@
       <!-- default 이미지 및 gif 게임 이미지 출력 -->
       <v-col cols="12">
         <v-img src="../assets/example.jpg" height="30vh" width="100vw" class="mx-auto" v-show="gameStatus === 0" />
-        <v-img v-show="gameStatus != 0" v-bind:src="paintImg[gameStatus - 1]" class="mx-auto" height="50vh"
+        <v-img v-show="gameStatus != 0" v-bind:src="paintImg[gameStatus - 1]" class="mx-auto" height="45vh"
           width="100vw" @load="loaded = 1" />
       </v-col>
 
@@ -137,7 +141,7 @@
       <v-row class="d-flex justify-center" v-if="gameStatus > 0" :style="{ 'margin-top': '1vh' }">
         <!-- 정답 글자 수 표시 -->
         <v-sheet v-for="i in answerList[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="6vh"
-          width="6vh" rounded :style="{ 'margin-left': '0.5vw' }"></v-sheet>
+          width="6vh" rounded :style="{ 'margin-left': '0.5vw', 'margin-bottom': '1vh' }"></v-sheet>
       </v-row>
 
 
@@ -314,9 +318,15 @@ async function gameOver() {
   let response = await this.$api(
     "http://34.64.169.197/api/v1/game/gameover",
     "POST",
-
     { category: store._state.data.category, img_paths: store._state.data.imgPath, correct_list: store._state.data.correctList }
   );
+}
+
+
+const handleOrientationChange = () => {
+  if (window.innerHeight <= 480 && screen.orientation.type.startsWith('landscape')) {
+    alert('Please use portrait mode on mobile devices.')
+  }
 }
 
 
@@ -356,6 +366,12 @@ onMounted(async () => {
 
   checkOrientation();
   window.addEventListener("orientationchange", checkOrientation);
+
+
+
+  console.log(window.innerHeight, screen.orientation.type)
+
+  window.addEventListener('orientationchange', handleOrientationChange)
 });
 
 
@@ -377,9 +393,6 @@ watch(imgTimer, (newVal) => {
 });
 watch(totalTimer, (newVal) => {
   if (Math.floor(newVal) == 100) {
-    for (let i = 0; i < 9 - correctList.value.length; i++) {
-      correctList.value.push(false)
-    }
     store.commit("setCleartime", 0);
     store.commit("setCorrect", correctList.value)
     gameOver()
