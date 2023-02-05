@@ -15,11 +15,11 @@ router = APIRouter()
 
 
 @router.get('/read', response_model=List[MetaDBOut])
-def read_all_no_label(db: Session = Depends(get_db)):
+def read_all_no_label(category: str, db: Session = Depends(get_db)):
     """
     사용 여부 정해지지 않았고 아직 레이블이 없는 데이터 반환
     """
-    no_label_data = read_no_label_and_using(db)
+    no_label_data = read_no_label_and_using(db, category)
     return no_label_data
 
 
