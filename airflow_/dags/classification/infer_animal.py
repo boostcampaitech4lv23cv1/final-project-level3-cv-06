@@ -83,7 +83,7 @@ def get_metadata_from_api() -> pd.DataFrame:
     Returns:
         pd.DataFrame: metadata dataframe
     """
-    url = f"{secret['api_url']}/api/v1/meta/read"
+    url = f"{secret['api_url']}/api/v1/meta/read?category=animal"
     res = requests.get(url, allow_redirects=False)
     df = res.json()
     df = pd.DataFrame(df)
@@ -159,6 +159,8 @@ def make_img_label() -> pd.DataFrame:
 
     imagenet_labels = read_imgnet_labels()
     df = get_metadata_from_api()
+    print(df)
+    print(df['tag'])
     if len(df) == 0:
         return df
     predictions = inference_img(df)
