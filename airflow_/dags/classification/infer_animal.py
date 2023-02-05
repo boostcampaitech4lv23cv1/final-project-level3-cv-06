@@ -159,6 +159,10 @@ def make_img_label() -> pd.DataFrame:
 
     imagenet_labels = read_imgnet_labels()
     df = get_metadata_from_api()
+    print(df)
+    print(df['tag'])
+    if len(df) == 0:
+        return df
     predictions = inference_img(df)
     labels, uses = pred2imgnetlabel(predictions, imagenet_labels)
     df["label"] = labels
@@ -313,6 +317,9 @@ def img2ani(df: pd.DataFrame) -> None:
 if __name__ == "__main__":
 
     df = make_img_label()
+    if len(df) == 0:
+        print("No image to process")
+        sys.exit(0)
     send_metadata2api(df)
     img2ani(df)
     print("label: ", df["label"])

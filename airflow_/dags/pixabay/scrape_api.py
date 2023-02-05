@@ -128,7 +128,7 @@ class PixabayCrawler:
                                     break
                                 if self.is_valid(img_dict["id"]):
                                     self.send_img2gcs(img_dict)
-                                    df = self.add_data2df(df, keyword, img_dict)
+                                    df = self.add_data2df(df, img_dict)
                                     n_imgs2gcs += 1
 
                                 imgs_progress += 1
@@ -152,7 +152,7 @@ class PixabayCrawler:
                 logger.warning(f"an error occured proccesing the class {keyword}")
         return df, n_imgs2gcs
 
-    def add_data2df(self, df, keyword, img_dict):
+    def add_data2df(self, df, img_dict):
 
         df = pd.concat(
             [
@@ -160,7 +160,7 @@ class PixabayCrawler:
                     [
                         [
                             img_dict["tags"],
-                            f"{keyword}/{SITE}/{SCRAPED_TIME}/{img_dict['id']}.webp",
+                            f"{KEYWORD}/{SITE}/{SCRAPED_TIME}/{img_dict['id']}.webp",
                             img_dict["webformatWidth"],
                             img_dict["webformatHeight"],
                             SCRAPED_TIME,
@@ -379,7 +379,7 @@ if __name__ == "__main__":
         #    '침팬지', '원숭이', '레서판다', '판다', '복어'
         params["category"] = category[0]
     elif KEYWORD == "landmark":
-        keyword = [KEYWORD, "unseco","tourist attraction"]
+        keyword = [KEYWORD, "unseco", "tourist attraction"]
         params["category"] = category[10]
     scraper = PixabayCrawler(keyword, params, bucket)
     df, n_imgs2gcs = scraper.scraper(n_imgs=N_IMGS)
