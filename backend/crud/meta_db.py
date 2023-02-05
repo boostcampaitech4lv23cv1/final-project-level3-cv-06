@@ -6,7 +6,7 @@ from utils import LOGGER
 from model import *
 from scheme import *
 
-def read_no_label_and_using(category: str, db: Session):
+def read_no_label_and_using(db: Session, category: str):
     """ 카테고리에 맞는 label없고 사용가능한 데이터 읽음
     
     """
