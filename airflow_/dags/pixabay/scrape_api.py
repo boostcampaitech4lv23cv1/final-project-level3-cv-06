@@ -379,7 +379,7 @@ if __name__ == "__main__":
         #    '침팬지', '원숭이', '레서판다', '판다', '복어'
         params["category"] = category[0]
     elif KEYWORD == "landmark":
-        keyword = [KEYWORD, "places"]
+        keyword = [KEYWORD, "unseco","tourist attraction"]
         params["category"] = category[10]
     scraper = PixabayCrawler(keyword, params, bucket)
     df, n_imgs2gcs = scraper.scraper(n_imgs=N_IMGS)

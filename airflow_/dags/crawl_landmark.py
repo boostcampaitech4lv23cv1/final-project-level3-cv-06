@@ -26,7 +26,7 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME")
 ssh_base = "/opt/ml/final-project-level3-cv-06"
 keyword = "landmark"
 site = "pixabay"
-n_imgs = 50
+n_imgs = 300
 bucket = "scraped-img"
 instance_name = "airflow-server"
 zone_name = "us-west1-b"
@@ -38,7 +38,7 @@ zone_name = "us-west1-b"
 default_args = {
     "owner": "airflow",
     # "depends_on_past": False,
-    "start_date": datetime(2023, 1, 12, 9, 0, 0, tzinfo=local_tz),
+    "start_date": datetime(2023, 2, 2, 9, 0, 0, tzinfo=local_tz),
     "retries": 3,
     # "retry_delay": timedelta(minutes=1),
     # 'queue': 'bash_queue',
@@ -54,7 +54,7 @@ default_args = {
     "tags": ["img", "crawler"],
 }
 ##################     DAGS     ##################
-with DAG("crawling_landmark", default_args=default_args, schedule="@once") as dag:
+with DAG("crawling_landmark", default_args=default_args, schedule="@daily") as dag:
 
     #####################    JOBS    #######################
     crawl_img = BashOperator(
