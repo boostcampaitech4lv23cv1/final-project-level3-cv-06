@@ -25,29 +25,34 @@ os.environ["GCLOUD_PROJECT"] = "CV-NOOPS"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f"{AIRFLOW_HOME}/m2-key.json"
 
 
-def get_country(latitude: int, longitude: int) -> str:
+def get_country(latitude: int, longitude: int, cc_df: pd.DataFrame) -> str:
     """get country from latitude and longitude
 
     Args:
         latitude (int): latitude
         longitude (int): longitude
-
+        cc_df (pd.DataFrame): country code dataframe
     Returns:
         str: country
     """
     geolocator = Nominatim(user_agent="geoapiExercises")
-    location = geolocator.reverse(f"{latitude}, {longitude}", exactly_one=True)
-    address = location.raw["address"]
-    return address.get("country", "")
+    location = geolocator.reverse(
+        f"{latitude}, {longitude}", exactly_one=True, language="en"
+    )
+    country_code = location.raw["address"]["country_code"].upper()
+
+    return cc_df[cc_df["code"] == country_code]["korean"].values[0]
 
 
-def get_country_landmark_gcs(bucket_name: str, file_names: list) -> list:
+def get_country_landmark_gcs(
+    bucket_name: str, file_names: list, cc_df: pd.DataFrame
+) -> list:
     """get country from gcs landmarks images
 
     Args:
         bucket_name (str): bucket name
         file_names (list): gcs file names
-
+        cc_df (pd.DataFrame): country code dataframe
     Returns:
         list: countries
     """
@@ -65,7 +70,7 @@ def get_country_landmark_gcs(bucket_name: str, file_names: list) -> list:
         if landmarks := response.landmark_annotations:
             latitude = landmarks[0].locations[0].lat_lng.latitude
             longitude = landmarks[0].locations[0].lat_lng.longitude
-            country = get_country(latitude, longitude)
+            country = get_country(latitude, longitude, cc_df)
             countries.append(country)
         else:
             countries.append("NaN")
@@ -97,7 +102,6 @@ def img2ani(df: pd.DataFrame) -> None:
     """
 
     base_path = f"{AIRFLOW_HOME}/dags/classification/data/"
-    time_consume = make_duration_list(num_frame=200, total_time=10, mode="LINEAR")
 
     resize_l = 1024
     K = 5
@@ -122,12 +126,14 @@ def img2ani(df: pd.DataFrame) -> None:
                 stroke_num=stroke_num,
                 patch_size=patch_size,
             )
+            time_consume = make_duration_list(len(output), total_time=10, mode="LINEAR")
+
             Image.Image.save(
                 output[0],
                 save_path,
                 format="WEBP",
                 save_all=True,
-                append_images=output,
+                append_images=output[1:],
                 optimize=True,
                 duration=time_consume,
                 loop=1,
@@ -136,7 +142,9 @@ def img2ani(df: pd.DataFrame) -> None:
 
 def download_gcs_filter(blobs, file_names, df):
     dest = "/opt/ml/final-project-level3-cv-06/airflow_/dags/classification/data"
-    os.makedirs(f"{dest}/{'/'.join(blobs[1].name.split('.')[0].split('/')[:-1])}", exist_ok=True)
+    os.makedirs(
+        f"{dest}/{'/'.join(blobs[1].name.split('.')[0].split('/')[:-1])}", exist_ok=True
+    )
 
     all_files = {file_name: False for file_name in file_names}
     to_be_downloaded_files = df[df["label"] != "NaN"]["img_path"].to_list()
@@ -172,8 +180,8 @@ if __name__ == "__main__":
     bucket = client.get_bucket(bucket_name)
     blobs = list(bucket.list_blobs(prefix=dir_name))
     file_names = [str(blob).split(",")[1].strip() for blob in blobs]
-
-    countries = get_country_landmark_gcs(bucket_name, file_names)
+    cc_df = pd.read_csv(f"{AIRFLOW_HOME}/dags/classification/country_code.csv")
+    countries = get_country_landmark_gcs(bucket_name, file_names, cc_df)
     df = make_df(SCRAPED_TIME, file_names, countries)
     send_metadata2api(df, KEYWORD)
     download_gcs_filter(blobs, file_names, df)
