@@ -83,7 +83,7 @@ def get_metadata_from_api() -> pd.DataFrame:
     Returns:
         pd.DataFrame: metadata dataframe
     """
-    url = f"{secret['api_url']}/api/v1/meta/read"
+    url = f"{secret['api_url']}/api/v1/meta/read?category=animal"
     res = requests.get(url, allow_redirects=False)
     df = res.json()
     df = pd.DataFrame(df)
