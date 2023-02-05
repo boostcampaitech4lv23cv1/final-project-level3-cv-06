@@ -141,18 +141,15 @@ def img2ani(df: pd.DataFrame) -> None:
 
 
 def download_gcs_filter(blobs, file_names, df):
-    dest = "/opt/ml/final-project-level3-cv-06/airflow_/dags/classification/data"
-    os.makedirs(
-        f"{dest}/{'/'.join(blobs[1].name.split('.')[0].split('/')[:-1])}", exist_ok=True
-    )
-
+    dest = "/opt/ml/final-project-level3-cv-06/airflow_/dags/classification/data/"
+    os.makedirs(f"{dest}{KEYWORD}/{SITE}/{SCRAPED_TIME}", exist_ok=True)
     all_files = {file_name: False for file_name in file_names}
     to_be_downloaded_files = df[df["label"] != "NaN"]["img_path"].to_list()
     for file in to_be_downloaded_files:
         all_files[file] = True
     for blob in blobs:
         if all_files[blob.name]:
-            blob.download_to_filename(f"{dest}/{blob.name}")
+            blob.download_to_filename(f"{dest}{blob.name}")
 
 
 def send_metadata2api(df, KEYWORD):
@@ -178,11 +175,14 @@ if __name__ == "__main__":
     dir_name = f"{KEYWORD}/{SITE}/{SCRAPED_TIME}"
     bucket_name = "scraped-img"
     bucket = client.get_bucket(bucket_name)
-    blobs = list(bucket.list_blobs(prefix=dir_name))
-    file_names = [str(blob).split(",")[1].strip() for blob in blobs]
-    cc_df = pd.read_csv(f"{AIRFLOW_HOME}/dags/classification/country_code.csv")
-    countries = get_country_landmark_gcs(bucket_name, file_names, cc_df)
-    df = make_df(SCRAPED_TIME, file_names, countries)
-    send_metadata2api(df, KEYWORD)
-    download_gcs_filter(blobs, file_names, df)
-    img2ani(df)
+    if blobs := list(bucket.list_blobs(prefix=dir_name)):
+        file_names = [str(blob).split(",")[1].strip() for blob in blobs]
+        cc_df = pd.read_csv(f"{AIRFLOW_HOME}/dags/classification/country_code.csv")
+        countries = get_country_landmark_gcs(bucket_name, file_names, cc_df)
+        countries = ["NaN"] * len(file_names)
+        df = make_df(SCRAPED_TIME, file_names, countries)
+        send_metadata2api(df, KEYWORD)
+        download_gcs_filter(blobs, file_names, df)
+        img2ani(df)
+    else:
+        print("There is no image to process")
