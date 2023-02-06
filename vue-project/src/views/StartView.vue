@@ -84,6 +84,9 @@ export default {
         this.$root.audio.play();
       }
     },
+    enter(){
+      console.log('enter')
+    }
   },
 };
 </script>

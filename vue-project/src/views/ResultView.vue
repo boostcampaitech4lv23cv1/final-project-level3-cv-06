@@ -9,9 +9,17 @@
 
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 5vh 0vw' }">
         <!-- 오디오 버튼 -->
-        <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
-          <v-icon :icon="audioIcon" size="5vh"> </v-icon>
-        </v-btn>
+        <v-col cols="1" class="d-flex justify-center">
+          <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
+            <v-icon :icon="audioIcon" size="5vh"> </v-icon>
+          </v-btn>
+        </v-col>
+
+        <v-col cols="1" class="d-flex justify-center">
+          <v-btn rounded variant="plain" @click="moveHome" height="5vh">
+            <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
+          </v-btn>
+        </v-col>
       </v-row>
 
       <v-row>
@@ -71,9 +79,18 @@
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 5vh 0vw' }">
         <!-- 오디오 버튼 -->
-        <v-btn rounded variant="plain" @click="changeAudio">
-          <v-icon :icon="audioIcon" size="5vh"> </v-icon>
-        </v-btn>
+        <v-col cols="2">
+          <v-btn rounded variant="plain" @click="changeAudio">
+            <v-icon :icon="audioIcon" size="5vh"> </v-icon>
+          </v-btn>
+        </v-col>
+
+
+        <v-col cols="2" class="d-flex justify-center">
+          <v-btn rounded variant="plain" @click="moveHome" height="5vh">
+            <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
+          </v-btn>
+        </v-col>
       </v-row>
 
       <v-row>
@@ -191,6 +208,9 @@ export default {
         this.audioIcon === "mdi-volume-high"
           ? "mdi-volume-off"
           : "mdi-volume-high";
+    },
+    moveHome() {
+      this.$router.push({ path: "/" });
     },
   },
 

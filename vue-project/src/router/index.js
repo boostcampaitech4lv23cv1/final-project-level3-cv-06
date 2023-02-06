@@ -69,20 +69,12 @@ const routes = [
   }
 ];
 
+
+
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
 
-
-let firstVisit = true
-
-router.beforeEach((to, from, next) => {
-  if (firstVisit && to.path !== '/') {
-    firstVisit = false
-    return next('/')
-  }
-  next()
-})
 
 export default router;

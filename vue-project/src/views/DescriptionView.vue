@@ -259,7 +259,6 @@ export default {
    * @return {Object}
    *  The initial data for the component.
    *
-
    * @property {boolean} audioIcon - The state of the audio (muted or not).
    * @property {boolean} overlay - overlay for explanation
    * @property {boolean} totalTimer - time left
@@ -275,7 +274,6 @@ export default {
       isPortrait: true,
     };
   },
-
   computed: {
     getImageSrc() {
       return this.page === 3
@@ -379,11 +377,9 @@ export default {
   height: 100vh;
   width: 100vw;
 }
-
 .overlayed-bar {
   color: grey;
   transform: rotate(90deg);
-
   margin-top: 20vh;
   background: linear-gradient(
     to right,
@@ -395,10 +391,8 @@ export default {
     #a53fff38 80%,
     #ff3fc93b 100%
   );
-
   border-radius: 30px;
 }
-
 .bar {
   color: white;
   transform: rotate(90deg);
@@ -415,7 +409,6 @@ export default {
   );
   border-radius: 30px;
 }
-
 .overlayed-mobile-bar {
   color: grey;
   transform: rotate(180deg);
@@ -429,10 +422,8 @@ export default {
     #a53fff38 80%,
     #ff3fc93b 100%
   );
-
   border-radius: 30px;
 }
-
 .mobile-bar {
   color: white;
   transform: rotate(180deg);
@@ -448,24 +439,20 @@ export default {
   );
   border-radius: 30px;
 }
-
 .round {
   font-size: 5vw;
   height: 11vh;
   font-family: "num";
 }
-
 .mobile-round {
   font-size: 10vw;
   height: 12vh;
   font-family: "num";
 }
-
 .explanation {
   font-size: 3vh;
   color: white;
 }
-
 .mobile-explanation {
   font-size: 2vh;
   color: white;

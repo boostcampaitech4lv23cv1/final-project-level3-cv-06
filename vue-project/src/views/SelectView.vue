@@ -103,10 +103,10 @@
               selected: selectedCategory === item.value,
               ' mx-auto ': true,
             }" :style="{
-  height: '4vh',
-  width: '23vh',
-  margin: '1.5vh 0vw 0vh 0vw',
-}">
+            height: '4vh',
+            width: '23vh',
+            margin: '1.5vh 0vw 0vh 0vw',
+          }">
             {{ item.text }}
           </v-btn>
         </v-radio-group>
@@ -147,7 +147,8 @@ export default {
       categoryItems: [
         { text: "Animal", value: "animal" },
         { text: "Landmark", value: "landmark" },
-        { text: "pokemon", value: "pokemon" },
+        { text: "Pokemon", value: "pokemon" },
+        { text: "Celebrity", value: "celebrity"}
       ],
       selectedCategory: "animal",
       audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",

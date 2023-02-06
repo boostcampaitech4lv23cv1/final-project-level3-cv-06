@@ -8,15 +8,24 @@
         </v-col>
       </v-row>
 
-      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
-          <v-icon :icon="audioIcon" size="5vh"> </v-icon>
+
+      <v-row>
+        <v-col cos="6" sm="9" />
+        <v-col cols="2" sm="1" class="d-flex justify-center">
+          <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
+            <v-icon :icon="audioIcon" size="5vh"> </v-icon>
+          </v-btn>
+        </v-col>
+        <v-col cols="2" sm="1" class="d-flex justify-center">
+          <v-btn rounded variant="plain" @click="moveHome" height="5vh">
+            <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
+          </v-btn>
+        </v-col>
+        <v-col cols="2" sm="1" class="d-flex justify-center">
+          <v-btn rounded variant="plain" @click="moveGame" height="5vh">
+            <v-icon icon="mdi-refresh" size="5vh"> </v-icon>
         </v-btn>
-      </v-row>
-      <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 0vh 0vw' }">
-        <v-btn rounded variant="plain" @click="moveHome" height="5vh">
-          <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
-        </v-btn>
+        </v-col>
       </v-row>
 
       <v-row class="d-flex align nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
@@ -42,7 +51,7 @@
             <v-col cols="1"></v-col>
             <!--clear time show-->
             <v-col xs="10" sm="5" lg="3" class="justfy">
-              {{ clearTime }}
+              {{  parseInt(clearTime/60) }}m {{ parseInt(clearTime%60) }}s
             </v-col>
           </v-row>
         </v-col>
@@ -72,7 +81,7 @@
           <!-- register score and go leaderboard -->
           <v-btn class="text-center" :style="{
             margin: '15vh 0vw 0vh 0vw',
-          }" @click="showDialog = true">
+          }" @click="showDialog = true" :disabled="blockRegister">
             Register!
           </v-btn>
         </v-col>
@@ -88,7 +97,7 @@
                 <v-text-field density="compact" label="Enter your name!" single-line v-model="name"></v-text-field>
               </v-card-text>
               <v-card-actions class="d-flex justify-end">
-                <v-btn @click="registerScore"> Register </v-btn>
+                <v-btn @click="registerScore" :disabled="name==''"> Register </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -118,6 +127,7 @@ export default {
       correctNum: 0,
       name: "",
       showDialog: false,
+      blockRegister: false,
     };
   },
 
@@ -140,11 +150,11 @@ export default {
     moveHome() {
       this.$router.push({ path: "/" });
     },
+    moveGame() {
+      this.$router.push({ path: "/select" });
+    },
 
     async registerScore() {
-      console.log(this.name)
-      console.log(this.clearTime)
-      console.log(this.correctAnswer)
       let response = await this.$api(
         "http://34.64.169.197/api/v1/score/create",
         "POST",
@@ -155,6 +165,8 @@ export default {
         }
       );
       this.name = "";
+      this.showDialog=false
+      this.blockRegister=true
     },
   },
   async mounted() {

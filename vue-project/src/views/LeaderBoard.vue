@@ -55,7 +55,7 @@
                 <tr v-for="item in ranking" :key="item.name">
                   <td class="text-center">{{ item.user_name }}</td>
                   <td class="text-center">{{ item.correct_cnt }}</td>
-                  <td class="text-center">{{ item.play_time }}</td>
+                  <td class="text-center">{{ parseInt(item.play_time/60) }}m {{ parseInt(item.play_time%60) }}s</td>
                 </tr>
               </tbody>
             </v-table>

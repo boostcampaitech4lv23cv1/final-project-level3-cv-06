@@ -11,5 +11,8 @@ export default {
   name: "App",
 
   data: () => ({}),
+  mounted() {
+    document.title = "Save Paint!";
+  }
 };
 </script>

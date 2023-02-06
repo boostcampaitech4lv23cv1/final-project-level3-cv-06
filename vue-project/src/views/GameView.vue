@@ -27,7 +27,6 @@
         </v-col>
 
 
-        <!-- 전체 타이머에 대한 프로그래스 바 -->
         <v-col cols="3" class="mx-auto">
           <v-progress-linear v-show="gameStatus > 0" class="bar" height="20vh" color="white" v-model="totalTimer" />
         </v-col>
@@ -64,13 +63,18 @@
         <v-col cols="4" class="d-flex justify-center">
           <!-- 정답 입력 칸 -->
           <v-text-field v-show="gameStatus > 0" label="Enter the answer" single-line density="compact" v-model="text"
-            @keydown.enter="enter"></v-text-field>
+            @keypress.enter="enter"></v-text-field>
 
 
           <!-- 게임 시작 버튼 -->
           <v-btn v-show="gameStatus == 0" @click="startGame">Game Start!</v-btn>
         </v-col>
-        <v-col cols="4"></v-col>
+        <v-col cols="1">
+          <v-btn v-show="imgTimer<=10" @click="showHint=true">
+            Show hint!
+          </v-btn>
+        </v-col>
+        <v-col cols="3"></v-col>
       </v-row>
 
 
@@ -108,7 +112,6 @@
       </v-row>
 
       <v-row>
-        <!-- 전체 타이머에 대한 프로그레스 바-->
         <v-progress-linear v-show="gameStatus > 0" class="mobile-bar" height="10vw" color="white"
           v-model="totalTimer" />
       </v-row>
@@ -138,22 +141,23 @@
       </v-row>
 
 
-      <v-row class="d-flex justify-center" v-if="gameStatus > 0" :style="{ 'margin-top': '1vh' }">
+      <v-row class="d-flex justify-center" v-if="gameStatus > 0 
+        " :style="{ 'margin-top': '1vh' }">
         <!-- 정답 글자 수 표시 -->
         <v-sheet v-for="i in answerList[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="6vh"
           width="6vh" rounded :style="{ 'margin-left': '0.5vw', 'margin-bottom': '1vh' }"></v-sheet>
       </v-row>
 
-
       <v-row class="d-flex justify-center">
         <!-- 정답 입력 칸 -->
-        <v-col cols="10" class="d-flex justify-center">
-          <v-text-field v-show="gameStatus > 0" label="Enter the answer" single-line density="compact" v-model="text"
-            @keydown.enter="enter"></v-text-field>
-
-
+        <v-col cols="9" class="d-flex justify-center">
+          <v-text-field @keydown.enter="enter" v-show="gameStatus > 0" label="Enter the answer" single-line density="compact" v-model="text"
+            ></v-text-field>
           <!-- 게임 시작 버튼 -->
           <v-btn v-show="gameStatus == 0" @click="startGame">Game Start!</v-btn>
+        </v-col>
+        <v-col cols="2" v-show="gameStatus>0">
+        <v-btn @click="enter">입력</v-btn>
         </v-col>
       </v-row>
 
@@ -214,6 +218,7 @@ const loaded = ref(0);
 const correctList = ref([])
 const isPortrait = ref(true);
 const progressColor = ref("#0000FF")
+const showHint = ref(false)
 
 
 /**
@@ -250,6 +255,9 @@ function checkOrientation() {
   isPortrait.value = window.screen.orientation.type === "portrait-primary";
 }
 
+function filterLetters(str) {
+  return str.replace(/[0-9]/g, '');
+}
 
 /**
  * 게임 화면이 넘어갈 때 마다 새로운 텍스트및 이미지를 지정해주는 함수
@@ -287,6 +295,7 @@ function enter() {
   if (text.value == answerList.value[gameStatus.value - 1]) {
     loaded.value = 0
     correctList.value.push(true)
+    showHint.value=false
     if (gameStatus.value === 9) {
       store.commit("setCleartime", totalTimer);
       store.commit("setCorrect", correctList.value)
@@ -350,7 +359,7 @@ onMounted(async () => {
   let imgPath = []
 
   for (let i = 0; i < 9; i++) {
-    answerList.value.push(response.data[i]['label'])
+    answerList.value.push(filterLetters(response.data[i]['label']))
 
     originImg.push(response.data[i]['base_url'] + response.data[i]['img_path'])
     imgPath.push(response.data[i]['img_path'])
@@ -377,8 +386,17 @@ onMounted(async () => {
  */
 watch(imgTimer, (newVal) => {
   if (newVal == 0) {
-    resetImg();
     correctList.value.push(false)
+    showHint.value=false
+    if (gameStatus.value === 9) {
+      store.commit("setCleartime", totalTimer);
+      store.commit("setCorrect", correctList.value)
+      gameOver()
+      router.push({ path: "/rank" });
+    }
+    else{
+      resetImg()
+    }
   }
   if (newVal <= 5) {
     progressColor.value = "#FF0000"

@@ -15,6 +15,7 @@ loadFonts();
 
 const app = createApp(App);
 app.config.globalProperties.audio = new Audio(bgm);
+app.config.globalProperties.audio.volume = 0.5;
 app.use(router);
 app.use(store);
 app.use(vuetify, {});
