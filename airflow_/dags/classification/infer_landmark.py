@@ -39,10 +39,11 @@ def get_country(latitude: int, longitude: int, cc_df: pd.DataFrame) -> str:
     location = geolocator.reverse(
         f"{latitude}, {longitude}", exactly_one=True, language="en"
     )
-    country_code = location.raw["address"]["country_code"].upper()
-
-    return cc_df[cc_df["code"] == country_code]["korean"].values[0]
-
+    try:
+        country_code = location.raw["address"]["country_code"].upper()
+        return cc_df[cc_df["code"] == country_code]["korean"].values[0]
+    except Exception:
+        return "NaN"
 
 def get_country_landmark_gcs(
     bucket_name: str, file_names: list, cc_df: pd.DataFrame
