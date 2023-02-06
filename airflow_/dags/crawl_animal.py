@@ -9,6 +9,7 @@ from airflow import DAG
 # Operators; we need this to operate!
 from airflow.operators.bash import BashOperator
 from airflow.providers.google.cloud.transfers.sftp_to_gcs import SFTPToGCSOperator
+from airflow.providers.sftp.sensors.sftp import SFTPSensor
 from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
 from airflow.providers.ssh.operators.ssh import SSHOperator
 from airflow.utils.dates import days_ago
@@ -74,6 +75,11 @@ with DAG("crawling_animal", default_args=default_args, schedule="@daily") as dag
             && python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
         cmd_timeout=600,
     )
+    sense_ani = SFTPSensor(
+        task_id="wait_for_ani",
+        path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/*_ani.webp",
+        sftp_conn_id="sftp_connection",
+    )
     ani2gcs = SFTPToGCSOperator(
         task_id="ani2gcs",
         source_path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/*_ani.webp",
@@ -97,6 +103,7 @@ with DAG("crawling_animal", default_args=default_args, schedule="@daily") as dag
         crawl_img
         >> load_data_from_gcs2ssh
         >> infer_label
+        >> sense_ani
         >> ani2gcs
         >> remove_dir
         >> slack_success_noti
