@@ -22,7 +22,7 @@
         <!--default 이미지 출력 및 게임시작시 gif 이미지 출력-->
         <v-col cols="6">
           <v-img src="../assets/example.jpg" height="35vh" width="40vw" class="mx-auto" v-show="gameStatus === 0" />
-          <v-img v-show="gameStatus != 0" v-bind:src="paintImg[gameStatus - 1]" class="mx-auto" height="40vh"
+          <v-lazy v-show="gameStatus != 0" v-bind:src="paintImg[gameStatus - 1]" class="mx-auto" height="40vh"
             width="100vw" @load="loaded = 1" />
         </v-col>
 
@@ -165,7 +165,7 @@
       </v-row>
 
       <v-row class="d-flex justify-center">
-        <v-col cols="3" v-if="gameStatus>0"  class="d-flex justify-end">
+        <v-col cols="1" v-if="gameStatus>0"  class="d-flex justify-end">
           <v-btn :disabled="imgTimer>10" @click="showHint=true, hintNum+=1">
             hint!
           </v-btn>
@@ -200,7 +200,6 @@ import axios from "axios";
 import logo from "../svg/logoView.vue";
 import wrong from "../svg/wrongAnswer.vue";
 import right from "../svg/rightAnswer.vue";
-
 
 /**
  * @property {Number} imgTimer 하나의 이미지에 대한 시간 표시 (15초 -> 0초)
@@ -318,7 +317,7 @@ function pass(){
 
     calScore()
     store.commit('setScore',score.value)
-    
+
     gameOver()
     router.push({ path: "/rank" });
   }
@@ -342,6 +341,10 @@ function enter() {
     if (gameStatus.value === 9) {
       store.commit("setCleartime", totalTimer);
       store.commit("setCorrect", correctList.value)
+
+      calScore()
+      store.commit('setScore',score.value)
+      
       gameOver()
       router.push({ path: "/rank" });
     }
@@ -503,6 +506,7 @@ function extract_chosung(str){
   }
 	return hstr;
 }
+
 </script>
 
 
