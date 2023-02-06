@@ -16,9 +16,9 @@ with open(
 def download_img_from_gcs(img_paths: list, paths_to_save: list):
     dest = "/opt/ml/final-project-level3-cv-06/airflow_/dags/classification/data/"
     for path_to_save in paths_to_save:
-        os.makedirs(dest + "/".join(path_to_save), exist_ok=True)
+        os.makedirs(f"{dest}{path_to_save}", exist_ok=True)
     for img_path in img_paths:
-        bash_script = f"gsutil cp gs://scraped-time/{img_path}/ {dest}{img_path}"
+        bash_script = f"gsutil cp gs://{bucket}/{img_path}/ {dest}{img_path}"
         os.system(bash_script)
 
 
