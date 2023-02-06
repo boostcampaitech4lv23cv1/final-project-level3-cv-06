@@ -65,7 +65,7 @@ with DAG("crawling_animal", default_args=default_args, schedule="@daily") as dag
     load_data_from_gcs2ssh = SSHOperator(
         task_id="download_data_from_gcs2ssh",
         ssh_conn_id="ssh_connection",
-        command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {scraped_time} {bucket} {site} {keyword}",
+        command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {bucket}",
     )
     infer_label = SSHOperator(
         task_id="infer_label",
