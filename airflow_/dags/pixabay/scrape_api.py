@@ -85,23 +85,11 @@ class PixabayCrawler:
             ]
         )
         logger.info("Starting")
+        n_imgs2gcs = 0
         for keyword in self.keywords:
             try:
                 self.params["q"] = keyword
-
-                try:
-                    class_path = (
-                        f"{AIRFLOW_HOME}/dags/data/{KEYWORD}/{SITE}/{SCRAPED_TIME}"
-                    )
-                    os.makedirs(class_path, exist_ok=True)
-
-                except Exception:
-                    logger.warning(
-                        f"Something went wrong while creating path for {keyword}"
-                    )
-
-                logger.info(f"Downloading class: {keyword} to {class_path}")
-
+                print(f"Now searching for '{keyword}'")
                 # testing if pixabay can serve the amount of wanted images
                 n_imgs = self.test_if_pixabay_can_serve(n_imgs)
 
@@ -109,7 +97,6 @@ class PixabayCrawler:
 
                 # creating the params list for all pages
                 imgs_progress = 0
-                n_imgs2gcs = 0
 
                 run = True
 
@@ -127,7 +114,7 @@ class PixabayCrawler:
                                     run = False
                                     break
                                 if self.is_valid(img_dict["id"]):
-                                    self.send_img2gcs(img_dict)
+                                    # self.send_img2gcs(img_dict)
                                     df = self.add_data2df(df, img_dict)
                                     n_imgs2gcs += 1
 
@@ -356,7 +343,7 @@ if __name__ == "__main__":
         "q": "None",
         "image_type": "photo",
         "page": 1,  # Returned search results are paginated. Use this parameter to select the page number.
-        "per_page": MAX_IMG_PER_PAGE,  # Determine the number of results per page. Accepted values: 3 - 200. Default: 20.
+        "per_page": 20,  # Determine the number of results per page. Accepted values: 3 - 200. Default: 20.
         "category": "None",
         "safesearch": "true",
         "order": "popular",
@@ -367,7 +354,7 @@ if __name__ == "__main__":
     bucket = storage_client.bucket(bucket_name)
 
     if KEYWORD == "animal":
-        keyword = [KEYWORD, "mammal"]
+        keyword = [KEYWORD, "Mammal"]
         #     '금붕어', '상어', '가오리', '닭', '타조', '까치', '독수리', '올빼미', '개구리', '거북이',
         #    '도마뱀', '카멜레온', '악어', '뱀', '전갈', '거미', '공작', '앵무새', '오리', '거위',
         #    '백조', '코끼리', '오리너구리', '캥거루', '코알라', '해파리', '말미잘', '달팽이', '게', '홍학',
@@ -379,7 +366,7 @@ if __name__ == "__main__":
         #    '침팬지', '원숭이', '레서판다', '판다', '복어'
         params["category"] = category[0]
     elif KEYWORD == "landmark":
-        keyword = [KEYWORD, "unseco", "tourist attraction"]
+        keyword = [KEYWORD, "Unesco", "tourist attraction"]
         params["category"] = category[10]
     scraper = PixabayCrawler(keyword, params, bucket)
     df, n_imgs2gcs = scraper.scraper(n_imgs=N_IMGS)
