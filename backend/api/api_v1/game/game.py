@@ -34,7 +34,7 @@ async def gamestart(game_start: GameStart, db: Session = Depends(get_db)) -> Lis
         random_keys = random.choices(list(data_dict.keys()), k=9)
         
         for key in random_keys:
-            result.append(random.choice(data_dict[key]))
+            result.append(random.choice(list(data_dict[key])))
         
         return result
     except Exception as e:
