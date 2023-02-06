@@ -18,7 +18,7 @@ def download_img_from_gcs(img_paths: list, paths_to_save: list):
     for path_to_save in paths_to_save:
         os.makedirs(dest + "/".join(path_to_save), exist_ok=True)
     for img_path in img_paths:
-        bash_script = f"gsutil -m cp gs://scraped-time/{img_path}/ {dest}{img_path}"
+        bash_script = f"gsutil cp gs://scraped-time/{img_path}/ {dest}{img_path}"
         os.system(bash_script)
 
 
