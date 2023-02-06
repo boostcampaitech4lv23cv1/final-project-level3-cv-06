@@ -25,6 +25,7 @@ const store = createStore({
             clearTime:100,
             correctAnswer:0,
             category:'',
+            score:0,
         }
     },
 
@@ -110,6 +111,11 @@ const store = createStore({
          */
         setCategory(state,category){
             state.category=category
+        },
+
+
+        setScore(state,score){
+            state.score=score
         }
     },
     plugins : [ 
