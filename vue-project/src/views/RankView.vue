@@ -29,8 +29,23 @@
       </v-row>
 
       <v-row class="d-flex align nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
+
+
         <!-- game result information -->
         <v-col cols="6" class="align-self-center">
+          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+            <!-- check icon & correct number -->
+            <v-col cols="1">
+              <v-icon icon="mdi-star" />
+            </v-col>
+            <v-col cols="1"></v-col>
+            <!-- correct answer number show -->
+            <v-col xs="10" sm="5" lg="3" class="justfy">
+              {{score}}
+            </v-col>
+          </v-row>
+
+
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
             <!-- check icon & correct number -->
             <v-col cols="1">
@@ -128,6 +143,7 @@ export default {
       name: "",
       showDialog: false,
       blockRegister: false,
+      userScore : this.$store.state.score
     };
   },
 
@@ -162,6 +178,8 @@ export default {
           user_name: this.name,
           play_time: this.clearTime,
           correct_cnt: this.correctAnswer,
+          // category: this.$store.state.category,
+          // score: this.$store.state.score,
         }
       );
       this.name = "";
@@ -178,13 +196,13 @@ export default {
         this.correctNum += 1;
       }
     }
-    if (Number(this.clearTime) <= 60) {
+    if (Number(this.userScore) >= 85) {
       this.rank = "S";
-    } else if (Number(this.clearTime) <= 70) {
+    } else if (Number(this.userScore) >= 70) {
       this.rank = "A";
-    } else if (Number(this.clearTime) <= 80) {
+    } else if (Number(this.userScore) >= 50) {
       this.rank = "B";
-    } else if (Number(this.clearTime) <= 100) {
+    } else if (Number(this.userScore) >= 30) {
       this.rank = "C";
     }
   },
