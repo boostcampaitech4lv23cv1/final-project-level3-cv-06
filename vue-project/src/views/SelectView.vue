@@ -1,6 +1,12 @@
 <template>
   <v-app class="hero">
     <v-container height="100%">
+              <v-alert 
+              density="compact"
+      type="info"
+title="아이폰은 지원되지 않아요."
+
+    >      </v-alert>
       <v-row class="d-flex justify-center">
         <!-- save paint! 로고 출력 -->
         <v-col cols="10" class="d-flex justify-center">
@@ -10,6 +16,9 @@
 
       <!-- 모바일 ui(음향,홈,설명) -->
       <v-row class="d-flex d-sm-none justify-center">
+
+
+
         <!-- 음향(소리) 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
           <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
@@ -76,7 +85,7 @@
               <!-- dialog text -->
               <v-card-text class="text-center" height="3vh">
                 카테고리에 해당하는 그림이 생성돼요. 그림을 보고 무엇인지 빨리
-                맞혀보세요!
+                맞혀보세요!   
               </v-card-text>
 
               <v-card-actions>
@@ -153,9 +162,12 @@ export default {
       selectedCategory: "animal",
       audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
       showDialog: false,
+      isIOS: false,
     };
   },
-
+  created() {
+    this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  },
   methods: {
     /**
      * button event of routing to gameview and store category and mode to local storage
