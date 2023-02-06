@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS score(
     id SERIAL PRIMARY KEY,
     created_time varchar(20),
     user_name varchar(30) NOT NULL,
+    score float,
+    category: varchar(30),
     play_time float,
-    correct_cnt int
+    correct_cnt int,
 );

@@ -32,13 +32,13 @@ async def create(score_in: ScoreIn, db: Session = Depends(get_db)):
     # valid = user_name_check(score_in.user_name, db)
     # if not valid:
     #     return HTTPException(status_code=400, detail="user name already exists")
-    create_score(db, score_in.user_name, score_in.play_time, score_in.correct_cnt)
+    create_score(db, score_in.user_name, score_in.score, score_in.play_time, score_in.correct_cnt)
     LOGGER.debug('upload score')
     
 
 
 @router.get('/read', response_model=List[ScoreOut])
-async def read_score(db: Session = Depends(get_db)):
+async def read_score(category: str, db: Session = Depends(get_db)):
     """
     전체 점수 정보 가져오는 API
 
@@ -50,7 +50,7 @@ async def read_score(db: Session = Depends(get_db)):
     정렬 후 전송
     """
     
-    data = read_all_score(db)
+    data = read_category_score(category, db)
     return data
     
     

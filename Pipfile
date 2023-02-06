@@ -21,6 +21,7 @@ python-dotenv = "*"
 psycopg2 = "*"
 psycopg2-binary = "*"
 pyarrow = "*"
+gunicorn = "*"
 
 [dev-packages]
 streamlit = "*"
