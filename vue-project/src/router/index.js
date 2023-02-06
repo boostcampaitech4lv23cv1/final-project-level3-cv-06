@@ -9,7 +9,7 @@ import rankview from '../views/RankView'
 import demoview from '../views/DemoView'
 import demoresult from '../views/DemoResult'
 import leaderboard from '../views/LeaderBoard'
-
+import store from '../store/store'
 
 const routes = [
   {
@@ -26,6 +26,13 @@ const routes = [
     path: "/game",
     name: "game",
     component: gameview,
+    beforeEnter: (to, from, next) => {
+      if (store.state.category === '') {
+        next('/')
+      } else {
+        next()
+      }
+    }
   },
   {
     path: "/description",
@@ -36,6 +43,13 @@ const routes = [
     path: "/result",
     name: "result",
     component: resultview,
+    beforeEnter: (to, from, next) => {
+      if (store.state.originImg.length === 0) {
+        next('/')
+      } else {
+        next()
+      }
+    }
   },
   {
     path: "/transform",
@@ -45,7 +59,14 @@ const routes = [
   {
     path:'/rank',
     name:'rank',
-    component: rankview
+    component: rankview,
+    beforeEnter: (to, from, next) => {
+      if (store.state.score === 0) {
+        next('/')
+      } else {
+        next()
+      }
+    }
   },
 
   {
@@ -74,6 +95,7 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  mode: 'history',
 });
 
 

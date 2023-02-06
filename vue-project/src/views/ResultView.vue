@@ -219,6 +219,7 @@ export default {
    * @function mounted
    */
   mounted() {
+    console.log(this.$store.state.originImg)
     this.checkOrientation();
     window.addEventListener("orientationchange", this.checkOrientation);
   },

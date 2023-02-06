@@ -1,7 +1,8 @@
 # main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi import FastAPI, UploadFile, File
+from pydantic import BaseModel
 from api.api_v1 import api_router
 
 
@@ -25,3 +26,17 @@ app.add_middleware(
 app.include_router(api_router, prefix='/api/v1')
 
 
+class Inferparam(BaseModel):
+    resize_l: int
+    K: int
+    stroke_num: int # 6, 8, 12 ,16
+    mode: str # large or small
+    
+
+@app.post("/t1")
+async def infer(file: UploadFile = File(...), param: Inferparam = Inferparam(
+    resize_l=512,
+    K=5,
+    stroke_num=8,
+    mode="large")):
+    return {"test": "test"}
