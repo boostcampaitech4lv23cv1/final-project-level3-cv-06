@@ -114,7 +114,7 @@ class PixabayCrawler:
                                     run = False
                                     break
                                 if self.is_valid(img_dict["id"]):
-                                    # self.send_img2gcs(img_dict)
+                                    self.send_img2gcs(img_dict)
                                     df = self.add_data2df(df, img_dict)
                                     n_imgs2gcs += 1
 
