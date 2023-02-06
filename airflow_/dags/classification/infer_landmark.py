@@ -61,7 +61,8 @@ def get_country_landmark_gcs(
     client = vision.ImageAnnotatorClient()
     image = vision.Image()
     countries = []
-    for file_name in file_names:
+    print(f"The number of files to be processed: {len(file_names)}")
+    for file_name in tqdm(file_names):
         image.source.image_uri = f"gs://{bucket_name}/{file_name}"
 
         response = client.landmark_detection(image=image)
@@ -184,9 +185,9 @@ if __name__ == "__main__":
         cc_df = pd.read_csv(f"{AIRFLOW_HOME}/dags/classification/country_code.csv")
         print("Read country code csv")
         countries = get_country_landmark_gcs(bucket_name, file_names, cc_df)
-        countries = ["NaN"] * len(file_names)
         df = make_df(SCRAPED_TIME, file_names, countries)
         print("Make metadata dataframe")
+        print(f"Dataframe is:\n {df}")
         send_metadata2api(df, KEYWORD)
         download_gcs_filter(blobs, file_names, df)
         print("Start img2ani")
