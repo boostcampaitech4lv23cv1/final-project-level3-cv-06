@@ -91,7 +91,7 @@ class PixabayCrawler:
 
                 try:
                     class_path = (
-                        f"{AIRFLOW_HOME}/dags/data/{keyword}/{SITE}/{SCRAPED_TIME}"
+                        f"{AIRFLOW_HOME}/dags/data/{KEYWORD}/{SITE}/{SCRAPED_TIME}"
                     )
                     os.makedirs(class_path, exist_ok=True)
 
