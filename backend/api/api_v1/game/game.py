@@ -1,4 +1,5 @@
 import random
+from collections import defaultdict
 
 from fastapi import APIRouter, HTTPException, Depends
 
@@ -17,15 +18,25 @@ router = APIRouter()
 async def gamestart(game_start: GameStart, db: Session = Depends(get_db)) -> List:
     """
     게임 시작 API\n
-    GCS로 부터 전체 경로를 받아 랜덤으로 9개를 리스트로 전송
+    GCS로 부터 전체 경로를 받아 다른 9개 레이블 랜덤으로 받아서 리스트로 전송
 
     **game_start**
     - category: str
     """
     
-    img_paths = read_game_data(db, game_start.category)
-    try:
-        random_list = random.sample(img_paths, 9)
+    items = read_game_data(db, game_start.category)
+    try: # 로직 수정 필요
+        result = []
+        data_dict = defaultdict(list)
+        for item in items:
+            data_dict[item.label] = item
+            
+        random_keys = random.choices(list(data_dict.keys()), k=9)
+        
+        for key in random_keys:
+            result.append(random.choice(data_dict[key]))
+        
+        return result
     except Exception as e:
         LOGGER.error(e)
         return HTTPException(status_code="500", detail="아직 게임이 준비되지 않았습니다.(The number of category is under 9)")
