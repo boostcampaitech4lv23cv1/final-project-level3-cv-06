@@ -1,6 +1,6 @@
 <template>
   <v-app class="hero">
-    <v-container height="100%">
+    <v-container height="100%" z-index:1>
       <v-alert
         class="d-flex d-sm-none justify-center"
         v-if="isIOS"
@@ -15,7 +15,6 @@
           <logo :style="{ height: '14vh', margin: '10vh 0vw 0vh 0vw' }" />
         </v-col>
       </v-row>
-
       <!-- 모바일 ui(음향,홈,설명) -->
       <v-row class="d-flex d-sm-none justify-center">
         <!-- 음향(소리) 버튼 -->
@@ -46,127 +45,75 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col cols="2" sm="4" />
-
-        <!-- category logo 출력 -->
-        <v-col cols="8" sm="4" class="d-flex justify-center align-center">
-          <category
-            :style="{ height: '6vh', width: '70vw', margin: '5vh 0vw 1vh 0vw' }"
-          />
-        </v-col>
-
-        <v-col cols="2" sm="4">
-          <!-- 음향(소리) 버튼 -->
-
-          <v-row
-            class="d-none d-sm-flex justify-end"
-            :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }"
-          >
-            <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
-              <v-icon :icon="audioIcon" size="5vh"> </v-icon>
-            </v-btn>
-          </v-row>
-
-          <!-- 홈 이동 버튼 -->
-
-          <v-row
-            class="d-none d-sm-flex justify-end"
-            :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }"
-          >
-            <v-btn rounded variant="plain" @click="moveHome" height="5vh">
-              <v-icon icon="mdi-home-outline" size="5vh" />
-            </v-btn>
-          </v-row>
-
-          <!-- 설명 dialog 버튼-->
-
-          <v-row
-            class="d-none d-sm-flex justify-end"
-            :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }"
-          >
-            <v-btn
-              rounded
-              variant="plain"
-              @click="showDialog = true"
-              height="5vh"
-            >
-              <v-icon icon="mdi-information-outline" size="5vh" />
-            </v-btn>
-          </v-row>
-        </v-col>
-      </v-row>
-
       <!-- description dialog -->
       <v-dialog v-model="showDialog">
-        <v-row class="justify-center">
-          <v-col cols="12" sm="6">
-            <v-card>
-              <!-- dialog text -->
-              <v-card-text class="text-center" height="3vh">
-                카테고리에 해당하는 그림이 생성돼요. 그림을 보고 무엇인지 빨리
-                맞혀보세요!
-              </v-card-text>
+        <v-dialog v-model="showDialog">
+          <v-dialog v-model="showDialog">
+            <v-dialog v-model="showDialog">
+              <v-dialog v-model="showDialog">
+                <v-row class="justify-center">
+                  <v-col cols="12" sm="6">
+                    <v-card>
+                      <!-- dialog text -->
+                      <v-card-text class="text-center" height="10vh">
+                        카테고리에 해당하는 그림이 생성돼요. 그림을 보고
+                        무엇인지 빨리 맞혀보세요!
+                      </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <!-- dialog close 버튼 -->
-                <v-btn
-                  variant="tonal"
-                  @click="showDialog = false"
-                  :style="{ margin: '0vh 0vw 0vh 0vw' }"
-                  color="orange"
-                  >확인</v-btn
-                >
-                <v-spacer></v-spacer>
-                <!-- description 이동 버튼 -->
-                <v-btn
-                  variant="tonal"
-                  @click="movePage('/description')"
-                  :style="{ margin: '0vh 0vw 0vh 0vw' }"
-                  color="orange"
-                  >게임방법 알아보기</v-btn
-                >
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <!-- dialog close 버튼 -->
+                        <v-btn
+                          variant="tonal"
+                          @click="showDialog = false"
+                          :style="{ margin: '0vh 0vw 0vh 0vw' }"
+                          color="#6fc2fe"
+                          >확인</v-btn
+                        >
+                        <v-spacer></v-spacer>
+                        <!-- description 이동 버튼 -->
+                        <v-btn
+                          variant="tonal"
+                          @click="movePage('/description')"
+                          :style="{ margin: '0vh 0vw 0vh 0vw' }"
+                          color="#6fc2fe"
+                          >게임방법 알아보기</v-btn
+                        >
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-dialog>
+            </v-dialog>
+          </v-dialog>
+        </v-dialog>
       </v-dialog>
-
-      <v-row class="d-flex justify-center">
-        <!-- category 선택 버튼 - radio type -->
-        <v-radio-group v-model="selectedCategory">
-          <v-btn
-            rounded
-            v-for="item in categoryItems"
-            :key="item.value"
-            :value="item.value"
-            @click="changeCategory(item.value)"
-            :class="{
-              selected: selectedCategory === item.value,
-              ' mx-auto ': true,
-            }"
-            :style="{
-              height: '4vh',
-              width: '23vh',
-              margin: '1.5vh 0vw 0vh 0vw',
-            }"
-          >
-            {{ item.text }}
-          </v-btn>
-        </v-radio-group>
+      <v-row
+        class="text-center text-h6 text-black font-weight-bold"
+        :style="{ 'margin-top': '5vh' }"
+      >
+        <v-col cols="3"> 인물 </v-col>
+        <v-col cols="3"> 동물 </v-col>
+        <v-col cols="3"> 포켓몬 </v-col>
+        <v-col cols="3"> 나라 </v-col>
       </v-row>
-
-      <!-- game 페이지 이동 버튼 -->
-      <v-row>
-        <v-col
-          cols="12"
-          class="d-flex justify-center"
-          :style="{ margin: '3vh 0vw 0vh 0vw' }"
-        >
-          <v-btn color="yellow" @click="startGame">Game start</v-btn>
-        </v-col>
+      <v-row align="center" justify="center">
+        <template v-for="(item, i) in items" :key="i">
+          <v-col cols="3">
+            <v-hover v-slot="{ isHovering, props }">
+              <v-card
+                class="mx-auto"
+                @click="[changeCategory(item.value), startGame()]"
+                :elevation="isHovering ? 12 : 2"
+                :class="{ 'on-hover': isHovering }"
+                v-bind="props"
+              >
+                <v-img :src="item.img" cover height="25vh"> </v-img>
+              </v-card>
+            </v-hover>
+          </v-col>
+        </template>
       </v-row>
     </v-container>
   </v-app>
@@ -174,12 +121,10 @@
 
 <script>
 import logo from "../svg/logoView.vue";
-import category from "../svg/categoryView.vue";
 
 export default {
   components: {
     logo,
-    category,
   },
   /**
    * The data function for the component.
@@ -194,13 +139,30 @@ export default {
    */
   data() {
     return {
-      categoryItems: [
-        { text: "Animal", value: "animal" },
-        { text: "Landmark", value: "landmark" },
-        { text: "Pokemon", value: "pokemon" },
-        { text: "Celebrity", value: "celebrity" },
+      items: [
+        {
+          title: "인물",
+          value: "celebrity",
+          img: require("../assets/IU.jpg"),
+        },
+        {
+          title: "동물",
+          value: "animal",
+          img: require("../assets/animal.jpg"),
+        },
+        {
+          title: "포켓몬",
+          value: "pokemon",
+          img: require("../assets/pikachu.jpg"),
+        },
+        {
+          title: "나라",
+          value: "landmark",
+          img: require("../assets/eiffel.jpg"),
+        },
       ],
-      selectedCategory: "animal",
+      transparent: "rgba(255, 255, 255, 0)",
+      selectedCategory: "",
       audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
       showDialog: false,
       isIOS: false,
@@ -275,11 +237,17 @@ export default {
   background-size: cover;
   height: 100vh;
 }
-
-.selected {
-  background-color: rgb(248, 207, 71);
+.v-card {
+  transition: opacity 0.4s ease-in-out;
 }
 
+.v-card:not(.on-hover) {
+  opacity: 0.8;
+}
+
+.show-btns {
+  color: rgba(255, 255, 255, 1) !important;
+}
 @media only screen and (max-width: 480px) {
   .icon-size {
     width: 2vh;
