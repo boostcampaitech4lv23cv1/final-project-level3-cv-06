@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
-from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func, distinct
 from fastapi import HTTPException
 
 from utils import LOGGER
@@ -17,20 +17,33 @@ def read_game_data(db: Session, category: str):
 
     """
     try:
-        img_paths = (
-            db.query(GameData)
-            .filter(
-                and_(
-                    GameData.category == category,
-                    GameData.use_status == True,
-                    GameData.label != "NaN"
-                )
-            )
-            .group_by(GameData.label, GameData.id)
-            .order_by(func.random())
-            .limit(9)
-            .all()
-        )
+        # img_paths = (
+        #     db.query(GameData)
+        #     .filter(
+        #         and_(
+        #             GameData.category == category,
+        #             GameData.use_status == True,
+        #             GameData.label != "NaN"
+        #         )
+        #     )
+        #     .group_by(GameData.label, GameData.id)
+        #     .order_by(func.random())
+        #     .limit(9)
+        #     .all()
+        # )
+        subq = db.query(
+            distinct(GameData.label).label(),
+            func.random().label("random_col")
+        ).filter(
+            GameData.category == category,
+            GameData.use_status == True,
+            GameData.label != "NaN"
+        ).order_by(
+            GameData.label,
+            func.random()
+        ).subquery()
+
+        img_paths = db.query(subq).order_by(func.random()).limit(9).all()
     except Exception as e:
         LOGGER.error(e)
         return HTTPException(status_code=500, detail="DB ERROR(please check category)")

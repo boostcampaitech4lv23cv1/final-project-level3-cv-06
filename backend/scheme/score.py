@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class ScoreIn(BaseModel):
     user_name: str
+    category: str
     score: float
     play_time: float
     correct_cnt: int
