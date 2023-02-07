@@ -6,8 +6,6 @@ import descriptionview from '../views/DescriptionView'
 import resultview from '../views/ResultView'
 import transformview from '../views/TransformView.vue'
 import rankview from '../views/RankView'
-import demoview from '../views/DemoView'
-import demoresult from '../views/DemoResult'
 import leaderboard from '../views/LeaderBoard'
 import store from '../store/store'
 
@@ -67,17 +65,6 @@ const routes = [
         next()
       }
     }
-  },
-
-  {
-    path: "/demo",
-    name: "demo",
-    component: demoview,
-  },
-  {
-    path: "/demoresult",
-    name: "demoresult",
-    component: demoresult,
   },
   {
     path: "/leaderboard",

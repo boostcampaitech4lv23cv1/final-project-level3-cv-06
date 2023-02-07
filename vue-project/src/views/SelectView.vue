@@ -1,6 +1,6 @@
 <template>
   <v-app class="hero">
-    <v-container height="100%" z-index:1>
+    <v-container height="100%">
       <v-alert
         class="d-flex d-sm-none justify-center"
         v-if="isIOS"
@@ -34,16 +34,48 @@
 
         <!-- 설명 dialog 버튼-->
         <v-col cols="2" class="d-flex justify-center">
-          <v-btn
-            rounded
-            variant="plain"
-            @click="showDialog = true"
-            height="5vh"
-          >
+          <v-btn rounded variant="plain" @click="showDialog = true" height="5vh">
             <v-icon icon="mdi-information-outline" size="5vh" />
           </v-btn>
         </v-col>
       </v-row>
+
+
+      <v-row>
+        <v-col cols="2" sm="4" />
+
+        <!-- category logo 출력 -->
+        <v-col cols="8" sm="4" class="d-flex justify-center align-center">
+          <category :style="{ height: '6vh', width: '70vw', margin: '5vh 0vw 1vh 0vw' }" />
+        </v-col>
+
+        <v-col cols="2" sm="4">
+          <!-- 음향(소리) 버튼 -->
+
+          <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
+            <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
+              <v-icon :icon="audioIcon" size="5vh"> </v-icon>
+            </v-btn>
+          </v-row>
+
+          <!-- 홈 이동 버튼 -->
+
+          <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
+            <v-btn rounded variant="plain" @click="moveHome" height="5vh">
+              <v-icon icon="mdi-home-outline" size="5vh" />
+            </v-btn>
+          </v-row>
+
+          <!-- 설명 dialog 버튼-->
+
+          <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
+            <v-btn rounded variant="plain" @click="showDialog = true" height="5vh">
+              <v-icon icon="mdi-information-outline" size="5vh" />
+            </v-btn>
+          </v-row>
+        </v-col>
+      </v-row>
+
 
       <!-- description dialog -->
       <v-dialog v-model="showDialog">
@@ -59,7 +91,7 @@
                         카테고리에 해당하는 그림이 생성돼요. 그림을 보고
                         무엇인지 빨리 맞혀보세요!
                       </v-card-text>
-
+                      
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <!-- dialog close 버튼 -->
@@ -114,6 +146,7 @@
             </v-hover>
           </v-col>
         </template>
+
       </v-row>
     </v-container>
   </v-app>

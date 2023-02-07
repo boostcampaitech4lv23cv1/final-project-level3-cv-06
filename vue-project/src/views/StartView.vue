@@ -11,41 +11,23 @@
       <v-row :style="{ margin: '20vh 0vw 0vh 0vw' }">
         <!-- 게임 버튼 select 페이지로 이동  -->
         <v-col cols="6" class="d-flex justify-center">
-          <v-btn
-            rounded
-            variant="plain"
-            color="transparent"
-            @click="[movePage('/select'), playBGM()]"
-          >
+          <v-btn rounded variant="plain" color="transparent" @click="[movePage('/select'), playBGM()]">
             <game :style="{ height: '7vh' }" />
           </v-btn>
         </v-col>
 
         <!-- 이미지 변환 페이지로 이동하는 버튼 -->
         <v-col cols="6" class="d-flex justify-center">
-          <v-btn
-            rounded
-            variant="plain"
-            color="transparent"
-            @click="[movePage('/transform'), playBGM()]"
-          >
+          <v-btn rounded variant="plain" color="transparent" @click="[movePage('/transform'), playBGM()]">
             <transform :style="{ height: '7vh' }" />
           </v-btn>
         </v-col>
       </v-row>
 
-      <v-row
-        :style="{ margin: '10vh 0vw 0vh 0vw' }"
-        class="d-flex justify-center"
-      >
+      <v-row :style="{ margin: '10vh 0vw 0vh 0vw' }" class="d-flex justify-center">
         <!-- 리더보드로(랭킹) 이동하는 버튼 -->
         <v-col cols="6" class="d-flex justify-center">
-          <v-btn
-            rounded
-            variant="plain"
-            color="transparent"
-            @click="[movePage('/leaderboard'), playBGM()]"
-          >
+          <v-btn rounded variant="plain" color="transparent" @click="[movePage('/leaderboard'), playBGM()]">
             <ranking :style="{ height: '7vh' }" />
           </v-btn>
         </v-col>
@@ -84,9 +66,6 @@ export default {
         this.$root.audio.play();
       }
     },
-    enter(){
-      console.log('enter')
-    }
   },
 };
 </script>

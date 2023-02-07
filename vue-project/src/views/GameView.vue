@@ -107,17 +107,11 @@
         :style="{ 'margin-top': '1vh' }"
       >
         <!-- 정답 글자 수 표시 -->
-        <v-card
-          v-for="i in answerList[gameStatus - 1].length"
-          :key="{ i }"
-          color="white"
-          elevation="1"
-          height="6vh"
-          width="6vh"
-          rounded
-          :style="{ 'margin-left': '0.5vw' }"
-          :text="extract_chosung(answerList[gameStatus - 1][i - 1])"
-        ></v-card>
+
+        <v-card v-for="i in answerList[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="6vh"
+          width="6vh" rounded :style="{ 'margin-left': '0.5vw' }"
+          :text="extract_chosung(answerList[gameStatus - 1][i - 1])"></v-card>
+
       </v-row>
 
       <v-row>
@@ -138,15 +132,17 @@
           <v-btn v-show="gameStatus == 0" @click="startGame">Game Start!</v-btn>
         </v-col>
         <v-col cols="2" v-if="gameStatus > 0" class="d-flex justify-end">
-          <v-btn
-            :disabled="imgTimer > 10"
-            @click="(showHint = true), (hintNum += 1)"
-          >
+
+          <v-btn :disabled="imgTimer > 10" @click="showHint = true, hintNum += 1">
+
             Show hint!
           </v-btn>
         </v-col>
         <v-col cols="1" v-if="gameStatus > 0" class="d-flex align-start">
-          <v-btn :style="{ 'margin-left': '1vw' }" @click="pass"> Pass! </v-btn>
+
+          <v-btn :style="{ 'margin-left': '1vw' }" @click="pass">
+            Pass!
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -184,14 +180,8 @@
       </v-row>
 
       <v-row>
-        <v-progress-linear
-          v-show="gameStatus > 0"
-          class="mobile-bar"
-          height="10vw"
-          color="white"
-          v-model="totalTimer"
-          :style="{ 'margin-bottom': '1vh' }"
-        />
+        <v-progress-linear v-show="gameStatus > 0" class="mobile-bar" height="10vw" color="white" v-model="totalTimer"
+          :style="{ 'margin-bottom': '1vh' }" />
       </v-row>
 
       <!-- default 이미지 및 gif 게임 이미지 출력 -->
@@ -257,36 +247,23 @@
         </v-col>
       </v-row>
 
-      <v-row
-        class="d-flex justify-center"
-        v-if="(gameStatus > 0) & showHint"
-        :style="{ 'margin-top': '1vh' }"
-      >
+
+
+      <v-row class="d-flex justify-center" v-if="gameStatus > 0 & showHint" :style="{ 'margin-top': '1vh' }">
         <!-- 정답 글자 수 표시 -->
-        <v-card
-          v-for="i in answerList[gameStatus - 1].length"
-          :key="{ i }"
-          color="white"
-          elevation="1"
-          height="6vh"
-          width="6vh"
-          rounded
-          :style="{ 'margin-left': '0.5vw' }"
-          :text="extract_chosung(answerList[gameStatus - 1][i - 1])"
-        ></v-card>
+        <v-card v-for="i in answerList[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="6vh"
+          width="6vh" rounded :style="{ 'margin-left': '0.5vw' }"
+          :text="extract_chosung(answerList[gameStatus - 1][i - 1])"></v-card>
+
       </v-row>
 
       <v-row class="d-flex justify-center">
         <!-- 정답 입력 칸 -->
         <v-col cols="8" sm="6" class="d-flex justify-center">
-          <v-text-field
-            @keydown.enter="enter"
-            v-show="gameStatus > 0"
-            label="Enter the answer"
-            single-line
-            density="compact"
-            v-model="text"
-          ></v-text-field>
+
+          <v-text-field @keydown.enter="enter" v-show="gameStatus > 0" label="Enter the answer" single-line
+            density="compact" v-model="text"></v-text-field>
+
           <!-- 게임 시작 버튼 -->
           <v-btn v-show="gameStatus == 0" @click="startGame">Game Start!</v-btn>
         </v-col>
@@ -297,15 +274,18 @@
 
       <v-row class="d-flex justify-center">
         <v-col cols="1" v-if="gameStatus > 0" class="d-flex justify-end">
-          <v-btn
-            :disabled="imgTimer > 10"
-            @click="(showHint = true), (hintNum += 1)"
-          >
+
+          <v-btn :disabled="imgTimer > 10" @click="showHint = true, hintNum += 1">
+
             hint!
           </v-btn>
         </v-col>
         <v-col cols="1" v-if="gameStatus > 0" class="d-flex align-start">
-          <v-btn :style="{ 'margin-left': '1vw' }" @click="pass"> Pass! </v-btn>
+
+          <v-btn :style="{ 'margin-left': '1vw' }" @click="pass">
+            Pass!
+          </v-btn>
+
         </v-col>
       </v-row>
 
@@ -406,11 +386,9 @@ function filterLetters(str) {
 }
 
 function calScore() {
-  score.value =
-    80 * (store._state.data.correctAnswer / 9) +
-    20 * ((100 - totalTimer.value) / 100) -
-    (40 * hintNum.value) / 9 -
-    passTime.value / 15;
+
+  score.value = Math.round(80 * (store._state.data.correctAnswer / 9) + 20 * ((100 - totalTimer.value) / 100) - (40 * hintNum.value / 9) - passTime.value / 15)
+
 }
 
 /**
@@ -436,17 +414,22 @@ function startGame() {
   totalTimer.value = 0;
 }
 
+
+
 function pass() {
-  loaded.value = 0;
-  correctList.value.push(false);
-  showHint.value = false;
-  passTime.value += imgTimer.value;
+  loaded.value = 0
+  correctList.value.push(false)
+  showHint.value = false
+  passTime.value += imgTimer.value
+
   if (gameStatus.value === 9) {
     store.commit("setCleartime", totalTimer);
     store.commit("setCorrect", correctList.value);
 
-    calScore();
-    store.commit("setScore", score.value);
+
+    calScore()
+    store.commit('setScore', score.value)
+
 
     gameOver();
     router.push({ path: "/rank" });
@@ -464,17 +447,21 @@ function pass() {
  */
 function enter() {
   if (text.value == answerList.value[gameStatus.value - 1]) {
-    loaded.value = 0;
-    correctList.value.push(true);
-    showHint.value = false;
+
+    loaded.value = 0
+    correctList.value.push(true)
+    showHint.value = false
+
     if (gameStatus.value === 9) {
       store.commit("setCleartime", totalTimer);
       store.commit("setCorrect", correctList.value);
 
-      calScore();
-      store.commit("setScore", score.value);
 
-      gameOver();
+      calScore()
+      store.commit('setScore', score.value)
+
+      gameOver()
+
       router.push({ path: "/rank" });
     } else {
       if (wrongTimer.value > 0) {
@@ -546,7 +533,7 @@ onMounted(async () => {
     tmp[1] = "ani.webp";
     paintImg.value.push(response.data[i]["base_url"] + tmp.join("_"));
   }
-  console.log(answerList.value);
+
 
   store.commit("setOrigin", originImg);
   store.commit("setPaint", paintImg.value);
@@ -563,19 +550,23 @@ onMounted(async () => {
  */
 watch(imgTimer, (newVal) => {
   if (newVal == 0) {
-    correctList.value.push(false);
-    showHint.value = false;
+    correctList.value.push(false)
+    showHint.value = false
     if (gameStatus.value === 9) {
       store.commit("setCleartime", totalTimer);
-      store.commit("setCorrect", correctList.value);
+      store.commit("setCorrect", correctList.value)
 
-      calScore();
-      store.commit("setScore", score.value);
+      calScore()
+      store.commit('setScore', score.value)
+
 
       gameOver();
       router.push({ path: "/rank" });
-    } else {
-      resetImg();
+
+    }
+    else {
+      resetImg()
+
     }
   }
   if (newVal <= 5) {
@@ -589,38 +580,22 @@ watch(totalTimer, (newVal) => {
     store.commit("setCleartime", 100);
     store.commit("setCorrect", correctList.value);
 
-    calScore();
-    store.commit("setScore", score.value);
+
+    calScore()
+    store.commit('setScore', score.value)
+
 
     gameOver();
     router.push({ path: "/rank" });
   }
 });
 
-const Cho = [
-  "ㄱ",
-  "ㄲ",
-  "ㄴ",
-  "ㄷ",
-  "ㄸ",
-  "ㄹ",
-  "ㅁ",
-  "ㅂ",
-  "ㅃ",
-  "ㅅ",
-  "ㅆ",
-  "ㅇ",
-  "ㅈ",
-  "ㅉ",
-  "ㅊ",
-  "ㅋ",
-  "ㅌ",
-  "ㅍ",
-  "ㅎ",
-];
+
+const Cho = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 
 function spliter(word) {
-  let n = word.charCodeAt(0) - 0xac00;
+  let n = word.charCodeAt(0) - 0xAC00;
+
   const jong = n % 28;
   const k = (n - jong) / 28;
   const jung = k % 21;
@@ -629,26 +604,21 @@ function spliter(word) {
 }
 
 function isHangul(word) {
-  let n = word.charCodeAt(0) - 0xac00;
+
+  let n = word.charCodeAt(0) - 0xAC00;
+
   if (n < 0 || n > 117171) return false;
   return true;
 }
 
 function extract_chosung(str) {
-  // let hstr="";
-  // for(let i=0;i<str.length;i++){
-  // 	if(!isHangul(str[i])){
-  // 		hstr=hstr+str[i];
-  // 		continue;
-  // 	}
-  // 	const [cho,,]=spliter(str[i]);
-  // 	hstr=hstr+Cho[cho];
-  // }
-  let hstr = "";
-  console.log(str);
+
+  let hstr = ""
   if (!isHangul(str)) {
-    let hstr = str;
-  } else {
+    let hstr = str
+  }
+  else {
+
     const [cho, ,] = spliter(str);
     hstr = hstr + Cho[cho];
   }

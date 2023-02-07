@@ -5,7 +5,7 @@
         <v-col cols="3" />
         <!-- ranking logo 출력 -->
         <v-col cols="6" class="d-flex justify-center align-center">
-          <ranking class="rank" :style="{ height: '10vh' }" />
+          <ranking class="rank" :style="{ 'height': '10vh' }" />
         </v-col>
       </v-row>
 
@@ -48,10 +48,7 @@
                 <tr v-for="item in ranking" :key="item.name">
                   <td class="text-center">{{ item.user_name }}</td>
                   <td class="text-center">{{ item.correct_cnt }}</td>
-                  <td class="text-center">
-                    {{ parseInt(item.play_time / 60) }}m
-                    {{ parseInt(item.play_time % 60) }}s
-                  </td>
+                  <td class="text-center">{{ parseInt(item.play_time / 60) }}m {{ parseInt(item.play_time % 60) }}s</td>
                   <td class="text-center">{{ item.score }}</td>
                 </tr>
               </tbody>
@@ -72,9 +69,10 @@ export default {
   data() {
     return {
       ranking: [],
-      items: ["animal", "landmark", "pokemon", "celebrity"],
-      category: this.$store.category,
+      items: ['animal', 'landmark', 'pokemon', 'celebrity'],
+      category: 'animal',
       audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
+      score: this.$store.score
     };
   },
   methods: {
@@ -96,12 +94,23 @@ export default {
   },
   async mounted() {
     let response = await this.$api(
-      "http://34.64.169.197/api/v1/score/read",
-      "GET"
-      // {category:this.category}
+      "http://34.64.169.197/api/v1/score/read?category=" + this.category,
+      "GET",
     );
     this.ranking = response;
   },
+  watch: {
+    category: {
+      immediate: true,
+      handler: async function () {
+        let response = await this.$api(
+          "http://34.64.169.197/api/v1/score/read?category=" + this.category,
+          "GET",
+        );
+        this.ranking = response
+      }
+    }
+  }
 };
 </script>
 
@@ -117,7 +126,7 @@ export default {
 
 @font-face {
   font-family: "default";
-  src: url("../fonts/Lobster-Regular.ttf");
+  src: url("../fonts/BMJUA_ttf.ttf");
 }
 
 .font {
