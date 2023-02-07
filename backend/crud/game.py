@@ -26,7 +26,7 @@ def read_game_data(db: Session, category: str):
                     GameData.label != "NaN"
                 )
             )
-            .group_by(GameData.label)
+            .group_by(GameData.label, GameData.id)
             .order_by(func.random())
             .limit(9)
             .all()
