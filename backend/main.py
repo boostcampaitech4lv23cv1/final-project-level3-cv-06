@@ -1,7 +1,8 @@
 import logging
 import re
 
-from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.api_v1 import api_router
@@ -13,6 +14,10 @@ app = FastAPI(
 
 origins = [
     "*",
+]
+
+black_list = [
+    "182.212.231.215"
 ]
 
 app.add_middleware(
@@ -31,6 +36,13 @@ async def check_ip(request: Request, call_next):
     """
     # ip_addr = request.headers.get("X-Forwarded-For")
     ip_addr = request.headers.get('X-Real-IP')
+    
+    if ip_addr in black_list:
+        data = {
+            'message': f'IP {ip_addr} is not allowed to access this resource.'
+        }
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=data)
+    
     LOGGER.info(f"request addr: {ip_addr}, url: {request.url}, method: {request.method}")
     response = await call_next(request)
     return response
