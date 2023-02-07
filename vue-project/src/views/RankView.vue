@@ -202,6 +202,9 @@ export default {
     } else if (Number(this.userScore) >= 30) {
       this.rank = "C";
     }
+    else {
+      this.rank = "F";
+    }
   },
 };
 </script>
