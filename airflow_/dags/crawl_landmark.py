@@ -9,6 +9,8 @@ from airflow import DAG
 # Operators; we need this to operate!
 from airflow.operators.bash import BashOperator
 from airflow.providers.google.cloud.transfers.sftp_to_gcs import SFTPToGCSOperator
+from airflow.providers.sftp.sensors.sftp import SFTPSensor
+
 from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
 from airflow.providers.ssh.operators.ssh import SSHOperator
 from airflow.utils.dates import days_ago
@@ -67,7 +69,13 @@ with DAG("crawling_landmark", default_args=default_args, schedule="@daily") as d
         ssh_conn_id="ssh_connection",
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/classification/infer_landmark.py {keyword} {site} {scraped_time}",
-        cmd_timeout=600,
+        cmd_timeout=30 * n_imgs + n_imgs,  # 30s * n_imgs
+    )
+    sense_img = SFTPSensor(
+        task_id="sense_img",
+        sftp_conn_id="sftp_connection",
+        path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/*_ani.webp",
+        poke_interval=10,
     )
     ani2gcs = SFTPToGCSOperator(
         task_id="ani2gcs",
@@ -88,13 +96,7 @@ with DAG("crawling_landmark", default_args=default_args, schedule="@daily") as d
         message=""":large_green_circle: Airflow Dag Succeeded.""",
     )
     #####################    TASKS    #####################
-    (
-        crawl_img
-        >> infer_label
-        >> ani2gcs
-        >> remove_dir
-        >> slack_success_noti
-    )
+    (crawl_img >> infer_label >> ani2gcs >> remove_dir >> slack_success_noti)
 
 # TODO handling errors
 # TODO configure the retries % failures

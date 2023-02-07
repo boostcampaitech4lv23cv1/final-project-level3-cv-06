@@ -72,7 +72,7 @@ with DAG("crawling_animal", default_args=default_args, schedule="@daily") as dag
         ssh_conn_id="ssh_connection",
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
-        cmd_timeout=600,
+        cmd_timeout=30 * n_imgs,  # 30s * n_imgs
     )
     ani2gcs = SFTPToGCSOperator(
         task_id="ani2gcs",
