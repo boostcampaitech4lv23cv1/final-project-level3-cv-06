@@ -8,7 +8,6 @@
         </v-col>
       </v-row>
 
-
       <v-row>
         <v-col cos="6" sm="9" />
         <v-col cols="2" sm="1" class="d-flex justify-center">
@@ -29,8 +28,6 @@
       </v-row>
 
       <v-row class="d-flex align nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
-
-
         <!-- game result information -->
         <v-col cols="6" class="align-self-center">
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
@@ -43,7 +40,6 @@
               {{ userScore }}
             </v-col>
           </v-row>
-
 
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
             <!-- check icon & correct number -->
@@ -153,13 +149,14 @@ export default {
     changeAudio() {
       if (this.$root.audio.paused) {
         this.$root.audio.play();
+        this.audioIcon = "mdi-volume-high";
       } else {
         this.$root.audio.muted = !this.$root.audio.muted;
+        this.audioIcon =
+          this.audioIcon === "mdi-volume-high"
+            ? "mdi-volume-off"
+            : "mdi-volume-high";
       }
-      this.audioIcon =
-        this.audioIcon === "mdi-volume-high"
-          ? "mdi-volume-off"
-          : "mdi-volume-high";
     },
 
     moveHome() {

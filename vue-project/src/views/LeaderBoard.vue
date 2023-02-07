@@ -25,13 +25,11 @@
         </v-col>
       </v-row>
 
-
       <v-row class="d-flex justify-center">
         <v-col cols="12" sm="6">
           <v-select v-model="category" :items="items"></v-select>
         </v-col>
       </v-row>
-
 
       <v-row class="d-flex justify-center font">
         <!-- 랭킹 테이블 생성 -->
@@ -81,13 +79,14 @@ export default {
     changeAudio() {
       if (this.$root.audio.paused) {
         this.$root.audio.play();
+        this.audioIcon = "mdi-volume-high";
       } else {
         this.$root.audio.muted = !this.$root.audio.muted;
+        this.audioIcon =
+          this.audioIcon === "mdi-volume-high"
+            ? "mdi-volume-off"
+            : "mdi-volume-high";
       }
-      this.audioIcon =
-        this.audioIcon === "mdi-volume-high"
-          ? "mdi-volume-off"
-          : "mdi-volume-high";
     },
     moveHome() {
       this.$router.push({ path: "/" });
@@ -98,7 +97,7 @@ export default {
       "http://34.64.169.197/api/v1/score/read?category=" + this.category,
       "GET",
     );
-    this.ranking = response
+    this.ranking = response;
   },
   watch: {
     category: {

@@ -35,8 +35,8 @@
       <v-dialog v-model="showDialog">
         <v-card>
           <!-- description text -->
-          <v-card-title class="text-center" height="3vh">변환하려는 이미지를 업로드하면, 그림으로 다시
-            그려드려요! </v-card-title>
+          <v-card-title class="text-center" height="3vh">변환하려는 이미지를 업로드하면, 그림으로 다시 그려드려요!
+          </v-card-title>
 
           <!-- dialog close 버튼 -->
           <v-card-actions>
@@ -95,17 +95,12 @@
         </v-col>
       </v-row>
 
-
       <v-dialog v-model="alertDialog">
         <v-row class="d-flex justify-center">
           <v-col cols="6">
             <v-card>
-              <v-card-title>
-                Alert!
-              </v-card-title>
-              <v-card-text>
-                지원하지 않는 파일 형식입니다!
-              </v-card-text>
+              <v-card-title> Alert! </v-card-title>
+              <v-card-text> 지원하지 않는 파일 형식입니다! </v-card-text>
             </v-card>
           </v-col>
         </v-row>
@@ -202,17 +197,12 @@
         </v-col>
       </v-row>
 
-
       <v-dialog v-model="alertDialog">
         <v-row class="d-flex justify-center">
           <v-col cols="12">
             <v-card>
-              <v-card-title>
-                Alert!
-              </v-card-title>
-              <v-card-text>
-                지원하지 않는 파일 형식입니다!
-              </v-card-text>
+              <v-card-title> Alert! </v-card-title>
+              <v-card-text> 지원하지 않는 파일 형식입니다! </v-card-text>
             </v-card>
           </v-col>
         </v-row>
@@ -269,12 +259,12 @@ export default {
   },
   methods: {
     async downloadImage() {
-      const blob = new Blob([this.returnImg], { type: 'image/jpeg' });
+      const blob = new Blob([this.returnImg], { type: "image/jpeg" });
       const objectURL = URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = objectURL;
-      link.download = 'image.jpeg';
+      link.download = "image.jpeg";
       link.click();
     },
     /**
@@ -318,8 +308,8 @@ export default {
       let availableExtension = ['image/jpg', 'image/png', 'image/jpeg']
 
       if (!availableExtension.includes(this.image.type)) {
-        this.alertDialog = true
-        return
+        this.alertDialog = true;
+        return;
       }
       this.transform = true;
       // let response = await this.$api2(
@@ -346,7 +336,6 @@ export default {
 
       this.returnImg = response.data
       this.transform = false;
-
     },
 
     /**
@@ -356,13 +345,14 @@ export default {
     changeAudio() {
       if (this.$root.audio.paused) {
         this.$root.audio.play();
+        this.audioIcon = "mdi-volume-high";
       } else {
         this.$root.audio.muted = !this.$root.audio.muted;
+        this.audioIcon =
+          this.audioIcon === "mdi-volume-high"
+            ? "mdi-volume-off"
+            : "mdi-volume-high";
       }
-      this.audioIcon =
-        this.audioIcon === "mdi-volume-high"
-          ? "mdi-volume-off"
-          : "mdi-volume-high";
     },
 
     /**
