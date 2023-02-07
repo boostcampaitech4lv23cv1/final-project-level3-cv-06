@@ -5,7 +5,7 @@
         <v-col cols="3" />
         <!-- ranking logo 출력 -->
         <v-col cols="6" class="d-flex justify-center align-center">
-          <ranking class="rank" :style="{'height':'10vh'}" />
+          <ranking class="rank" :style="{ height: '10vh' }" />
         </v-col>
       </v-row>
 
@@ -25,16 +25,11 @@
         </v-col>
       </v-row>
 
-
       <v-row class="d-flex justify-center">
         <v-col cols="12" sm="6">
-          <v-select
-            v-model="category"
-            :items="items"
-          ></v-select>
+          <v-select v-model="category" :items="items"></v-select>
         </v-col>
       </v-row>
-
 
       <v-row class="d-flex justify-center font">
         <!-- 랭킹 테이블 생성 -->
@@ -53,8 +48,11 @@
                 <tr v-for="item in ranking" :key="item.name">
                   <td class="text-center">{{ item.user_name }}</td>
                   <td class="text-center">{{ item.correct_cnt }}</td>
-                  <td class="text-center">{{ parseInt(item.play_time/60) }}m {{ parseInt(item.play_time%60) }}s</td>
-                  <td class="text-center">{{  item.score }}</td>
+                  <td class="text-center">
+                    {{ parseInt(item.play_time / 60) }}m
+                    {{ parseInt(item.play_time % 60) }}s
+                  </td>
+                  <td class="text-center">{{ item.score }}</td>
                 </tr>
               </tbody>
             </v-table>
@@ -74,8 +72,8 @@ export default {
   data() {
     return {
       ranking: [],
-      items: ['animal','landmark','pokemon','celebrity'],
-      category : this.$store.category,
+      items: ["animal", "landmark", "pokemon", "celebrity"],
+      category: this.$store.category,
       audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
     };
   },
@@ -83,13 +81,14 @@ export default {
     changeAudio() {
       if (this.$root.audio.paused) {
         this.$root.audio.play();
+        this.audioIcon = "mdi-volume-high";
       } else {
         this.$root.audio.muted = !this.$root.audio.muted;
+        this.audioIcon =
+          this.audioIcon === "mdi-volume-high"
+            ? "mdi-volume-off"
+            : "mdi-volume-high";
       }
-      this.audioIcon =
-        this.audioIcon === "mdi-volume-high"
-          ? "mdi-volume-off"
-          : "mdi-volume-high";
     },
     moveHome() {
       this.$router.push({ path: "/" });
@@ -98,10 +97,10 @@ export default {
   async mounted() {
     let response = await this.$api(
       "http://34.64.169.197/api/v1/score/read",
-      "GET",
+      "GET"
       // {category:this.category}
     );
-    this.ranking = response
+    this.ranking = response;
   },
 };
 </script>

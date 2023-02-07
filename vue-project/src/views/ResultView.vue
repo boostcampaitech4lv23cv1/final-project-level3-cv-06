@@ -85,7 +85,6 @@
           </v-btn>
         </v-col>
 
-
         <v-col cols="2" class="d-flex justify-center">
           <v-btn rounded variant="plain" @click="moveHome" height="5vh">
             <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
@@ -201,13 +200,14 @@ export default {
     changeAudio() {
       if (this.$root.audio.paused) {
         this.$root.audio.play();
+        this.audioIcon = "mdi-volume-high";
       } else {
         this.$root.audio.muted = !this.$root.audio.muted;
+        this.audioIcon =
+          this.audioIcon === "mdi-volume-high"
+            ? "mdi-volume-off"
+            : "mdi-volume-high";
       }
-      this.audioIcon =
-        this.audioIcon === "mdi-volume-high"
-          ? "mdi-volume-off"
-          : "mdi-volume-high";
     },
     moveHome() {
       this.$router.push({ path: "/" });

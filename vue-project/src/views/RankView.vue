@@ -8,7 +8,6 @@
         </v-col>
       </v-row>
 
-
       <v-row>
         <v-col cos="6" sm="9" />
         <v-col cols="2" sm="1" class="d-flex justify-center">
@@ -24,16 +23,20 @@
         <v-col cols="2" sm="1" class="d-flex justify-center">
           <v-btn rounded variant="plain" @click="moveGame" height="5vh">
             <v-icon icon="mdi-refresh" size="5vh"> </v-icon>
-        </v-btn>
+          </v-btn>
         </v-col>
       </v-row>
 
-      <v-row class="d-flex align nums" :style="{ height: '30vh', 'margin-top': '0vh' }">
-
-
+      <v-row
+        class="d-flex align nums"
+        :style="{ height: '30vh', 'margin-top': '0vh' }"
+      >
         <!-- game result information -->
         <v-col cols="6" class="align-self-center">
-          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+          <v-row
+            class="d-flex justify-end"
+            :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }"
+          >
             <!-- check icon & correct number -->
             <v-col cols="1">
               <v-icon icon="mdi-star" />
@@ -41,12 +44,14 @@
             <v-col cols="1"></v-col>
             <!-- correct answer number show -->
             <v-col xs="10" sm="5" lg="3" class="justfy">
-              {{score}}
+              {{ score }}
             </v-col>
           </v-row>
 
-
-          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+          <v-row
+            class="d-flex justify-end"
+            :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }"
+          >
             <!-- check icon & correct number -->
             <v-col cols="1">
               <check />
@@ -58,7 +63,10 @@
             </v-col>
           </v-row>
 
-          <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
+          <v-row
+            class="d-flex justify-end"
+            :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }"
+          >
             <!--timer icon show & clear time-->
             <v-col cols="1">
               <timer />
@@ -66,18 +74,21 @@
             <v-col cols="1"></v-col>
             <!--clear time show-->
             <v-col xs="10" sm="5" lg="3" class="justfy">
-              {{  parseInt(clearTime/60) }}m {{ parseInt(clearTime%60) }}s
+              {{ parseInt(clearTime / 60) }}m {{ parseInt(clearTime % 60) }}s
             </v-col>
           </v-row>
         </v-col>
 
         <!-- show rank emoji -->
-        <v-col cols="4" :style="{
-          'margin-left': '7vh',
-          'margin-top': '2vh',
-          'font-size': '23vh',
-          color: 'gold',
-        }">
+        <v-col
+          cols="4"
+          :style="{
+            'margin-left': '7vh',
+            'margin-top': '2vh',
+            'font-size': '23vh',
+            color: 'gold',
+          }"
+        >
           {{ rank }}
         </v-col>
       </v-row>
@@ -85,18 +96,27 @@
       <v-row class="justify-center">
         <v-col cols="5" class="d-flex justify-end">
           <!-- go result button -->
-          <v-btn class="text-center" :style="{
-            margin: '15vh 0vw 0vh 0vw',
-          }" @click="goResult">
+          <v-btn
+            class="text-center"
+            :style="{
+              margin: '15vh 0vw 0vh 0vw',
+            }"
+            @click="goResult"
+          >
             Show Result!
           </v-btn>
         </v-col>
         <v-col cols="1"></v-col>
         <v-col cols="5">
           <!-- register score and go leaderboard -->
-          <v-btn class="text-center" :style="{
-            margin: '15vh 0vw 0vh 0vw',
-          }" @click="showDialog = true" :disabled="blockRegister">
+          <v-btn
+            class="text-center"
+            :style="{
+              margin: '15vh 0vw 0vh 0vw',
+            }"
+            @click="showDialog = true"
+            :disabled="blockRegister"
+          >
             Register!
           </v-btn>
         </v-col>
@@ -109,10 +129,17 @@
               <v-card-title> Register your score! </v-card-title>
               <v-divider class="mx-4 mb-1"></v-divider>
               <v-card-text>
-                <v-text-field density="compact" label="Enter your name!" single-line v-model="name"></v-text-field>
+                <v-text-field
+                  density="compact"
+                  label="Enter your name!"
+                  single-line
+                  v-model="name"
+                ></v-text-field>
               </v-card-text>
               <v-card-actions class="d-flex justify-end">
-                <v-btn @click="registerScore" :disabled="name==''"> Register </v-btn>
+                <v-btn @click="registerScore" :disabled="name == ''">
+                  Register
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -143,7 +170,7 @@ export default {
       name: "",
       showDialog: false,
       blockRegister: false,
-      userScore : this.$store.state.score
+      userScore: this.$store.state.score,
     };
   },
 
@@ -154,13 +181,14 @@ export default {
     changeAudio() {
       if (this.$root.audio.paused) {
         this.$root.audio.play();
+        this.audioIcon = "mdi-volume-high";
       } else {
         this.$root.audio.muted = !this.$root.audio.muted;
+        this.audioIcon =
+          this.audioIcon === "mdi-volume-high"
+            ? "mdi-volume-off"
+            : "mdi-volume-high";
       }
-      this.audioIcon =
-        this.audioIcon === "mdi-volume-high"
-          ? "mdi-volume-off"
-          : "mdi-volume-high";
     },
 
     moveHome() {
@@ -183,8 +211,8 @@ export default {
         }
       );
       this.name = "";
-      this.showDialog=false
-      this.blockRegister=true
+      this.showDialog = false;
+      this.blockRegister = true;
     },
   },
   async mounted() {

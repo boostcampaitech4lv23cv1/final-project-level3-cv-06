@@ -351,13 +351,14 @@ export default {
     changeAudio() {
       if (this.$root.audio.paused) {
         this.$root.audio.play();
+        this.audioIcon = "mdi-volume-high";
       } else {
         this.$root.audio.muted = !this.$root.audio.muted;
+        this.audioIcon =
+          this.audioIcon === "mdi-volume-high"
+            ? "mdi-volume-off"
+            : "mdi-volume-high";
       }
-      this.audioIcon =
-        this.audioIcon === "mdi-volume-high"
-          ? "mdi-volume-off"
-          : "mdi-volume-high";
     },
     /**
      * 디바이스 가로 세로 모드 탐지 함수
