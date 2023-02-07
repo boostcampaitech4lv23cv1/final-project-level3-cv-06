@@ -41,7 +41,10 @@
           <!-- dialog close 버튼 -->
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="tonal" color="orange" @click="showDialog = false">확인</v-btn>
+
+            <v-btn variant="tonal" color="#6fc2fe" @click="showDialog = false"
+              >확인</v-btn
+            >
             <v-spacer />
           </v-card-actions>
         </v-card>
@@ -157,7 +160,10 @@
           <!-- dialog close 버튼 -->
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="tonal" color="orange" @click="showDialog = false">확인</v-btn>
+            <v-btn variant="tonal" color="#6fc2fe" @click="showDialog = false"
+              >확인</v-btn
+            >
+
             <v-spacer />
           </v-card-actions>
         </v-card>
