@@ -160,7 +160,7 @@ def make_img_label() -> pd.DataFrame:
     imagenet_labels = read_imgnet_labels()
     df = get_metadata_from_api()
     print(df)
-    print(df['tag'])
+    print(df["tag"])
     if len(df) == 0:
         return df
     predictions = inference_img(df)
@@ -320,7 +320,7 @@ if __name__ == "__main__":
     if len(df) == 0:
         print("No image to process")
         sys.exit(0)
-    send_metadata2api(df)
+    send_metadata2api(df, KEYWORD)
     img2ani(df)
     print("label: ", df["label"])
 # TODO animation 인메모리로 GCS 전송

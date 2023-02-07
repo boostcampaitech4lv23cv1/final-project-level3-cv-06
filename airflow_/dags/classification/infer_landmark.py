@@ -39,9 +39,11 @@ def get_country(latitude: int, longitude: int, cc_df: pd.DataFrame) -> str:
     location = geolocator.reverse(
         f"{latitude}, {longitude}", exactly_one=True, language="en"
     )
-    country_code = location.raw["address"]["country_code"].upper()
-
-    return cc_df[cc_df["code"] == country_code]["korean"].values[0]
+    try:
+        country_code = location.raw["address"]["country_code"].upper()
+        return cc_df[cc_df["code"] == country_code]["korean"].values[0]
+    except Exception:
+        return "NaN"
 
 
 def get_country_landmark_gcs(
@@ -59,7 +61,8 @@ def get_country_landmark_gcs(
     client = vision.ImageAnnotatorClient()
     image = vision.Image()
     countries = []
-    for file_name in file_names:
+    print(f"The number of files to be processed: {len(file_names)}")
+    for file_name in tqdm(file_names):
         image.source.image_uri = f"gs://{bucket_name}/{file_name}"
 
         response = client.landmark_detection(image=image)
@@ -111,7 +114,7 @@ def img2ani(df: pd.DataFrame) -> None:
     model, meta_brushes, device = init()
 
     img_paths = base_path + df["img_path"]
-
+    print(f"img_paths: {img_paths}")
     for img_path, label in tqdm(zip(img_paths, df["label"])):
         if label != "NaN":
             save_path = img_path.split(".")[0] + "_ani.webp"
@@ -144,8 +147,10 @@ def download_gcs_filter(blobs, file_names, df):
     file_list = []
     dest = "/opt/ml/final-project-level3-cv-06/airflow_/dags/classification/data/"
     os.makedirs(f"{dest}{KEYWORD}/{SITE}/{SCRAPED_TIME}", exist_ok=True)
+    print(f"make dir at {dest}{KEYWORD}/{SITE}/{SCRAPED_TIME}")
     all_files = {file_name: False for file_name in file_names}
     to_be_downloaded_files = df[df["label"] != "NaN"]["img_path"].to_list()
+    print(f"to_be_downloaded_files: {to_be_downloaded_files}")
     for file in to_be_downloaded_files:
         all_files[file] = True
     for blob in blobs:
@@ -155,22 +160,28 @@ def download_gcs_filter(blobs, file_names, df):
     return file_list
 
 
-def send_metadata2api(df, KEYWORD):
-    url = f"{secret['api_url']}/api/v1/meta/create"
+def send_metadata2api(df: pd.DataFrame, KEYWORD: str) -> None:
+    """send metadata dataframe to api server
+
+    Args:
+        df (pd.DataFrame): metadata dataframe
+        KEYWORD (str): keyword for metadata
+    """
+    df = df.drop("tag", axis=1)
+    url = f"{secret['api_url']}/api/v1/meta/update"
 
     buffer = pa.BufferOutputStream()
     feather.write_feather(df, buffer)
 
     file = {"file": buffer.getvalue().to_pybytes()}
     category = {"category": KEYWORD}
-
     res = requests.post(url, files=file, data=category)
 
     # Check the status code of the response
-    if res.status_code == 200:
-        print("metadata sent successfully")
-    else:
-        print("Failed to send data")
+    try:
+        res.raise_for_status()
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
@@ -181,11 +192,15 @@ if __name__ == "__main__":
     if blobs := list(bucket.list_blobs(prefix=dir_name)):
         file_names = [str(blob).split(",")[1].strip() for blob in blobs]
         cc_df = pd.read_csv(f"{AIRFLOW_HOME}/dags/classification/country_code.csv")
+        print("Read country code csv")
         countries = get_country_landmark_gcs(bucket_name, file_names, cc_df)
-        countries = ["NaN"] * len(file_names)
         df = make_df(SCRAPED_TIME, file_names, countries)
+        print("Make metadata dataframe")
+        print(f"Dataframe is:\n {df}")
         send_metadata2api(df, KEYWORD)
+        print("Send metadata to api")
         file_list = download_gcs_filter(blobs, file_names, df)
+        print("Start img2ani")
         img2ani(df)
         print(file_list)
     else:
