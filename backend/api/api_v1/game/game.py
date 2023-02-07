@@ -23,20 +23,8 @@ async def gamestart(game_start: GameStart, db: Session = Depends(get_db)) -> Lis
     **game_start**
     - category: str
     """
-    
-    items = read_game_data(db, game_start.category)
-    try: # 로직 수정 필요
-        result = []
-        data_dict = defaultdict(list)
-        for item in items:
-            data_dict[item.label] = item
-            
-        random_keys = random.choices(list(data_dict.keys()), k=9)
-        
-        for key in random_keys:
-            result.append(random.choice(list(data_dict[key])))
-        
-        return result
+    try:
+        random_list = read_game_data(db, game_start.category)
     except Exception as e:
         LOGGER.error(e)
         return HTTPException(status_code="500", detail="아직 게임이 준비되지 않았습니다.(The number of category is under 9)")

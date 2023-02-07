@@ -1,10 +1,12 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
+from sqlalchemy.sql.expression import func
 from fastapi import HTTPException
 
 from utils import LOGGER
 from model import *
 from scheme import *
+
 
 def read_game_data(db: Session, category: str):
     """category에 맞으면서 use status가 True인 데이터 읽음
@@ -15,7 +17,20 @@ def read_game_data(db: Session, category: str):
 
     """
     try:
-        img_paths = db.query(GameData).filter(and_(GameData.category == category, GameData.use_status == True, GameData.label != "NaN")).all()
+        img_paths = (
+            db.query(GameData)
+            .filter(
+                and_(
+                    GameData.category == category,
+                    GameData.use_status == True,
+                    GameData.label != "NaN"
+                )
+            )
+            .group_by(GameData.label)
+            .order_by(func.random())
+            .limit(9)
+            .all()
+        )
     except Exception as e:
         LOGGER.error(e)
         return HTTPException(status_code=500, detail="DB ERROR(please check category)")
