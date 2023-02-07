@@ -24,7 +24,7 @@
         <v-col cols="2" sm="1" class="d-flex justify-center">
           <v-btn rounded variant="plain" @click="moveGame" height="5vh">
             <v-icon icon="mdi-refresh" size="5vh"> </v-icon>
-        </v-btn>
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -35,23 +35,22 @@
         <v-col cols="6" class="align-self-center">
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
             <!-- check icon & correct number -->
-            <v-col cols="1">
-              <v-icon icon="mdi-star" />
+            <v-col cols="2" class="d-flex justify-center align-center">
+              <v-icon icon="mdi-star" size="5vh" />
             </v-col>
-            <v-col cols="1"></v-col>
             <!-- correct answer number show -->
             <v-col xs="10" sm="5" lg="3" class="justfy">
-              {{score}}
+              {{ userScore }}
             </v-col>
           </v-row>
 
 
           <v-row class="d-flex justify-end" :style="{ height: '8vh', 'margin-top': '3vh', 'font-size': '4vh' }">
             <!-- check icon & correct number -->
-            <v-col cols="1">
+            <v-col cols="2" class="d-flex just">
               <check />
             </v-col>
-            <v-col cols="1"></v-col>
+
             <!-- correct answer number show -->
             <v-col xs="10" sm="5" lg="3" class="justfy">
               {{ correctAnswer }}/9
@@ -66,7 +65,7 @@
             <v-col cols="1"></v-col>
             <!--clear time show-->
             <v-col xs="10" sm="5" lg="3" class="justfy">
-              {{  parseInt(clearTime/60) }}m {{ parseInt(clearTime%60) }}s
+              {{ parseInt(clearTime/ 60) }}m {{ parseInt(clearTime% 60) }}s
             </v-col>
           </v-row>
         </v-col>
@@ -112,7 +111,7 @@
                 <v-text-field density="compact" label="Enter your name!" single-line v-model="name"></v-text-field>
               </v-card-text>
               <v-card-actions class="d-flex justify-end">
-                <v-btn @click="registerScore" :disabled="name==''"> Register </v-btn>
+                <v-btn @click="registerScore" :disabled="name == ''"> Register </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -143,7 +142,7 @@ export default {
       name: "",
       showDialog: false,
       blockRegister: false,
-      userScore : this.$store.state.score
+      userScore: this.$store.state.score
     };
   },
 
@@ -170,6 +169,7 @@ export default {
       this.$router.push({ path: "/select" });
     },
 
+
     async registerScore() {
       let response = await this.$api(
         "http://34.64.169.197/api/v1/score/create",
@@ -178,13 +178,13 @@ export default {
           user_name: this.name,
           play_time: this.clearTime,
           correct_cnt: this.correctAnswer,
-          // category: this.$store.state.category,
-          // score: this.$store.state.score,
+          category: this.$store.state.category,
+          score: this.$store.state.score,
         }
       );
       this.name = "";
-      this.showDialog=false
-      this.blockRegister=true
+      this.showDialog = false
+      this.blockRegister = true
     },
   },
   async mounted() {

@@ -20,26 +20,19 @@
             <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
           </v-btn>
         </v-col>
+
+        <v-col cols="1" class="d-flex justify-center">
+          <v-btn rounded variant="plain" @click="moveRank" height="5vh">
+            <v-icon icon="mdi-refresh" size="5vh"> </v-icon>
+          </v-btn>
+        </v-col>
       </v-row>
 
       <v-row>
         <!-- 이미지를 3x3으로 출력 -->
-        <v-col
-          v-for="n in 9"
-          :key="n"
-          class="d-flex child-flex no-padding"
-          cols="4"
-        >
-          <v-img
-            :width="'45vw'"
-            :height="'60vh'"
-            :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-            aspect-ratio="1"
-            cover
-            :src="`${originImg[n - 1]}`"
-            class="grey lighten-2"
-            @click="moveDetail(n - 1)"
-          >
+        <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
+          <v-img :width="'45vw'" :height="'60vh'" :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+            aspect-ratio="1" cover :src="`${originImg[n - 1]}`" class="grey lighten-2" @click="moveDetail(n - 1)">
           </v-img>
         </v-col>
       </v-row>
@@ -63,9 +56,7 @@
         <v-row>
           <!-- dialog 닫는 버튼 -->
           <v-col cols="1" class="mx-auto">
-            <v-btn color="primary" block @click="showDialog = false"
-              >Close</v-btn
-            >
+            <v-btn color="primary" block @click="showDialog = false">Close</v-btn>
           </v-col>
         </v-row>
       </v-dialog>
@@ -79,7 +70,7 @@
       </v-row>
       <v-row class="d-flex justify-end" :style="{ margin: '3vh 0vw 5vh 0vw' }">
         <!-- 오디오 버튼 -->
-        <v-col cols="2">
+        <v-col cols="2" class="d-flex justify-center">
           <v-btn rounded variant="plain" @click="changeAudio">
             <v-icon :icon="audioIcon" size="5vh"> </v-icon>
           </v-btn>
@@ -91,26 +82,19 @@
             <v-icon icon="mdi-home-outline" size="5vh"> </v-icon>
           </v-btn>
         </v-col>
+
+        <v-col cols="2" class="d-flex justify-center">
+          <v-btn rounded variant="plain" @click="moveRank" height="5vh">
+            <v-icon icon="mdi-refresh" size="5vh"> </v-icon>
+          </v-btn>
+        </v-col>
       </v-row>
 
       <v-row>
         <!-- 이미지를 3x3으로 출력 -->
-        <v-col
-          v-for="n in 9"
-          :key="n"
-          class="d-flex child-flex no-padding"
-          cols="4"
-        >
-          <v-img
-            :width="'30vw'"
-            :height="'20vh'"
-            :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-            aspect-ratio="1"
-            cover
-            :src="`${originImg[n - 1]}`"
-            class="grey lighten-2"
-            @click="moveDetail(n - 1)"
-          >
+        <v-col v-for="n in 9" :key="n" class="d-flex child-flex no-padding" cols="4">
+          <v-img :width="'30vw'" :height="'20vh'" :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+            aspect-ratio="1" cover :src="`${originImg[n - 1]}`" class="grey lighten-2" @click="moveDetail(n - 1)">
           </v-img>
         </v-col>
       </v-row>
@@ -134,9 +118,7 @@
         <v-row>
           <!-- dialog 닫는 버튼 -->
           <v-col cols="3" class="mx-auto">
-            <v-btn color="primary" block @click="showDialog = false"
-              >Close</v-btn
-            >
+            <v-btn color="primary" block @click="showDialog = false">Close</v-btn>
           </v-col>
         </v-row>
       </v-dialog>
@@ -212,6 +194,9 @@ export default {
     moveHome() {
       this.$router.push({ path: "/" });
     },
+    moveRank() {
+      this.$router.push({ path: "/rank" })
+    }
   },
 
   /**

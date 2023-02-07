@@ -1,12 +1,7 @@
 <template>
   <v-app class="hero">
     <v-container height="100%">
-              <v-alert 
-              density="compact"
-      type="info"
-title="아이폰은 지원되지 않아요."
-
-    >      </v-alert>
+      <!-- <v-alert density="compact" type="info" title="아이폰은 지원되지 않아요."> </v-alert> -->
       <v-row class="d-flex justify-center">
         <!-- save paint! 로고 출력 -->
         <v-col cols="10" class="d-flex justify-center">
@@ -85,7 +80,7 @@ title="아이폰은 지원되지 않아요."
               <!-- dialog text -->
               <v-card-text class="text-center" height="3vh">
                 카테고리에 해당하는 그림이 생성돼요. 그림을 보고 무엇인지 빨리
-                맞혀보세요!   
+                맞혀보세요!
               </v-card-text>
 
               <v-card-actions>
@@ -112,10 +107,10 @@ title="아이폰은 지원되지 않아요."
               selected: selectedCategory === item.value,
               ' mx-auto ': true,
             }" :style="{
-            height: '4vh',
-            width: '23vh',
-            margin: '1.5vh 0vw 0vh 0vw',
-          }">
+  height: '4vh',
+  width: '23vh',
+  margin: '1.5vh 0vw 0vh 0vw',
+}">
             {{ item.text }}
           </v-btn>
         </v-radio-group>
@@ -157,7 +152,7 @@ export default {
         { text: "Animal", value: "animal" },
         { text: "Landmark", value: "landmark" },
         { text: "Pokemon", value: "pokemon" },
-        { text: "Celebrity", value: "celebrity"}
+        { text: "Celebrity", value: "celebrity" }
       ],
       selectedCategory: "animal",
       audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",

@@ -41,12 +41,17 @@
           <!-- dialog close 버튼 -->
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="tonal" color="orange" @click="showDialog = false"
-              >확인</v-btn>
+            <v-btn variant="tonal" color="orange" @click="showDialog = false">확인</v-btn>
             <v-spacer />
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-row class="d-flex justify-end">
+        <v-col cols="2">
+          <v-select v-model="select" :items="items" density="compact" label="image quality" />
+        </v-col>
+      </v-row>
 
       <v-row :style="{ margin: '2vh 0vw 0vh 0vw' }">
         <!-- 이전 이미지 출력 -->
@@ -64,19 +69,13 @@
         <v-col cols="5">
           <v-img src="../assets/tower-bridge-paint.jpg" width="30vw" class="mx-auto" v-show="uploaded == false" />
           <v-img max-height="25vh" class="mx-auto" max-width="30vw" :src="`data:image/gif;base64,${returnImg}`">
-             
-            <v-alert
-            v-if="transform == true"
-      density="compact"
-      type="info"
-title="약 10초가 소요됩니다."
-width="20vw"
-    >
 
-      </v-alert>
-      <v-progress-circular v-if="transform == true" class="loading" color="grey-lighten-4"
+            <v-alert v-if="transform == true" density="compact" type="info" title="약 10초가 소요됩니다." width="20vw">
+
+            </v-alert>
+            <v-progress-circular v-if="transform == true" class="loading" color="grey-lighten-4"
               indeterminate></v-progress-circular>
-            </v-img>
+          </v-img>
         </v-col>
       </v-row>
 
@@ -149,18 +148,21 @@ width="20vw"
         </v-col>
       </v-row>
 
+      <v-row class="d-flex justify-center">
+        <v-col cols="6">
+          <v-select v-model="select" :items="items" density="compact" label="image quality" />
+        </v-col>
+      </v-row>
+
       <!-- description dialog -->
       <v-dialog v-model="showDialog">
         <v-card>
           <!-- description text -->
-          <v-card-title class="text-center" height="3vh"
-            >이미지를 아래처럼 변환해요!</v-card-title>
+          <v-card-title class="text-center" height="3vh">이미지를 아래처럼 변환해요!</v-card-title>
           <!-- dialog close 버튼 -->
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="tonal" color="orange" @click="showDialog = false"
-              >확인</v-btn
-            >
+            <v-btn variant="tonal" color="orange" @click="showDialog = false">확인</v-btn>
             <v-spacer />
           </v-card-actions>
         </v-card>
@@ -188,18 +190,14 @@ width="20vw"
           <v-img src="../assets/tower-bridge-paint.jpg" width="100vw" v-show="uploaded == false" />
           <v-img max-width="100vw" class="mx-auto" :src="`data:image/gif;base64,${returnImg}`">
 
- 
-            <v-alert
-            v-if="transform == true"
-      density="compact"
-      type="info"
-    >
-    약 10초가 소요돼요!
-    </v-alert>
+
+            <v-alert v-if="transform == true" density="compact" type="info">
+              약 10초가 소요돼요!
+            </v-alert>
             <v-progress-circular v-if="transform == true" class="loading-mobile" color="grey-lighten-4"
               indeterminate></v-progress-circular>
-              </v-img>
-            
+          </v-img>
+
 
         </v-col>
       </v-row>
@@ -225,6 +223,7 @@ width="20vw"
 
 <script>
 import logo from "../svg/logoView.vue";
+import axios from 'axios';
 export default {
   components: {
     logo,
@@ -256,6 +255,8 @@ export default {
       isPortrait: true,
       showDialog: false,
       alertDialog: false,
+      select: 1,
+      items: [1, 2, 3]
     };
   },
   /**
@@ -305,6 +306,15 @@ export default {
       const formData = new FormData();
       formData.append("file", this.image);
 
+      let resize_l = 512
+      if (this.select == 2) {
+        resize_l = 768
+      }
+      else {
+        resize_l = 1024
+      }
+
+      formData.append('resize_l', resize_l)
       let availableExtension = ['image/jpg', 'image/png', 'image/jpeg']
 
       if (!availableExtension.includes(this.image.type)) {
@@ -312,18 +322,29 @@ export default {
         return
       }
       this.transform = true;
-      let response = await this.$api2(
-        "http://34.64.169.197/api/v1/infer",
-        "POST",
-        formData
-      );
-
       // let response = await this.$api2(
-      //   "http://127.0.0.1:8000/api/v1/infer",
+      //   "http://34.64.169.197/api/v1/infer",
       //   "POST",
-      //   formData
+      //   {
+      //     file: formData,
+      //     resize_l: this.resize_l,
+      //   }
       // );
-      this.returnImg = response;
+
+      let response = await axios.post("http://34.64.169.197/api/v1/infer", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+      })
+
+      // let response = await axios.post("http://127.0.0.1:8000/api/v1/game/infer", formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data'
+      //   },
+      // });
+
+
+      this.returnImg = response.data
       this.transform = false;
 
     },
