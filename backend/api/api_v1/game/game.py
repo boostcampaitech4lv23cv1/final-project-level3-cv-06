@@ -1,7 +1,17 @@
 from typing import List
 import platform
 
-from fastapi import APIRouter, HTTPException
+from fastapi import (
+    FastAPI,
+    UploadFile,
+    File,
+    Response,
+    HTTPException,
+    BackgroundTasks,
+    Body,
+    APIRouter,
+    HTTPException,
+)
 from fastapi.responses import StreamingResponse, FileResponse, Response, JSONResponse
 
 from utils import set_game_imgs, get_paint_img, get_result_imgs, get_origin_imgs
@@ -38,3 +48,9 @@ async def result(paths: ImagePaths):
 @router.post("/gameover")
 async def gameover(gameover: GameOver):
     print(gameover)
+
+
+@router.post("/infer")
+async def infer(file: UploadFile = File(...), resize_l: int = Body()):
+    print(file)
+    print(resize_l)
