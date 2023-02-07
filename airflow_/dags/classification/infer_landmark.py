@@ -141,6 +141,7 @@ def img2ani(df: pd.DataFrame) -> None:
 
 
 def download_gcs_filter(blobs, file_names, df):
+    file_list = []
     dest = "/opt/ml/final-project-level3-cv-06/airflow_/dags/classification/data/"
     os.makedirs(f"{dest}{KEYWORD}/{SITE}/{SCRAPED_TIME}", exist_ok=True)
     all_files = {file_name: False for file_name in file_names}
@@ -150,6 +151,8 @@ def download_gcs_filter(blobs, file_names, df):
     for blob in blobs:
         if all_files[blob.name]:
             blob.download_to_filename(f"{dest}{blob.name}")
+            file_list.append(f"{dest}{blob.name}")
+    return file_list
 
 
 def send_metadata2api(df, KEYWORD):
@@ -182,7 +185,8 @@ if __name__ == "__main__":
         countries = ["NaN"] * len(file_names)
         df = make_df(SCRAPED_TIME, file_names, countries)
         send_metadata2api(df, KEYWORD)
-        download_gcs_filter(blobs, file_names, df)
+        file_list = download_gcs_filter(blobs, file_names, df)
         img2ani(df)
+        print(file_list)
     else:
         print("There is no image to process")
