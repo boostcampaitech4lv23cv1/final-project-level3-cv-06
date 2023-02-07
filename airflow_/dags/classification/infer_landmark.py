@@ -114,7 +114,7 @@ def img2ani(df: pd.DataFrame) -> None:
     model, meta_brushes, device = init()
 
     img_paths = base_path + df["img_path"]
-
+    print(f"img_paths: {img_paths}")
     for img_path, label in tqdm(zip(img_paths, df["label"])):
         if label != "NaN":
             save_path = img_path.split(".")[0] + "_ani.webp"
@@ -149,6 +149,7 @@ def download_gcs_filter(blobs, file_names, df):
     print(f"make dir at {dest}{KEYWORD}/{SITE}/{SCRAPED_TIME}")
     all_files = {file_name: False for file_name in file_names}
     to_be_downloaded_files = df[df["label"] != "NaN"]["img_path"].to_list()
+    print(f"to_be_downloaded_files: {to_be_downloaded_files}")
     for file in to_be_downloaded_files:
         all_files[file] = True
     for blob in blobs:
@@ -157,22 +158,28 @@ def download_gcs_filter(blobs, file_names, df):
             print(f"downloaded {blob.name} to {dest}{blob.name}")
 
 
-def send_metadata2api(df, KEYWORD):
-    url = f"{secret['api_url']}/api/v1/meta/create"
+def send_metadata2api(df: pd.DataFrame, KEYWORD: str) -> None:
+    """send metadata dataframe to api server
+
+    Args:
+        df (pd.DataFrame): metadata dataframe
+        KEYWORD (str): keyword for metadata
+    """
+    df = df.drop("tag", axis=1)
+    url = f"{secret['api_url']}/api/v1/meta/update"
 
     buffer = pa.BufferOutputStream()
     feather.write_feather(df, buffer)
 
     file = {"file": buffer.getvalue().to_pybytes()}
     category = {"category": KEYWORD}
-
     res = requests.post(url, files=file, data=category)
 
     # Check the status code of the response
-    if res.status_code == 200:
-        print("metadata sent successfully")
-    else:
-        print("Failed to send data")
+    try:
+        res.raise_for_status()
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
@@ -189,6 +196,7 @@ if __name__ == "__main__":
         print("Make metadata dataframe")
         print(f"Dataframe is:\n {df}")
         send_metadata2api(df, KEYWORD)
+        print("Send metadata to api")
         download_gcs_filter(blobs, file_names, df)
         print("Start img2ani")
         img2ani(df)
