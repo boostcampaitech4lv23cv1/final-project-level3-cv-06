@@ -12,10 +12,11 @@ def read_category_score(category: str, db: Session):
     """
     return db.query(Score).filter(Score.category == category).order_by(Score.score.desc(), Score.correct_cnt.desc(), Score.play_time.asc()).all()
 
-def create_score(db: Session, user_name, score, play_time, correct_cnt):
+def create_score(db: Session, user_name, score, play_time, correct_cnt, category):
     now = datetime.now()
     score = Score(
                 created_time = now.strftime('%Y-%m-%d %H:%M:%S'),
+                category = category,
                 user_name = user_name,
                 play_time = play_time,
                 correct_cnt = correct_cnt,

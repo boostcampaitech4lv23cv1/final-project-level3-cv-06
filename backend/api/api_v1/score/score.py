@@ -32,7 +32,7 @@ async def create(score_in: ScoreIn, db: Session = Depends(get_db)):
     # valid = user_name_check(score_in.user_name, db)
     # if not valid:
     #     return HTTPException(status_code=400, detail="user name already exists")
-    create_score(db, score_in.user_name, score_in.score, score_in.play_time, score_in.correct_cnt)
+    create_score(db, score_in.user_name, score_in.score, score_in.play_time, score_in.correct_cnt, score_in.category)
     LOGGER.debug('upload score')
     
 
