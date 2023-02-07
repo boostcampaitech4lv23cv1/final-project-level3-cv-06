@@ -90,7 +90,7 @@
       <v-row class="d-flex justify-center">
         <v-col cols="auto">
           <!-- transform 버튼 출력 -이미지 없으면 block -->
-          <v-btn v-if="returnImg == null" @click="transformImg" :disabled="image == null">변환 시작</v-btn>
+          <v-btn @click="transformImg" :disabled="image == null" :style="{ 'margin-right': '1vw' }">변환 시작</v-btn>
           <v-btn v-if="returnImg !== null" @click="downloadImage">이미지 다운로드</v-btn>
         </v-col>
       </v-row>
@@ -174,7 +174,7 @@
       <v-row class="d-flex justify-center" :style="{ margin: '0vh 0vw 0vh 0vw' }">
         <!-- transform 버튼 -이미지 없으면 block -->
         <v-col cols="auto">
-          <v-btn v-if="returnImg == null" @click="transformImg" :disabled="image == null">변환 시작</v-btn>
+          <v-btn @click="transformImg" :disabled="image == null">변환 시작</v-btn>
           <v-btn v-if="returnImg !== null" @click="downloadImage">이미지 다운로드</v-btn>
         </v-col>
       </v-row>
@@ -291,10 +291,11 @@ export default {
      * @function transformImg
      */
     async transformImg() {
-      // this.returnImg = null
+
 
       const formData = new FormData();
       formData.append("file", this.image);
+
 
       let resize_l = 512
       if (this.select == 2) {
@@ -304,34 +305,23 @@ export default {
         resize_l = 1024
       }
 
+
       formData.append('resize_l', resize_l)
       let availableExtension = ['image/jpg', 'image/png', 'image/jpeg']
+
 
       if (!availableExtension.includes(this.image.type)) {
         this.alertDialog = true;
         return;
       }
-      this.transform = true;
-      // let response = await this.$api2(
-      //   "http://34.64.169.197/api/v1/infer",
-      //   "POST",
-      //   {
-      //     file: formData,
-      //     resize_l: this.resize_l,
-      //   }
-      // );
 
+
+      this.transform = true;
       let response = await axios.post("http://34.64.169.197/api/v1/infer", formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
       })
-
-      // let response = await axios.post("http://127.0.0.1:8000/api/v1/game/infer", formData, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data'
-      //   },
-      // });
 
 
       this.returnImg = response.data
@@ -354,6 +344,7 @@ export default {
             : "mdi-volume-high";
       }
     },
+
 
     /**
      * 홈버튼 클릭시 홈으로 이동
