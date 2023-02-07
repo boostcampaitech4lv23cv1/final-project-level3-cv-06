@@ -1,13 +1,8 @@
 <template>
   <v-app class="hero">
     <v-container height="100%">
-      <v-alert
-        class="d-flex d-sm-none justify-center"
-        v-if="isIOS"
-        density="compact"
-        type="info"
-        title="아이폰은 지원되지 않아요."
-      >
+      <v-alert class="d-flex d-sm-none justify-center" v-if="isIOS" density="compact" type="info"
+        title="아이폰은 지원되지 않아요.">
       </v-alert>
       <v-row class="d-flex justify-center">
         <!-- save paint! 로고 출력 -->
@@ -15,8 +10,10 @@
           <logo :style="{ height: '14vh', margin: '10vh 0vw 0vh 0vw' }" />
         </v-col>
       </v-row>
+
+
       <!-- 모바일 ui(음향,홈,설명) -->
-      <v-row class="d-flex d-sm-none justify-center">
+      <v-row class="d-flex justify-center">
         <!-- 음향(소리) 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
           <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
@@ -25,12 +22,14 @@
           <br />
         </v-col>
 
+
         <!-- 홈 이동 버튼 -->
         <v-col cols="2" class="d-flex justify-center">
           <v-btn rounded variant="plain" @click="moveHome" height="5vh">
             <v-icon icon="mdi-home-outline" size="5vh" />
           </v-btn>
         </v-col>
+
 
         <!-- 설명 dialog 버튼-->
         <v-col cols="2" class="d-flex justify-center">
@@ -41,106 +40,44 @@
       </v-row>
 
 
-      <v-row>
-        <v-col cols="2" sm="4" />
-
-        <!-- category logo 출력 -->
-        <v-col cols="8" sm="4" class="d-flex justify-center align-center">
-          <category :style="{ height: '6vh', width: '70vw', margin: '5vh 0vw 1vh 0vw' }" />
-        </v-col>
-
-        <v-col cols="2" sm="4">
-          <!-- 음향(소리) 버튼 -->
-
-          <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
-            <v-btn rounded variant="plain" @click="changeAudio" height="5vh">
-              <v-icon :icon="audioIcon" size="5vh"> </v-icon>
-            </v-btn>
-          </v-row>
-
-          <!-- 홈 이동 버튼 -->
-
-          <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
-            <v-btn rounded variant="plain" @click="moveHome" height="5vh">
-              <v-icon icon="mdi-home-outline" size="5vh" />
-            </v-btn>
-          </v-row>
-
-          <!-- 설명 dialog 버튼-->
-
-          <v-row class="d-none d-sm-flex justify-end" :style="{ margin: '1vh 0vw 0vh 0vw', height: '5vh' }">
-            <v-btn rounded variant="plain" @click="showDialog = true" height="5vh">
-              <v-icon icon="mdi-information-outline" size="5vh" />
-            </v-btn>
-          </v-row>
-        </v-col>
-      </v-row>
-
-
       <!-- description dialog -->
       <v-dialog v-model="showDialog">
-        <v-dialog v-model="showDialog">
-          <v-dialog v-model="showDialog">
-            <v-dialog v-model="showDialog">
-              <v-dialog v-model="showDialog">
-                <v-row class="justify-center">
-                  <v-col cols="12" sm="6">
-                    <v-card>
-                      <!-- dialog text -->
-                      <v-card-text class="text-center" height="10vh">
-                        카테고리에 해당하는 그림이 생성돼요. 그림을 보고
-                        무엇인지 빨리 맞혀보세요!
-                      </v-card-text>
-                      
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <!-- dialog close 버튼 -->
-                        <v-btn
-                          variant="tonal"
-                          @click="showDialog = false"
-                          :style="{ margin: '0vh 0vw 0vh 0vw' }"
-                          color="#6fc2fe"
-                          >확인</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                        <!-- description 이동 버튼 -->
-                        <v-btn
-                          variant="tonal"
-                          @click="movePage('/description')"
-                          :style="{ margin: '0vh 0vw 0vh 0vw' }"
-                          color="#6fc2fe"
-                          >게임방법 알아보기</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-col>
-                </v-row>
-              </v-dialog>
-            </v-dialog>
-          </v-dialog>
-        </v-dialog>
+        <v-row class="justify-center">
+          <v-col cols="12" sm="6">
+            <v-card>
+              <!-- dialog text -->
+              <v-card-text class="text-center" height="10vh">
+                카테고리에 해당하는 그림이 생성돼요. 그림을 보고
+                무엇인지 빨리 맞혀보세요!
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <!-- dialog close 버튼 -->
+                <v-btn variant="tonal" @click="showDialog = false" :style="{ margin: '0vh 0vw 0vh 0vw' }"
+                  color="#6fc2fe">확인</v-btn>
+                <v-spacer></v-spacer>
+                <!-- description 이동 버튼 -->
+                <v-btn variant="tonal" @click="movePage('/description')" :style="{ margin: '0vh 0vw 0vh 0vw' }"
+                  color="#6fc2fe">게임방법 알아보기</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-dialog>
-      <v-row
-        class="text-center text-h6 text-black font-weight-bold"
-        :style="{ 'margin-top': '5vh' }"
-      >
+      <v-row class="text-center text-h6 text-black font-weight-bold" :style="{ 'margin-top': '5vh' }">
         <v-col cols="3"> 인물 </v-col>
         <v-col cols="3"> 동물 </v-col>
         <v-col cols="3"> 포켓몬 </v-col>
         <v-col cols="3"> 나라 </v-col>
       </v-row>
-      <v-row align="center" justify="center">
+      <v-row justify="center">
         <template v-for="(item, i) in items" :key="i">
           <v-col cols="3">
             <v-hover v-slot="{ isHovering, props }">
-              <v-card
-                class="mx-auto"
-                @click="[changeCategory(item.value), startGame()]"
-                :elevation="isHovering ? 12 : 2"
-                :class="{ 'on-hover': isHovering }"
-                v-bind="props"
-              >
+              <v-card class="mx-auto" @click="[changeCategory(item.value), startGame()]"
+                :elevation="isHovering ? 12 : 2" :class="{ 'on-hover': isHovering }" v-bind="props">
                 <v-img :src="item.img" cover height="25vh"> </v-img>
               </v-card>
             </v-hover>
@@ -270,6 +207,7 @@ export default {
   background-size: cover;
   height: 100vh;
 }
+
 .v-card {
   transition: opacity 0.4s ease-in-out;
 }
@@ -281,6 +219,7 @@ export default {
 .show-btns {
   color: rgba(255, 255, 255, 1) !important;
 }
+
 @media only screen and (max-width: 480px) {
   .icon-size {
     width: 2vh;
