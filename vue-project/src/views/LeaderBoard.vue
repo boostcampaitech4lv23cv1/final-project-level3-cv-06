@@ -5,7 +5,7 @@
         <v-col cols="3" />
         <!-- ranking logo 출력 -->
         <v-col cols="6" class="d-flex justify-center align-center">
-          <ranking class="rank" :style="{ 'height': '10vh' }" />
+          <ranking class="rank" :style="{ height: '10vh' }" />
         </v-col>
       </v-row>
 
@@ -32,12 +32,13 @@
       </v-row>
 
       <v-row class="d-flex justify-center font">
-        <!-- 랭킹 테이블 생성 -->
+        <v-col sm="3"></v-col>
         <v-col xs="12" sm="6">
           <div class="scroll">
             <v-table class="table">
               <thead>
                 <tr>
+                  <th class="text-center">Rank</th>
                   <th class="text-center">Name</th>
                   <th class="text-center">Correct</th>
                   <th class="text-center">Time</th>
@@ -45,16 +46,32 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in ranking" :key="item.name">
+                <tr v-for="(item, index) in ranking" :key="item.name">
+                  <td class="text-center">
+                    <div v-if="index === 0">
+                      <first width="5vw" higth="5vh" />
+                    </div>
+                    <div v-if="index === 1">
+                      <second width="5vw" higth="5vh" />
+                    </div>
+                    <div v-if="index === 2">
+                      <third width="5vw" higth="5vh" />
+                    </div>
+                    {{ index + 1 }}
+                  </td>
                   <td class="text-center">{{ item.user_name }}</td>
                   <td class="text-center">{{ item.correct_cnt }}</td>
-                  <td class="text-center">{{ parseInt(item.play_time / 60) }}m {{ parseInt(item.play_time % 60) }}s</td>
+                  <td class="text-center">
+                    {{ parseInt(item.play_time / 60) }}m
+                    {{ parseInt(item.play_time % 60) }}s
+                  </td>
                   <td class="text-center">{{ item.score }}</td>
                 </tr>
               </tbody>
             </v-table>
           </div>
         </v-col>
+        <v-col sm="3"></v-col>
       </v-row>
     </v-container>
   </v-app>
@@ -62,17 +79,39 @@
 
 <script>
 import ranking from "../svg/rankingText.vue";
+import first from "../svg/fisrtTrophy.vue";
+import second from "../svg/secondTrophy.vue";
+import third from "../svg/thirdTrophy.vue";
 export default {
   components: {
     ranking,
+    first,
+    second,
+    third,
   },
   data() {
     return {
-      ranking: [],
-      items: ['animal', 'landmark', 'pokemon', 'celebrity'],
-      category: 'animal',
+      ranking: [
+        { user_name: "John Doe", correct_cnt: 20, play_time: 150, score: 200 },
+        { user_name: "Jane Doe", correct_cnt: 18, play_time: 120, score: 180 },
+        { user_name: "Jim Smith", correct_cnt: 15, play_time: 130, score: 170 },
+        {
+          user_name: "Tom Anderson",
+          correct_cnt: 14,
+          play_time: 140,
+          score: 160,
+        },
+        {
+          user_name: "Sarah Johnson",
+          correct_cnt: 12,
+          play_time: 110,
+          score: 150,
+        },
+      ],
+      items: ["동물", "나라", "포켓몬", "인물"],
+      category: "동물",
       audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
-      score: this.$store.score
+      score: this.$store.score,
     };
   },
   methods: {
@@ -95,7 +134,7 @@ export default {
   async mounted() {
     let response = await this.$api(
       "http://34.64.169.197/api/v1/score/read?category=" + this.category,
-      "GET",
+      "GET"
     );
     this.ranking = response;
   },
@@ -105,12 +144,12 @@ export default {
       handler: async function () {
         let response = await this.$api(
           "http://34.64.169.197/api/v1/score/read?category=" + this.category,
-          "GET",
+          "GET"
         );
-        this.ranking = response
-      }
-    }
-  }
+        this.ranking = response;
+      },
+    },
+  },
 };
 </script>
 
