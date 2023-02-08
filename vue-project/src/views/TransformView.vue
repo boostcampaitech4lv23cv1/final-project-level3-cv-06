@@ -265,11 +265,8 @@ export default {
   },
   methods: {
     async downloadImage() {
-      const blob = new Blob([this.returnImg], { type: "image/jpeg" });
-      const objectURL = URL.createObjectURL(blob);
-
       const link = document.createElement("a");
-      link.href = objectURL;
+      link.href = `data:image/jpeg;base64,${this.returnImg}`;
       link.download = "image.jpeg";
       link.click();
     },
@@ -302,9 +299,11 @@ export default {
       const formData = new FormData();
       formData.append("file", this.image);
 
-
-      let resize_l = 512
-      if (this.select == 2) {
+      let resize_l = 0
+      if (this.select == 1) {
+        resize_l = 512
+      }
+      else if (this.select == 2) {
         resize_l = 768
       }
       else {
