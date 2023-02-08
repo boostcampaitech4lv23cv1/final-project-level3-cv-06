@@ -57,7 +57,7 @@
                     <div v-if="index === 2">
                       <third width="5vw" higth="5vh" />
                     </div>
-                    {{ index + 1 }}
+                    <div v-if="index > 2">{{ index + 1 }}</div>
                   </td>
                   <td class="text-center">{{ item.user_name }}</td>
                   <td class="text-center">{{ item.correct_cnt }}</td>
