@@ -114,10 +114,25 @@ export default {
     moveHome() {
       this.$router.push({ path: "/" });
     },
+    getCategory() {
+      if (this.category == '동물') {
+        return 'animal'
+      }
+      else if (this.category == '나라') {
+        return 'landmark'
+      }
+      else if (this.category == '포켓몬') {
+        return 'pokemon'
+      }
+      else {
+        return 'celebrity'
+      }
+    }
   },
+
   async mounted() {
     let response = await this.$api(
-      "http://34.64.169.197/api/v1/score/read?category=" + this.category,
+      "http://34.64.169.197/api/v1/score/read?category=" + this.getCategory(),
       "GET"
     );
     this.ranking = response;
@@ -127,7 +142,7 @@ export default {
       immediate: true,
       handler: async function () {
         let response = await this.$api(
-          "http://34.64.169.197/api/v1/score/read?category=" + this.category,
+          "http://34.64.169.197/api/v1/score/read?category=" + this.getCategory(),
           "GET"
         );
         this.ranking = response;

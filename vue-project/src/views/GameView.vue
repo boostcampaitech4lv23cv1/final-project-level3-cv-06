@@ -6,16 +6,9 @@
         <!-- Head Text -->
         <v-col cols="8" class="d-flex justify-center">
           <!-- Save Paint! 로고 출력 -->
-          <logo
-            v-if="gameStatus === 0"
-            :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }"
-          />
+          <logo v-if="gameStatus === 0" :style="{ height: '15vh', margin: '2vh 0vw 2vh 0vw' }" />
           <!-- 문제 번호 / 문제 수 출력-->
-          <div
-            v-if="gameStatus != 0"
-            class="nums"
-            :style="{ 'font-size': '5vw', height: '11vh' }"
-          >
+          <div v-if="gameStatus != 0" class="nums" :style="{ 'font-size': '5vw', height: '11vh' }">
             {{ headText }}
           </div>
         </v-col>
@@ -25,91 +18,45 @@
         <v-col cols="3"></v-col>
         <!--default 이미지 출력 및 게임시작시 gif 이미지 출력-->
         <v-col cols="6">
-          <v-img
-            src="../assets/IU.jpg"
-            height="35vh"
-            width="40vw"
-            class="mx-auto"
-            v-show="
-              gameStatus === 0 && store._state.data.category == 'celebrity'
-            "
-          />
-          <v-img
-            src="../assets/animal.jpg"
-            height="35vh"
-            width="40vw"
-            class="mx-auto"
-            v-show="gameStatus === 0 && store._state.data.category == 'animal'"
-          />
-          <v-img
-            src="../assets/eiffel.jpg"
-            height="35vh"
-            width="40vw"
-            class="mx-auto"
-            v-show="
-              gameStatus === 0 && store._state.data.category == 'landmark'
-            "
-          />
-          <v-img
-            src="../assets/pikachu.jpg"
-            height="35vh"
-            width="40vw"
-            class="mx-auto"
-            v-show="gameStatus === 0 && store._state.data.category == 'pokemon'"
-          />
-          <v-lazy
-            v-show="gameStatus != 0"
-            v-bind:src="paintImg[gameStatus - 1]"
-            class="mx-auto"
-            height="40vh"
-            width="100vw"
-            @load="loaded = 1"
-          />
+          <v-img src="../assets/IU.jpg" height="35vh" width="40vw" class="mx-auto" v-show="
+            gameStatus === 0 && store._state.data.category == 'celebrity'
+          " />
+          <v-img src="../assets/animal.jpg" height="35vh" width="40vw" class="mx-auto"
+            v-show="gameStatus === 0 && store._state.data.category == 'animal'" />
+          <v-img src="../assets/eiffel.jpg" height="35vh" width="40vw" class="mx-auto" v-show="
+            gameStatus === 0 && store._state.data.category == 'landmark'
+          " />
+          <v-img src="../assets/pikachu.jpg" height="35vh" width="40vw" class="mx-auto"
+            v-show="gameStatus === 0 && store._state.data.category == 'pokemon'" />
+          <v-img v-show="gameStatus != 0" v-bind:src="paintImg[gameStatus - 1]" class="mx-auto" height="40vh"
+            width="100vw" @load="loaded = 1" />
         </v-col>
 
         <v-col cols="3" class="mx-auto">
-          <v-progress-linear
-            v-show="gameStatus > 0"
-            class="bar"
-            height="20vh"
-            color="white"
-            v-model="totalTimer"
-          />
+          <v-progress-linear v-show="gameStatus > 0" class="bar" height="20vh" color="white" v-model="totalTimer" />
         </v-col>
       </v-row>
 
       <v-row class="d-flex justify-center text-center">
         <!-- 하나의 이미지에 대한 타이머 프로그래스 바 / 시간 초 출력 5초 이하로 남을 시 빨간색으로 표시-->
         <v-col>
-          <v-progress-circular
-            v-show="gameStatus > 0"
-            height="4vh"
-            :size="65"
-            :style="{ color: progressColor }"
-            :width="8"
-            model-value="100"
-          >
-            <div
-              :style="{
-                'font-size': '3vh',
-                color: 'black',
-              }"
-            >
+          <v-progress-circular v-show="gameStatus > 0" height="4vh" :size="65" :style="{ color: progressColor }"
+            :width="8" model-value="100">
+            <div :style="{
+              'font-size': '3vh',
+              color: 'black',
+            }">
               {{ imgTimer }}
             </div>
           </v-progress-circular>
         </v-col>
       </v-row>
 
-      <v-row
-        class="d-flex justify-center"
-        v-if="(gameStatus > 0) & showHint"
-        :style="{ 'margin-top': '1vh' }"
-      >
+      <v-row class="d-flex justify-center" v-if="(gameStatus > 0) & showHint" :style="{ 'margin-top': '1vh' }">
         <!-- 정답 글자 수 표시 -->
 
         <v-card v-for="i in answerList[gameStatus - 1].length" :key="{ i }" color="white" elevation="1" height="6vh"
-          width="6vh" rounded :style="{ 'margin-left': '0.5vw' }"
+          width="6vh" rounded :style="{ 'margin-left': '0.5vw' }" class="text-center hint"
           :text="extract_chosung(answerList[gameStatus - 1][i - 1])"></v-card>
 
       </v-row>
@@ -119,14 +66,8 @@
 
         <v-col cols="4" class="d-flex justify-center">
           <!-- 정답 입력 칸 -->
-          <v-text-field
-            v-show="gameStatus > 0"
-            label="Enter the answer"
-            single-line
-            density="compact"
-            v-model="text"
-            @keypress.enter="enter"
-          ></v-text-field>
+          <v-text-field v-show="gameStatus > 0" label="Enter the answer" single-line density="compact" v-model="text"
+            @keypress.enter="enter"></v-text-field>
 
           <!-- 게임 시작 버튼 -->
           <v-btn v-show="gameStatus == 0" @click="startGame">Game Start!</v-btn>
@@ -169,11 +110,7 @@
       <!-- 문제 번호 출력 -->
       <v-row class="d-flex justify-center" v-if="gameStatus != 0">
         <v-col cols="8" class="d-flex justify-center">
-          <div
-            v-if="gameStatus != 0"
-            class="nums d-flex align-center"
-            :style="{ 'font-size': '10vw', height: '7vh' }"
-          >
+          <div v-if="gameStatus != 0" class="nums d-flex align-center" :style="{ 'font-size': '10vw', height: '7vh' }">
             {{ headText }}
           </div>
         </v-col>
@@ -186,61 +123,27 @@
 
       <!-- default 이미지 및 gif 게임 이미지 출력 -->
       <v-col cols="12">
-        <v-img
-          src="../assets/IU.jpg"
-          height="35vh"
-          width="40vw"
-          class="mx-auto"
-          v-show="gameStatus === 0 && store._state.data.category == 'celebrity'"
-        />
-        <v-img
-          src="../assets/animal.jpg"
-          height="35vh"
-          width="40vw"
-          class="mx-auto"
-          v-show="gameStatus === 0 && store._state.data.category == 'animal'"
-        />
-        <v-img
-          src="../assets/eiffel.jpg"
-          height="35vh"
-          width="40vw"
-          class="mx-auto"
-          v-show="gameStatus === 0 && store._state.data.category == 'landmark'"
-        />
-        <v-img
-          src="../assets/pikachu.jpg"
-          height="35vh"
-          width="40vw"
-          class="mx-auto"
-          v-show="gameStatus === 0 && store._state.data.category == 'pokemon'"
-        />
-        <v-img
-          v-show="gameStatus != 0"
-          v-bind:src="paintImg[gameStatus - 1]"
-          class="mx-auto"
-          height="45vh"
-          width="100vw"
-          @load="loaded = 1"
-        />
+        <v-img src="../assets/IU.jpg" height="35vh" width="40vw" class="mx-auto"
+          v-show="gameStatus === 0 && store._state.data.category == 'celebrity'" />
+        <v-img src="../assets/animal.jpg" height="35vh" width="40vw" class="mx-auto"
+          v-show="gameStatus === 0 && store._state.data.category == 'animal'" />
+        <v-img src="../assets/eiffel.jpg" height="35vh" width="40vw" class="mx-auto"
+          v-show="gameStatus === 0 && store._state.data.category == 'landmark'" />
+        <v-img src="../assets/pikachu.jpg" height="35vh" width="40vw" class="mx-auto"
+          v-show="gameStatus === 0 && store._state.data.category == 'pokemon'" />
+        <v-img v-show="gameStatus != 0" v-bind:src="paintImg[gameStatus - 1]" class="mx-auto" height="45vh"
+          width="100vw" @load="loaded = 1" />
       </v-col>
 
       <v-row class="d-flex justify-center text-center">
         <!-- 하나의 이미지에 대한 타이머 프로그래스 바 / 시간 초 출력 5초 이하로 남을 시 빨간색으로 표시-->
         <v-col>
-          <v-progress-circular
-            v-show="gameStatus > 0"
-            height="4vh"
-            :size="65"
-            :style="{ color: progressColor }"
-            :width="8"
-            model-value="100"
-          >
-            <div
-              :style="{
-                'font-size': '3vh',
-                color: 'black',
-              }"
-            >
+          <v-progress-circular v-show="gameStatus > 0" height="4vh" :size="65" :style="{ color: progressColor }"
+            :width="8" model-value="100">
+            <div :style="{
+              'font-size': '3vh',
+              color: 'black',
+            }">
               {{ imgTimer }}
             </div>
           </v-progress-circular>
@@ -388,6 +291,9 @@ function filterLetters(str) {
 function calScore() {
 
   score.value = Math.round(80 * (store._state.data.correctAnswer / 9) + 20 * ((100 - totalTimer.value) / 100) - (40 * hintNum.value / 9) - passTime.value / 15)
+  if (score.value < 0) {
+    score.value = 0
+  }
 
 }
 
@@ -643,31 +549,27 @@ function extract_chosung(str) {
 .bar {
   transform: rotate(90deg);
   margin-top: 17vh;
-  background: linear-gradient(
-    to right,
-    #e54040 0%,
-    #ffa63a 16%,
-    #dcff3f 32%,
-    #6cff3f 48%,
-    #3fa2ff 64%,
-    #a53fff 80%,
-    #ff3fc9 100%
-  );
+  background: linear-gradient(to right,
+      #e54040 0%,
+      #ffa63a 16%,
+      #dcff3f 32%,
+      #6cff3f 48%,
+      #3fa2ff 64%,
+      #a53fff 80%,
+      #ff3fc9 100%);
   border-radius: 30px;
 }
 
 .mobile-bar {
   transform: rotate(180deg);
-  background: linear-gradient(
-    to right,
-    #e54040 0%,
-    #ffa63a 16%,
-    #dcff3f 32%,
-    #6cff3f 48%,
-    #3fa2ff 64%,
-    #a53fff 80%,
-    #ff3fc9 100%
-  );
+  background: linear-gradient(to right,
+      #e54040 0%,
+      #ffa63a 16%,
+      #dcff3f 32%,
+      #6cff3f 48%,
+      #3fa2ff 64%,
+      #a53fff 80%,
+      #ff3fc9 100%);
   border-radius: 30px;
 }
 
@@ -679,5 +581,16 @@ function extract_chosung(str) {
 .nums {
   font-family: "num";
   font-size: 4rem;
+}
+
+@font-face {
+  font-family: "hint";
+  src: url("../fonts/BMJUA_ttf.ttf")
+}
+
+
+.hint {
+  font-family: "hint";
+  font-size: 1.5rem;
 }
 </style>

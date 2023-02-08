@@ -42,9 +42,7 @@
           <v-card-actions>
             <v-spacer />
 
-            <v-btn variant="tonal" color="#6fc2fe" @click="showDialog = false"
-              >확인</v-btn
-            >
+            <v-btn variant="tonal" color="#6fc2fe" @click="showDialog = false">확인</v-btn>
             <v-spacer />
           </v-card-actions>
         </v-card>
@@ -90,6 +88,7 @@
         </v-col>
       </v-row>
 
+
       <v-row class="d-flex justify-center">
         <v-col cols="auto">
           <!-- transform 버튼 출력 -이미지 없으면 block -->
@@ -97,6 +96,7 @@
           <v-btn v-if="returnImg !== null" @click="downloadImage">이미지 다운로드</v-btn>
         </v-col>
       </v-row>
+
 
       <v-dialog v-model="alertDialog">
         <v-row class="d-flex justify-center">
@@ -110,6 +110,7 @@
       </v-dialog>
     </v-container>
 
+
     <!-- 세로 모드 -->
     <v-container v-if="isPortrait == true">
       <v-row>
@@ -122,6 +123,7 @@
           }" />
         </v-col>
       </v-row>
+
 
       <v-row class="d-flex justify-center">
         <!-- 음향 버튼 -->
@@ -160,9 +162,7 @@
           <!-- dialog close 버튼 -->
           <v-card-actions>
             <v-spacer />
-            <v-btn variant="tonal" color="#6fc2fe" @click="showDialog = false"
-              >확인</v-btn
-            >
+            <v-btn variant="tonal" color="#6fc2fe" @click="showDialog = false">확인</v-btn>
 
             <v-spacer />
           </v-card-actions>
