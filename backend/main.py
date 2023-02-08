@@ -17,7 +17,6 @@ origins = [
 ]
 
 black_list = [
-    "182.212.231.215"
 ]
 
 app.add_middleware(
