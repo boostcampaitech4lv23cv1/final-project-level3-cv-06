@@ -91,23 +91,7 @@ export default {
   },
   data() {
     return {
-      ranking: [
-        { user_name: "John Doe", correct_cnt: 20, play_time: 150, score: 200 },
-        { user_name: "Jane Doe", correct_cnt: 18, play_time: 120, score: 180 },
-        { user_name: "Jim Smith", correct_cnt: 15, play_time: 130, score: 170 },
-        {
-          user_name: "Tom Anderson",
-          correct_cnt: 14,
-          play_time: 140,
-          score: 160,
-        },
-        {
-          user_name: "Sarah Johnson",
-          correct_cnt: 12,
-          play_time: 110,
-          score: 150,
-        },
-      ],
+      ranking: [],
       items: ["동물", "나라", "포켓몬", "인물"],
       category: "동물",
       audioIcon: this.$root.audio.muted ? "mdi-volume-off" : "mdi-volume-high",
