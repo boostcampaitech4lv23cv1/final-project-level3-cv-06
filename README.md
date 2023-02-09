@@ -17,11 +17,13 @@
 <img src="https://img.shields.io/badge/vue.js-3.0-339933?logo=vue.js"> <img src="https://img.shields.io/badge/NGINX-1.23.3-009639?logo=nginx">
 </div>
 <div align="center">
-<img src="https://img.shields.io/badge/Airflow-2.5.1-017CEE?logo=Apache Airflow">
 <img src="https://img.shields.io/badge/PostgreSQL-14.0-4169E1?logo=PostgreSQL">
-<img src="https://img.shields.io/badge/Docker-20.10.22-2496ED?logo=docker"> 
 <img src="https://img.shields.io/badge/FastAPI-0.89.1-009688?logo=fastapi"> 
 <img src="https://img.shields.io/badge/PyTorch-1.7.1-EE4C2C?logo=pytorch">
+</div>
+<div align="center">
+<img src="https://img.shields.io/badge/Airflow-2.5.1-017CEE?logo=Apache Airflow">
+<img src="https://img.shields.io/badge/Docker-20.10.22-2496ED?logo=docker"> 
 <img src="https://img.shields.io/badge/PyTorch Lightning-1.9.0-792EE5?logo=PyTorch Lightning">
 </div>
 
