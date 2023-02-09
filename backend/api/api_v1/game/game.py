@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, Depends
 
 from sqlalchemy.orm import Session
 from typing import List
+import platform
 
 from utils import *
 from scheme import *

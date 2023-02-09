@@ -4,7 +4,8 @@ import re
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi import FastAPI, UploadFile, File
+from pydantic import BaseModel
 from api.api_v1 import api_router
 from utils import LOGGER
 

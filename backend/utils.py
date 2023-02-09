@@ -44,9 +44,10 @@ def from_image_to_str(img, extend):
     # img.save(imgByteArr, format="PNG")
     imgByteArr = imgByteArr.getvalue()
     # Base64로 Bytes를 인코딩
-    encoded = base64.b64encode(imgByteArr) # byte
+    encoded = base64.b64encode(imgByteArr)  # byte
     # Base64로 utf-8로 디코딩
-    decoded = encoded.decode('utf-8') # 
+    decoded = encoded.decode("utf-8")  #
+    print(decoded)
     return decoded
 
     
