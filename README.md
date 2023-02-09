@@ -10,7 +10,7 @@
 
  **4. 안드로이드 환경에서도 플레이할 수 있습니다. 다양한 환경에서 즐겨보세요!**
 
- **[게임 링크](http://bit.ly/savepaint)**
+ # [게임 링크](http://bit.ly/savepaint)
 
 # Tech Skill
 <div align="center">
@@ -71,8 +71,13 @@
  </table>
 
 # Model
-![image](https://user-images.githubusercontent.com/59409740/217578400-55553915-b890-42b6-85fa-c076ea7401df.png)
+<p align=center>
+<img src="https://user-images.githubusercontent.com/59409740/217578400-55553915-b890-42b6-85fa-c076ea7401df.png"/>
+<br>
 <a href="https://arxiv.org/pdf/2108.03798.pdf"> Paint Transformer </a>
+</p>
+
+
 
 
 # Pipeline
