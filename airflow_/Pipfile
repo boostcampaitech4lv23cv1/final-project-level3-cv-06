@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+albumentations = "*"
+pandas = "*"
+timm = "*"
+apache-airflow = "*"
+psycopg2 = "*"
+pyarrow = "*"
+apache-airflow-providers-ssh = "*"
+apache-airflow-providers-sftp = "*"
+google-cloud-storage = "*"
+apache-airflow-providers-google = "*"
+apache-airflow-providers-slack = "*"
+pytorch-lightning = "*"
+apache-airflow-providers-postgres = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
+python_full_version = "3.9.16"

@@ -1,0 +1,1 @@
+python infer_animal.py animal pixabay 01-30_21
