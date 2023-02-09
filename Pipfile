@@ -3,15 +3,31 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[[source]]
+url = "https://download.pytorch.org/whl/cpu"
+verify_ssl = false
+name = "pytorch"
+
 [packages]
 fastapi = {extras = ["all"], version = "*"}
 pandas = "*"
 scikit-learn = "*"
-psycopg2-binary = "*"
 opencv-python = "*"
+<<<<<<< HEAD
+torch = {version = "*", index = "pytorch"}
+torchvision = {version = "*", index = "pytorch"}
+google-cloud-storage = "*"
+sqlalchemy = "*"
+python-dotenv = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
+pyarrow = "*"
+gunicorn = "*"
+=======
 torch = "*"
 torchvision = "*"
 uvicorn = "*"
+>>>>>>> 3209a634718e4e16a3f70f7b78d7f8b3fd1cab2b
 
 [dev-packages]
 streamlit = "*"
@@ -20,4 +36,4 @@ minio = "*"
 ipywidgets = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.9.16"

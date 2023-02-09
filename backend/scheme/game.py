@@ -1,26 +1,22 @@
 from typing import Union, List
-
 from pydantic import BaseModel
 
 
-class GameIn(BaseModel):
+class GameStart(BaseModel):
     category: str
-    mode: str = "painttransformer"
-
-
-class ImagePath(BaseModel):
-    path: str
-
-
-class ImagePaths(BaseModel):
-    paths: List[str]
-
-
-class GameOut(BaseModel):
-    result_imgs: List[bytes]
-    origin_imgs: List[bytes]
 
 
 class GameOver(BaseModel):
+    category: str
     img_paths: List[str]
-    score_list: List[int]
+    correct_list: List[bool]
+    
+
+class SavePaintOut(BaseModel):
+    base_url: str = "https://storage.googleapis.com/scraped-img/"
+    label: str
+    img_path: str
+    class Config:
+        orm_mode = True
+        
+
