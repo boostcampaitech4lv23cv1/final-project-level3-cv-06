@@ -1,20 +1,56 @@
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import StreamingResponse, FileResponse
+from typing import List
+import platform
 
+from fastapi import (
+    FastAPI,
+    UploadFile,
+    File,
+    Response,
+    HTTPException,
+    BackgroundTasks,
+    Body,
+    APIRouter,
+    HTTPException,
+)
+from fastapi.responses import StreamingResponse, FileResponse, Response, JSONResponse
+
+from utils import set_game_imgs, get_paint_img, get_result_imgs, get_origin_imgs
+from scheme import *
 
 router = APIRouter()
 
 
-@router.get("/gamestart")
-async def gamestart(category: str, mode: str):
-    # TODO
-    # 카테고리, 모드 따라서 알맞은 사진 반환하기
-    # predict(category)
-    return FileResponse("gif/cat.gif", media_type="image/gif")
+@router.post("/gamestart")
+async def gamestart(game_in: GameIn):
+    img_paths = set_game_imgs(game_in.category)
+    if platform.system() == "Windows":
+        answer_list = [path.split("\\")[-2] for path in img_paths]
+    else:
+        answer_list = [path.split("/")[-2] for path in img_paths]
+    return JSONResponse(content={"img_list": img_paths, "answer_list": answer_list})
+
+
+@router.post("/paint")
+async def paint(path: ImagePath):
+
+    return StreamingResponse(content=get_paint_img(path.path), media_type="images/gif")
+
+
+@router.post("/result", response_model=GameOut)
+async def result(paths: ImagePaths):
+
+    result_imgs = get_result_imgs(paths.paths)
+    origin_imgs = get_origin_imgs(paths.paths)
+
+    return {"result_imgs": result_imgs, "origin_imgs": origin_imgs}
 
 
 @router.post("/gameover")
-async def gameover():
-    # TODO
-    # 점수 받아서 DB에 저장하기
-    pass
+async def gameover(gameover: GameOver):
+    print(gameover)
+
+
+@router.post("/infer")
+async def infer(file: UploadFile = File(...), resize_l: int = Body()):
+    print(file)
+    print(resize_l)

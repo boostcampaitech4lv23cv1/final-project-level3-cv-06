@@ -3,15 +3,18 @@ import cv2
 import time
 import random
 import base64
-import aiofiles
 import io
+from glob import glob
 from PIL import Image
 import numpy as np
+
+from typing import List
 
 from PaintTransformer.inference import init, inference
 from PaintTransformer.inference_only_final import inference as inference_by_img
 
 
+DATA_PATH = "dataset"
 model_path = "PaintTransformer/model.pth"  # main.py 기준으로 경로 설정해야 함
 
 resize_l = 256
@@ -93,34 +96,35 @@ def predict_by_img(img):
     return final_img
 
 
-def from_image_to_bytes(img):
+def from_image_to_bytes(img, extend):
     """
     pillow image 객체를 bytes로 변환
     """
     # Pillow 이미지 객체를 Bytes로 변환
     imgByteArr = io.BytesIO()
-    # img.save(imgByteArr, format=img.format)
-    img.save(imgByteArr, format="PNG")
+    img.save(imgByteArr, format=extend)
     imgByteArr = imgByteArr.getvalue()
-    return imgByteArr
+    encoded = base64.b64encode(imgByteArr)
+    return encoded
 
 
-def from_image_to_str(uf, extend: str):
+def from_image_to_str(img, extend):
     """
     pillow image 객체를 bytes로 변환
     """
-    # Pillow 이미지 객체를 Bytes로 변환
-    imgByteArr = io.BytesIO()
     if extend == "jpg":
         extend = "jpeg"
-    uf.save(imgByteArr, format=extend)
+
+    imgByteArr = io.BytesIO()
+    img.save(imgByteArr, format=extend)
     # img.save(imgByteArr, format="PNG")
     imgByteArr = imgByteArr.getvalue()
     # Base64로 Bytes를 인코딩
-    encoded = base64.b64encode(imgByteArr)
-    # Base64로 ascii로 디코딩
-    # decoded = encoded.decode('ascii')
-    return encoded
+    encoded = base64.b64encode(imgByteArr)  # byte
+    # Base64로 utf-8로 디코딩
+    decoded = encoded.decode("utf-8")  #
+    print(decoded)
+    return decoded
 
 
 async def save_img(uf):
@@ -145,3 +149,74 @@ async def save_img(uf):
         print("저장 실패")
     finally:
         print("save image")
+
+
+# async def get_img(category: str):
+#     # 이미지 9개 반환
+
+
+#     category_path = os.path.join(DATA_PATH, 'original', f'{category}')
+#     path_lst = glob(f'{category_path}/*/*')
+
+#     origin_path = random.choice(path_lst)
+#     paint_path = origin_path.replace('original', 'paint').replace('jpg', 'gif')
+#     result_path = origin_path.replace('original', 'result')
+#     answer = origin_path.split('/')[-2]
+
+#     with open(paint_path, 'rb') as f:
+#         while True:
+#             paint_chunk = f.read(1024)
+#             if not paint_chunk:
+#                 break
+#             else:
+#                 # encoded = base64.b64encode(paint_chunk)
+#                 yield paint_chunk
+
+#         # result_img = Image.open(result)
+
+
+def set_game_imgs(category: str) -> List[str]:
+
+    category_path = os.path.join(DATA_PATH, "original", f"{category}")
+    path_lst = glob(f"{category_path}/*/*")
+
+    origin_paths = random.sample(path_lst, 9)
+
+    return origin_paths
+
+
+async def get_paint_img(img_path: str):
+    paint_img_path = img_path.replace("original", "paint").replace("jpg", "gif")
+    with open(paint_img_path, "rb") as f:  # 비동기 처리
+        while True:
+            chunk = f.read(1024)
+            if not chunk:
+                break
+            else:
+                yield chunk
+
+
+def get_result_imgs(img_paths: List[str]) -> list:
+
+    result_imgs = []
+
+    result_img_paths = [path.replace("original", "result") for path in img_paths]
+    for path in result_img_paths:
+        with open(f"{path}", "rb") as f:
+            data = f.read()
+            encoded = base64.b64encode(data)
+            result_imgs.append(encoded)
+
+    return result_imgs
+
+
+def get_origin_imgs(img_paths: List[str]) -> list:
+
+    origin_imgs = []
+    for path in img_paths:
+        with open(f"{path}", "rb") as f:
+            data = f.read()
+            encoded = base64.b64encode(data)
+            origin_imgs.append(encoded)
+
+    return origin_imgs

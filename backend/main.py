@@ -1,7 +1,8 @@
 # main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi import FastAPI, UploadFile, File
+from pydantic import BaseModel
 from api.api_v1 import api_router
 
 

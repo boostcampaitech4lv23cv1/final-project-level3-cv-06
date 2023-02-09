@@ -1,12 +1,10 @@
-import aiofiles
 from io import BytesIO
 from PIL import Image
 
 from utils import predict_by_img, from_image_to_bytes, from_image_to_str, save_img
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from fastapi import FastAPI, File, UploadFile, Response
-from fastapi.responses import FileResponse
-
+from fastapi.responses import FileResponse, JSONResponse
 
 router = APIRouter()
 
@@ -26,5 +24,5 @@ async def inference(
 
     paint_img = predict_by_img(img)
 
-    base64_img = from_image_to_str(paint_img, extend)
-    return Response(content=base64_img)
+    encoed_img = from_image_to_str(paint_img, extend)
+    return JSONResponse(content={"image": encoed_img}, media_type="application/json")
