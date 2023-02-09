@@ -226,3 +226,20 @@ raw_image/
 
 env/
 .env
+
+airflow_/dags/crawled_img
+airflow_/dags/logs
+airflow_/logs/
+airflow_/airflow*
+airflow_/webserver_config.py
+airflow_/standalone_admin_password.txt
+
+airflow_/Pipfile
+
+airflow_/dags/data
+airflow_/dags/classification/data
+# scraped data
+airflow_/secret.yml
+airflow_/m2-key.json
+
+lightning_logs/

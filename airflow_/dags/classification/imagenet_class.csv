@@ -1,0 +1,1001 @@
+english,korean,use
+tench,물고기,0
+goldfish,금붕어,1
+great white shark,상어,1
+tiger shark,상어,1
+hammerhead shark,상어,1
+electric ray,가오리,1
+stingray,가오리,1
+cock,닭,1
+hen,닭,1
+ostrich,타조,1
+brambling,새,0
+goldfinch,새,0
+house finch,새,0
+junco,새,0
+indigo bunting,새,0
+American robin,새,0
+bulbul,새,0
+jay,새,0
+magpie,까치,1
+chickadee,새,0
+American dipper,새,0
+kite,새,0
+bald eagle,독수리,1
+vulture,독수리,1
+great grey owl,올빼미,1
+fire salamander,도롱뇽,0
+smooth newt,도룡뇽,0
+newt,도룡뇽,0
+spotted salamander,도룡뇽,0
+axolotl,도룡뇽,0
+American bullfrog,개구리,1
+tree frog,개구리,1
+tailed frog,개구리,1
+loggerhead sea turtle,거북이,1
+leatherback sea turtle,거북이,1
+mud turtle,거북이,1
+terrapin,거북이,1
+box turtle,거북이,1
+banded gecko,도마뱀,1
+green iguana,이구아나,0
+Carolina anole,도마뱀,1
+desert grassland whiptail lizard,도마뱀,1
+agama,도마뱀,1
+frilled-necked lizard,도마뱀,1
+alligator lizard,도마뱀,1
+Gila monster,도마뱀,1
+European green lizard,도마뱀,1
+chameleon,카멜레온,1
+Komodo dragon,도마뱀,1
+Nile crocodile,악어,1
+American alligator,악어,1
+triceratops,,0
+worm snake,뱀,1
+ring-necked snake,뱀,1
+eastern hog-nosed snake,뱀,1
+smooth green snake,뱀,1
+kingsnake,뱀,1
+garter snake,뱀,1
+water snake,뱀,1
+vine snake,뱀,1
+night snake,뱀,1
+boa constrictor,뱀,1
+African rock python,뱀,1
+Indian cobra,뱀,1
+green mamba,뱀,1
+sea snake,뱀,1
+Saharan horned viper,뱀,1
+eastern diamondback rattlesnake,뱀,1
+sidewinder,뱀,1
+trilobite,,0
+harvestman,,0
+scorpion,전갈,1
+yellow garden spider,거미,1
+barn spider,거미,1
+European garden spider,거미,1
+southern black widow,거미,1
+tarantula,거미,1
+wolf spider,거미,1
+tick,,0
+centipede,지네,0
+black grouse,새,0
+ptarmigan,새,0
+ruffed grouse,새,0
+prairie grouse,새,0
+peacock,공작,1
+quail,새,0
+partridge,새,0
+grey parrot,앵무새,1
+macaw,앵무새,1
+sulphur-crested cockatoo,앵무새,1
+lorikeet,앵무새,1
+coucal,뻐꾸기,0
+bee eater,새,0
+hornbill,새,0
+hummingbird,새,0
+jacamar,새,0
+toucan,새,0
+duck,오리,1
+red-breasted merganser,오리,1
+goose,거위,1
+black swan,백조,1
+tusker,코끼리,1
+echidna,가시두더지,0
+platypus,오리너구리,1
+wallaby,캥거루,1
+koala,코알라,1
+wombat,웜뱃,0
+jellyfish,해파리,1
+sea anemone,말미잘,1
+brain coral,산호초,0
+flatworm,,0
+nematode,,0
+conch,소라,0
+snail,달팽이,1
+slug,달팽이,1
+sea slug,달팽이,1
+chiton,조개,0
+chambered nautilus,조개,0
+Dungeness crab,게,1
+rock crab,게,0
+fiddler crab,게,0
+red king crab,게,0
+American lobster,랍스터,0
+spiny lobster,랍스터,0
+crayfish,가재,0
+hermit crab,소라게,0
+isopod,,0
+white stork,새,0
+black stork,새,0
+spoonbill,새,0
+flamingo,홍학,1
+little blue heron,새,0
+great egret,새,0
+bittern,새,0
+crane (bird),새,0
+limpkin,새,0
+common gallinule,새,0
+American coot,새,0
+bustard,새,0
+ruddy turnstone,새,0
+dunlin,새,0
+common redshank,새,0
+dowitcher,새,0
+oystercatcher,새,0
+pelican,펠리컨,1
+king penguin,펭귄,1
+albatross,새,0
+grey whale,고래,1
+killer whale,범고래,1
+dugong,듀공,0
+sea lion,바다사자,1
+Chihuahua,개,1
+Japanese Chin,개,1
+Maltese,개,1
+Pekingese,개,1
+Shih Tzu,개,1
+King Charles Spaniel,개,1
+Papillon,개,1
+toy terrier,개,1
+Rhodesian Ridgeback,개,1
+Afghan Hound,개,1
+Basset Hound,개,1
+Beagle,개,1
+Bloodhound,개,1
+Bluetick Coonhound,개,1
+Black and Tan Coonhound,개,1
+Treeing Walker Coonhound,개,1
+English foxhound,개,1
+Redbone Coonhound,개,1
+borzoi,개,1
+Irish Wolfhound,개,1
+Italian Greyhound,개,1
+Whippet,개,1
+Ibizan Hound,개,1
+Norwegian Elkhound,개,1
+Otterhound,개,1
+Saluki,개,1
+Scottish Deerhound,개,1
+Weimaraner,개,1
+Staffordshire Bull Terrier,개,1
+American Staffordshire Terrier,개,1
+Bedlington Terrier,개,1
+Border Terrier,개,1
+Kerry Blue Terrier,개,1
+Irish Terrier,개,1
+Norfolk Terrier,개,1
+Norwich Terrier,개,1
+Yorkshire Terrier,개,1
+Wire Fox Terrier,개,1
+Lakeland Terrier,개,1
+Sealyham Terrier,개,1
+Airedale Terrier,개,1
+Cairn Terrier,개,1
+Australian Terrier,개,1
+Dandie Dinmont Terrier,개,1
+Boston Terrier,개,1
+Miniature Schnauzer,개,1
+Giant Schnauzer,개,1
+Standard Schnauzer,개,1
+Scottish Terrier,개,1
+Tibetan Terrier,개,1
+Australian Silky Terrier,개,1
+Soft-coated Wheaten Terrier,개,1
+West Highland White Terrier,개,1
+Lhasa Apso,개,1
+Flat-Coated Retriever,개,1
+Curly-coated Retriever,개,1
+Golden Retriever,개,1
+Labrador Retriever,개,1
+Chesapeake Bay Retriever,개,1
+German Shorthaired Pointer,개,1
+Vizsla,개,1
+English Setter,개,1
+Irish Setter,개,1
+Gordon Setter,개,1
+Brittany,개,1
+Clumber Spaniel,개,1
+English Springer Spaniel,개,1
+Welsh Springer Spaniel,개,1
+Cocker Spaniels,개,1
+Sussex Spaniel,개,1
+Irish Water Spaniel,개,1
+Kuvasz,개,1
+Schipperke,개,1
+Groenendael,개,1
+Malinois,개,1
+Briard,개,1
+Australian Kelpie,개,1
+Komondor,개,1
+Old English Sheepdog,개,1
+Shetland Sheepdog,개,1
+collie,개,1
+Border Collie,개,1
+Bouvier des Flandres,개,1
+Rottweiler,개,1
+German Shepherd Dog,개,1
+Dobermann,개,1
+Miniature Pinscher,개,1
+Greater Swiss Mountain Dog,개,1
+Bernese Mountain Dog,개,1
+Appenzeller Sennenhund,개,1
+Entlebucher Sennenhund,개,1
+Boxer,개,1
+Bullmastiff,개,1
+Tibetan Mastiff,개,1
+French Bulldog,개,1
+Great Dane,개,1
+St. Bernard,개,1
+husky,개,1
+Alaskan Malamute,개,1
+Siberian Husky,개,1
+Dalmatian,개,1
+Affenpinscher,개,1
+Basenji,개,1
+pug,개,1
+Leonberger,개,1
+Newfoundland,개,1
+Pyrenean Mountain Dog,개,1
+Samoyed,개,1
+Pomeranian,개,1
+Chow Chow,개,1
+Keeshond,개,1
+Griffon Bruxellois,개,1
+Pembroke Welsh Corgi,개,1
+Cardigan Welsh Corgi,개,1
+Toy Poodle,개,1
+Miniature Poodle,개,1
+Standard Poodle,개,1
+Mexican hairless dog,개,1
+grey wolf,늑대,1
+Alaskan tundra wolf,늑대,1
+red wolf,늑대,1
+coyote,코요테,0
+dingo,딩고,0
+dhole,승냥이,0
+African wild dog,들개,0
+hyena,하이에나,1
+red fox,여우,1
+kit fox,여우,1
+Arctic fox,여우,1
+grey fox,여우,1
+tabby cat,고양이,1
+tiger cat,고양이,1
+Persian cat,고양이,1
+Siamese cat,고양이,1
+Egyptian Mau,고양이,1
+cougar,퓨마,1
+lynx,스라소니,0
+leopard,표범,1
+snow leopard,표범,1
+jaguar,재규어,1
+lion,사자,1
+tiger,호랑이,1
+cheetah,치타,1
+brown bear,곰,1
+American black bear,곰,1
+polar bear,곰,1
+sloth bear,곰,1
+mongoose,몽구스,0
+meerkat,미어캣,1
+tiger beetle,딱정벌레,0
+ladybug,무당벌레,1
+ground beetle,딱정벌레,0
+longhorn beetle,딱정벌레,0
+leaf beetle,딱정벌레,0
+dung beetle,딱정벌레,0
+rhinoceros beetle,딱정벌레,0
+weevil,바구미,0
+fly,파리,0
+bee,벌,1
+ant,개미,1
+grasshopper,메뚜기,1
+cricket,귀뚜라미,0
+stick insect,대벌레,0
+cockroach,바퀴벌레,0
+mantis,사마귀,1
+cicada,매미,0
+leafhopper,매미충,0
+lacewing,잠자리,1
+dragonfly,잠자리,1
+damselfly,잠자리,1
+red admiral,나비,1
+ringlet,나비,1
+monarch butterfly,나비,1
+small white,나비,1
+sulphur butterfly,나비,1
+gossamer-winged butterfly,나비,1
+starfish,불가사리,1
+sea urchin,성게,1
+sea cucumber,해삼,1
+cottontail rabbit,토끼,1
+hare,토끼,1
+Angora rabbit,토끼,1
+hamster,햄스터,1
+porcupine,호저,1
+fox squirrel,다람쥐,1
+marmot,마멋,0
+beaver,비버,1
+guinea pig,기니피그,1
+common sorrel,식물,0
+zebra,얼룩말,1
+pig,돼지,1
+wild boar,멧돼지,0
+warthog,멧돼지,0
+hippopotamus,하마,1
+ox,소,1
+water buffalo,소,0
+bison,소,0
+ram,양,1
+bighorn sheep,양,1
+Alpine ibex,산양,0
+hartebeest,영양,0
+impala,임팔라,0
+gazelle,가젤,0
+dromedary,낙타,1
+llama,라마,0
+weasel,족제비,1
+mink,족제비,0
+European polecat,족제비,0
+black-footed ferret,족제비,0
+otter,수달,1
+skunk,스컹크,1
+badger,오소리,1
+armadillo,아르마딜로,1
+three-toed sloth,나무늘보,1
+orangutan,오랑우탄,1
+gorilla,고릴라,1
+chimpanzee,침팬지,1
+gibbon,원숭이,1
+siamang,원숭이,0
+guenon,원숭이,0
+patas monkey,원숭이,0
+baboon,원숭이,0
+macaque,원숭이,0
+langur,원숭이,0
+black-and-white colobus,원숭이,0
+proboscis monkey,원숭이,0
+marmoset,원숭이,0
+white-headed capuchin,원숭이,0
+howler monkey,원숭이,0
+titi,원숭이,0
+Geoffroy's spider monkey,원숭이,1
+common squirrel monkey,원숭이,1
+ring-tailed lemur,원숭이,1
+indri,원숭이,0
+Asian elephant,코끼리,1
+African bush elephant,코끼리,1
+red panda,레서판다,1
+giant panda,판다,1
+snoek,물고기,0
+eel,물고기,0
+coho salmon,물고기,0
+rock beauty,물고기,0
+clownfish,물고기,0
+sturgeon,물고기,0
+garfish,물고기,0
+lionfish,물고기,0
+pufferfish,복어,1
+abacus,,0
+abaya,,0
+academic gown,,0
+accordion,,0
+acoustic guitar,,0
+aircraft carrier,,0
+airliner,,0
+airship,,0
+altar,,0
+ambulance,,0
+amphibious vehicle,,0
+analog clock,,0
+apiary,,0
+apron,,0
+waste container,,0
+assault rifle,,0
+backpack,,0
+bakery,,0
+balance beam,,0
+balloon,,0
+ballpoint pen,,0
+Band-Aid,,0
+banjo,,0
+baluster,,0
+barbell,,0
+barber chair,,0
+barbershop,,0
+barn,,0
+barometer,,0
+barrel,,0
+wheelbarrow,,0
+baseball,,0
+basketball,,0
+bassinet,,0
+bassoon,,0
+swimming cap,,0
+bath towel,,0
+bathtub,,0
+station wagon,,0
+lighthouse,,0
+beaker,,0
+military cap,,0
+beer bottle,,0
+beer glass,,0
+bell-cot,,0
+bib,,0
+tandem bicycle,,0
+bikini,,0
+ring binder,,0
+binoculars,,0
+birdhouse,,0
+boathouse,,0
+bobsleigh,,0
+bolo tie,,0
+poke bonnet,,0
+bookcase,,0
+bookstore,,0
+bottle cap,,0
+bow,,0
+bow tie,,0
+brass,,0
+bra,,0
+breakwater,,0
+breastplate,,0
+broom,,0
+bucket,,0
+buckle,,0
+bulletproof vest,,0
+high-speed train,,0
+butcher shop,,0
+taxicab,,0
+cauldron,,0
+candle,,0
+cannon,,0
+canoe,,0
+can opener,,0
+cardigan,,0
+car mirror,,0
+carousel,,0
+tool kit,,0
+carton,,0
+car wheel,,0
+automated teller machine,,0
+cassette,,0
+cassette player,,0
+castle,,0
+catamaran,,0
+CD player,,0
+cello,,0
+mobile phone,,0
+chain,,0
+chain-link fence,,0
+chain mail,,0
+chainsaw,,0
+chest,,0
+chiffonier,,0
+chime,,0
+china cabinet,,0
+Christmas stocking,,0
+church,,0
+movie theater,,0
+cleaver,,0
+cliff dwelling,,0
+cloak,,0
+clogs,,0
+cocktail shaker,,0
+coffee mug,,0
+coffeemaker,,0
+coil,,0
+combination lock,,0
+computer keyboard,,0
+confectionery store,,0
+container ship,,0
+convertible,,0
+corkscrew,,0
+cornet,,0
+cowboy boot,,0
+cowboy hat,,0
+cradle,,0
+crane (machine),,0
+crash helmet,,0
+crate,,0
+infant bed,,0
+Crock Pot,,0
+croquet ball,,0
+crutch,,0
+cuirass,,0
+dam,,0
+desk,,0
+desktop computer,,0
+rotary dial telephone,,0
+diaper,,0
+digital clock,,0
+digital watch,,0
+dining table,,0
+dishcloth,,0
+dishwasher,,0
+disc brake,,0
+dock,,0
+dog sled,,0
+dome,,0
+doormat,,0
+drilling rig,,0
+drum,,0
+drumstick,,0
+dumbbell,,0
+Dutch oven,,0
+electric fan,,0
+electric guitar,,0
+electric locomotive,,0
+entertainment center,,0
+envelope,,0
+espresso machine,,0
+face powder,,0
+feather boa,,0
+filing cabinet,,0
+fireboat,,0
+fire engine,,0
+fire screen sheet,,0
+flagpole,,0
+flute,,0
+folding chair,,0
+football helmet,,0
+forklift,,0
+fountain,,0
+fountain pen,,0
+four-poster bed,,0
+freight car,,0
+French horn,,0
+frying pan,,0
+fur coat,,0
+garbage truck,,0
+gas mask,,0
+gas pump,,0
+goblet,,0
+go-kart,,0
+golf ball,,0
+golf cart,,0
+gondola,,0
+gong,,0
+gown,,0
+grand piano,,0
+greenhouse,,0
+grille,,0
+grocery store,,0
+guillotine,,0
+barrette,,0
+hair spray,,0
+half-track,,0
+hammer,,0
+hamper,,0
+hair dryer,,0
+hand-held computer,,0
+handkerchief,,0
+hard disk drive,,0
+harmonica,,0
+harp,,0
+harvester,,0
+hatchet,,0
+holster,,0
+home theater,,0
+honeycomb,,0
+hook,,0
+hoop skirt,,0
+horizontal bar,,0
+horse-drawn vehicle,,0
+hourglass,,0
+iPod,,0
+clothes iron,,0
+jack-o'-lantern,,0
+jeans,,0
+jeep,,0
+T-shirt,,0
+jigsaw puzzle,,0
+pulled rickshaw,,0
+joystick,,0
+kimono,,0
+knee pad,,0
+knot,,0
+lab coat,,0
+ladle,,0
+lampshade,,0
+laptop computer,,0
+lawn mower,,0
+lens cap,,0
+paper knife,,0
+library,,0
+lifeboat,,0
+lighter,,0
+limousine,,0
+ocean liner,,0
+lipstick,,0
+slip-on shoe,,0
+lotion,,0
+speaker,,0
+loupe,,0
+sawmill,,0
+magnetic compass,,0
+mail bag,,0
+mailbox,,0
+tights,,0
+tank suit,,0
+manhole cover,,0
+maraca,,0
+marimba,,0
+mask,,0
+match,,0
+maypole,,0
+maze,,0
+measuring cup,,0
+medicine chest,,0
+megalith,,0
+microphone,,0
+microwave oven,,0
+military uniform,,0
+milk can,,0
+minibus,,0
+miniskirt,,0
+minivan,,0
+missile,,0
+mitten,,0
+mixing bowl,,0
+mobile home,,0
+Model T,,0
+modem,,0
+monastery,,0
+monitor,,0
+moped,,0
+mortar,,0
+square academic cap,,0
+mosque,,0
+mosquito net,,0
+scooter,,0
+mountain bike,,0
+tent,,0
+computer mouse,,0
+mousetrap,,0
+moving van,,0
+muzzle,,0
+nail,,0
+neck brace,,0
+necklace,,0
+nipple,,0
+notebook computer,,0
+obelisk,,0
+oboe,,0
+ocarina,,0
+odometer,,0
+oil filter,,0
+organ,,0
+oscilloscope,,0
+overskirt,,0
+bullock cart,,0
+oxygen mask,,0
+packet,,0
+paddle,,0
+paddle wheel,,0
+padlock,,0
+paintbrush,,0
+pajamas,,0
+palace,,0
+pan flute,,0
+paper towel,,0
+parachute,,0
+parallel bars,,0
+park bench,,0
+parking meter,,0
+passenger car,,0
+patio,,0
+payphone,,0
+pedestal,,0
+pencil case,,0
+pencil sharpener,,0
+perfume,,0
+Petri dish,,0
+photocopier,,0
+plectrum,,0
+Pickelhaube,,0
+picket fence,,0
+pickup truck,,0
+pier,,0
+piggy bank,,0
+pill bottle,,0
+pillow,,0
+ping-pong ball,,0
+pinwheel,,0
+pirate ship,,0
+pitcher,,0
+hand plane,,0
+planetarium,,0
+plastic bag,,0
+plate rack,,0
+plow,,0
+plunger,,0
+Polaroid camera,,0
+pole,,0
+police van,,0
+poncho,,0
+billiard table,,0
+soda bottle,,0
+pot,,0
+potter's wheel,,0
+power drill,,0
+prayer rug,,0
+printer,,0
+prison,,0
+projectile,,0
+projector,,0
+hockey puck,,0
+punching bag,,0
+purse,,0
+quill,,0
+quilt,,0
+race car,,0
+racket,,0
+radiator,,0
+radio,,0
+radio telescope,,0
+rain barrel,,0
+recreational vehicle,,0
+reel,,0
+reflex camera,,0
+refrigerator,,0
+remote control,,0
+restaurant,,0
+revolver,,0
+rifle,,0
+rocking chair,,0
+rotisserie,,0
+eraser,,0
+rugby ball,,0
+ruler,,0
+running shoe,,0
+safe,,0
+safety pin,,0
+salt shaker,,0
+sandal,,0
+sarong,,0
+saxophone,,0
+scabbard,,0
+weighing scale,,0
+school bus,,0
+schooner,,0
+scoreboard,,0
+CRT screen,,0
+screw,,0
+screwdriver,,0
+seat belt,,0
+sewing machine,,0
+shield,,0
+shoe store,,0
+shoji,,0
+shopping basket,,0
+shopping cart,,0
+shovel,,0
+shower cap,,0
+shower curtain,,0
+ski,,0
+ski mask,,0
+sleeping bag,,0
+slide rule,,0
+sliding door,,0
+slot machine,,0
+snorkel,,0
+snowmobile,,0
+snowplow,,0
+soap dispenser,,0
+soccer ball,,0
+sock,,0
+solar thermal collector,,0
+sombrero,,0
+soup bowl,,0
+space bar,,0
+space heater,,0
+space shuttle,,0
+spatula,,0
+motorboat,,0
+spider web,,0
+spindle,,0
+sports car,,0
+spotlight,,0
+stage,,0
+steam locomotive,,0
+through arch bridge,,0
+steel drum,,0
+stethoscope,,0
+scarf,,0
+stone wall,,0
+stopwatch,,0
+stove,,0
+strainer,,0
+tram,,0
+stretcher,,0
+couch,,0
+stupa,,0
+submarine,,0
+suit,,0
+sundial,,0
+sunglass,,0
+sunglasses,,0
+sunscreen,,0
+suspension bridge,,0
+mop,,0
+sweatshirt,,0
+swimsuit,,0
+swing,,0
+switch,,0
+syringe,,0
+table lamp,,0
+tank,,0
+tape player,,0
+teapot,,0
+teddy bear,,0
+television,,0
+tennis ball,,0
+thatched roof,,0
+front curtain,,0
+thimble,,0
+threshing machine,,0
+throne,,0
+tile roof,,0
+toaster,,0
+tobacco shop,,0
+toilet seat,,0
+torch,,0
+totem pole,,0
+tow truck,,0
+toy store,,0
+tractor,,0
+semi-trailer truck,,0
+tray,,0
+trench coat,,0
+tricycle,,0
+trimaran,,0
+tripod,,0
+triumphal arch,,0
+trolleybus,,0
+trombone,,0
+tub,,0
+turnstile,,0
+typewriter keyboard,,0
+umbrella,,0
+unicycle,,0
+upright piano,,0
+vacuum cleaner,,0
+vase,,0
+vault,,0
+velvet,,0
+vending machine,,0
+vestment,,0
+viaduct,,0
+violin,,0
+volleyball,,0
+waffle iron,,0
+wall clock,,0
+wallet,,0
+wardrobe,,0
+military aircraft,,0
+sink,,0
+washing machine,,0
+water bottle,,0
+water jug,,0
+water tower,,0
+whiskey jug,,0
+whistle,,0
+wig,,0
+window screen,,0
+window shade,,0
+Windsor tie,,0
+wine bottle,,0
+wing,,0
+wok,,0
+wooden spoon,,0
+wool,,0
+split-rail fence,,0
+shipwreck,,0
+yawl,,0
+yurt,,0
+website,,0
+comic book,,0
+crossword,,0
+traffic sign,,0
+traffic light,,0
+dust jacket,,0
+menu,,0
+plate,,0
+guacamole,,0
+consomme,,0
+hot pot,,0
+trifle,,0
+ice cream,,0
+ice pop,,0
+baguette,,0
+bagel,,0
+pretzel,,0
+cheeseburger,,0
+hot dog,,0
+mashed potato,,0
+cabbage,,0
+broccoli,,0
+cauliflower,,0
+zucchini,,0
+spaghetti squash,,0
+acorn squash,,0
+butternut squash,,0
+cucumber,,0
+artichoke,,0
+bell pepper,,0
+cardoon,,0
+mushroom,,0
+Granny Smith,,0
+strawberry,,0
+orange,,0
+lemon,,0
+fig,,0
+pineapple,,0
+banana,,0
+jackfruit,,0
+custard apple,,0
+pomegranate,,0
+hay,,0
+carbonara,,0
+chocolate syrup,,0
+dough,,0
+meatloaf,,0
+pizza,,0
+pot pie,,0
+burrito,,0
+red wine,,0
+espresso,,0
+cup,,0
+eggnog,,0
+alp,,0
+bubble,,0
+cliff,,0
+coral reef,,0
+geyser,,0
+lakeshore,,0
+promontory,,0
+shoal,,0
+seashore,,0
+valley,,0
+volcano,,0
+baseball player,야구선수,0
+bridegroom,신랑,0
+scuba diver,스쿠버다이버,0
+rapeseed,,0
+daisy,꽃,0
+yellow lady's slipper,,0
+corn,옥수수,0
+acorn,도토리,0
+rose hip,장미열매,0
+horse chestnut seed,나무,0
+coral fungus,버섯,0
+agaric,버섯,0
+gyromitra,버섯,0
+stinkhorn mushroom,버섯,0
+earth star,버섯,0
+hen-of-the-woods,버섯,0
+bolete,버섯,0
+ear,귀,0
+toilet paper,휴지,0
