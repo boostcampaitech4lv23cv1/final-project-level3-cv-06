@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime, timedelta
 
 import pendulum
@@ -8,6 +9,7 @@ from airflow import DAG
 
 # Operators; we need this to operate!
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.transfers.sftp_to_gcs import SFTPToGCSOperator
 from airflow.providers.sftp.sensors.sftp import SFTPSensor
 from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
@@ -67,6 +69,7 @@ with DAG("crawling_animal", default_args=default_args, schedule="@daily") as dag
         task_id="download_data_from_gcs2ssh",
         ssh_conn_id="ssh_connection",
         command=f"python {ssh_base}/airflow_/dags/classification/load_img_from_gcs.py {bucket}",
+        conn_timeout=5 * n_imgs
     )
     infer_label = SSHOperator(
         task_id="infer_label",
@@ -74,11 +77,11 @@ with DAG("crawling_animal", default_args=default_args, schedule="@daily") as dag
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/classification/infer_animal.py {keyword} {site} {scraped_time}",
         cmd_timeout=30 * n_imgs,  # 30s * n_imgs
+        conn_timeout=30 * n_imgs
     )
-    sense_ani = SFTPSensor(
-        task_id="wait_for_ani",
-        path=f"{ssh_base}/airflow_/dags/classification/data/{keyword}/{site}/{scraped_time}/*_ani.webp",
-        sftp_conn_id="sftp_connection",
+    sleep_for_ani = PythonOperator(
+        task_id="sleep_for_ani",
+        python_callable=lambda: time.sleep(n_imgs / 2),
     )
     ani2gcs = SFTPToGCSOperator(
         task_id="ani2gcs",
@@ -103,7 +106,7 @@ with DAG("crawling_animal", default_args=default_args, schedule="@daily") as dag
         crawl_img
         >> load_data_from_gcs2ssh
         >> infer_label
-        >> sense_ani
+        >> sleep_for_ani
         >> ani2gcs
         >> remove_dir
         >> slack_success_noti

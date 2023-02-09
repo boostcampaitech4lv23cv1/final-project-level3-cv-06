@@ -70,6 +70,7 @@ with DAG("crawling_landmark", default_args=default_args, schedule="@daily") as d
         command=f"source /opt/ml/.local/share/virtualenvs/airflow_-dXXA5isc/bin/activate \
             && python {ssh_base}/airflow_/dags/classification/infer_landmark.py {keyword} {site} {scraped_time}",
         cmd_timeout=30 * n_imgs + n_imgs,  # 30s * n_imgs
+        conn_timeout=30 * n_imgs + n_imgs
     )
     sleep_for_ani = PythonOperator(
         task_id="sleep_for_ani",
