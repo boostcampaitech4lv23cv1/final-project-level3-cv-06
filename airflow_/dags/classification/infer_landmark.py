@@ -81,7 +81,7 @@ def get_country_landmark_gcs(
 
 
 def make_df(SCRAPED_TIME, file_names, countries):
-    return pd.DataFrame(
+    df = pd.DataFrame(
         {
             "tag": "landmark",
             "img_path": file_names,
@@ -91,6 +91,9 @@ def make_df(SCRAPED_TIME, file_names, countries):
             "label": countries,
         }
     )
+    df["use_status"] = False
+    df[df["label"] != "NaN"]["use_status"] = True
+    return df
 
 
 def img2ani(df: pd.DataFrame) -> None:
@@ -145,7 +148,7 @@ def img2ani(df: pd.DataFrame) -> None:
 
 def download_gcs_filter(blobs, file_names, df):
     file_list = []
-    dest = "/opt/ml/final-project-level3-cv-06/airflow_/dags/classification/data/"
+    dest = f"{AIRFLOW_HOME}/dags/classification/data/"
     os.makedirs(f"{dest}{KEYWORD}/{SITE}/{SCRAPED_TIME}", exist_ok=True)
     print(f"make dir at {dest}{KEYWORD}/{SITE}/{SCRAPED_TIME}")
     all_files = {file_name: False for file_name in file_names}
@@ -197,11 +200,10 @@ if __name__ == "__main__":
         df = make_df(SCRAPED_TIME, file_names, countries)
         print("Make metadata dataframe")
         print(f"Dataframe is:\n {df}")
-        send_metadata2api(df, KEYWORD)
-        print("Send metadata to api")
         file_list = download_gcs_filter(blobs, file_names, df)
         print("Start img2ani")
         img2ani(df)
-        print(file_list)
+        send_metadata2api(df, KEYWORD)
+        print("Send metadata to api")
     else:
         print("There is no image to process")
