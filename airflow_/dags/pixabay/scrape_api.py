@@ -346,7 +346,7 @@ if __name__ == "__main__":
         "per_page": 20,  # Determine the number of results per page. Accepted values: 3 - 200. Default: 20.
         "category": "None",
         "safesearch": "true",
-        "order": "popular",
+        "order": "latest",
     }
 
     storage_client = storage.Client()
