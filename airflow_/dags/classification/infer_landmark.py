@@ -1,16 +1,12 @@
 import os
 import sys
+from typing import List
 
 import pandas as pd
-import pyarrow as pa
-import pyarrow.feather as feather
-import requests
 import yaml
 from geopy.geocoders import Nominatim
 from google.cloud import storage, vision
-from infer_animal import make_duration_list
-from PaintTransformer.inference import inference, init
-from PIL import Image
+from infer_animal import img2ani, send_pred_2api
 from tqdm import tqdm
 
 AIRFLOW_HOME = os.path.abspath(
@@ -47,8 +43,8 @@ def get_country(latitude: int, longitude: int, cc_df: pd.DataFrame) -> str:
 
 
 def get_country_landmark_gcs(
-    bucket_name: str, file_names: list, cc_df: pd.DataFrame
-) -> list:
+    bucket_name: str, file_names: List, cc_df: pd.DataFrame
+) -> List:
     """get country from gcs landmarks images
 
     Args:
@@ -80,7 +76,16 @@ def get_country_landmark_gcs(
     return countries
 
 
-def make_df(SCRAPED_TIME, file_names, countries):
+def make_df(file_names: List, countries: List) -> pd.DataFrame:
+    """make metadata dataframe
+    add use_status column for api
+    Args:
+        file_names (List): file names
+        countries (List): countries
+
+    Returns:
+        pd.DataFrame: metadata dataframe
+    """
     df = pd.DataFrame(
         {
             "tag": "landmark",
@@ -96,58 +101,16 @@ def make_df(SCRAPED_TIME, file_names, countries):
     return df
 
 
-def img2ani(df: pd.DataFrame) -> None:
-    """convert img to animation
-
-    1. check if img use_status is True
-    2. convert img to animation using PaintTransformer
-    3. save animation in webp format
+def download_gcs_filter(blobs: List, file_names: List, df: pd.DataFrame) -> None:
+    """download gcs files that has country label
 
     Args:
+        blobs (List): gcs blobs
+        file_names (List): gcs blobs file names
         df (pd.DataFrame): metadata dataframe
+
+    Returns: None
     """
-
-    base_path = f"{AIRFLOW_HOME}/dags/classification/data/"
-
-    resize_l = 1024
-    K = 5
-    stroke_num = 8
-    patch_size = 32
-
-    model, meta_brushes, device = init()
-
-    img_paths = base_path + df["img_path"]
-    print(f"img_paths: {img_paths}")
-    for img_path, label in tqdm(zip(img_paths, df["label"])):
-        if label != "NaN":
-            save_path = img_path.split(".")[0] + "_ani.webp"
-            image = Image.open(img_path)
-            output = inference(
-                image=image,
-                resize_l=resize_l,  # resize original input to this size. (max(w, h) = resize_l)
-                K=K,  # set K
-                device=device,
-                model=model,
-                meta_brushes=meta_brushes,
-                stroke_num=stroke_num,
-                patch_size=patch_size,
-            )
-            time_consume = make_duration_list(len(output), total_time=10, mode="LINEAR")
-
-            Image.Image.save(
-                output[0],
-                save_path,
-                format="WEBP",
-                save_all=True,
-                append_images=output[1:],
-                optimize=True,
-                duration=time_consume,
-                loop=1,
-            )
-
-
-def download_gcs_filter(blobs, file_names, df):
-    file_list = []
     dest = f"{AIRFLOW_HOME}/dags/classification/data/"
     os.makedirs(f"{dest}{KEYWORD}/{SITE}/{SCRAPED_TIME}", exist_ok=True)
     print(f"make dir at {dest}{KEYWORD}/{SITE}/{SCRAPED_TIME}")
@@ -159,32 +122,6 @@ def download_gcs_filter(blobs, file_names, df):
     for blob in blobs:
         if all_files[blob.name]:
             blob.download_to_filename(f"{dest}{blob.name}")
-            file_list.append(f"{dest}{blob.name}")
-    return file_list
-
-
-def send_metadata2api(df: pd.DataFrame, KEYWORD: str) -> None:
-    """send metadata dataframe to api server
-
-    Args:
-        df (pd.DataFrame): metadata dataframe
-        KEYWORD (str): keyword for metadata
-    """
-    df = df.drop("tag", axis=1)
-    url = f"{secret['api_url']}/api/v1/meta/update"
-
-    buffer = pa.BufferOutputStream()
-    feather.write_feather(df, buffer)
-
-    file = {"file": buffer.getvalue().to_pybytes()}
-    category = {"category": KEYWORD}
-    res = requests.post(url, files=file, data=category)
-
-    # Check the status code of the response
-    try:
-        res.raise_for_status()
-    except Exception as e:
-        print(e)
 
 
 if __name__ == "__main__":
@@ -200,13 +137,12 @@ if __name__ == "__main__":
         df = make_df(SCRAPED_TIME, file_names, countries)
         print("Make metadata dataframe")
         print(f"Dataframe is:\n {df}")
-        file_list = download_gcs_filter(blobs, file_names, df)
+        download_gcs_filter(blobs, file_names, df)
         print("Start img2ani")
         img2ani(df)
-        print("End img2ani")        
+        print("End img2ani")
         print("Start sending metadata to api")
-        send_metadata2api(df, KEYWORD)
+        send_pred_2api(df, KEYWORD)
         print("End sending metadata to api")
-        print(file_list)
     else:
         print("There is no image to process")

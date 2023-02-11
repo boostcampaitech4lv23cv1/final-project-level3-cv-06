@@ -1,6 +1,6 @@
 import os
 import sys
-from glob import glob
+from typing import List, Tuple
 
 import albumentations as A
 import cv2
@@ -17,24 +17,22 @@ from albumentations.pytorch import ToTensorV2
 from PaintTransformer.inference import inference, init
 from PIL import Image
 from pytorch_lightning import LightningModule, Trainer
-from sqlalchemy import create_engine
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
-AIRFLOW_HOME = os.path.dirname(os.path.abspath(__file__))
+AIRFLOW_HOME = os.path.abspath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+)
 
 
 KEYWORD, SITE, SCRAPED_TIME = sys.argv[1:]
-# KEYWORD, SITE, SCRAPED_TIME = "animal", "pixabay", "02-03_22"
-with open(
-    f"{os.path.abspath(os.path.join(AIRFLOW_HOME, '..','..'))}/secret.yml", "r"
-) as f:
+with open(f"{AIRFLOW_HOME}/secret.yml", "r") as f:
     secret = yaml.load(f, Loader=yaml.FullLoader)
 
 
 class ClassifyDataset(Dataset):
     def __init__(self, df, transform=None):
-        base_path = f"{AIRFLOW_HOME}/data/"
+        base_path = f"{AIRFLOW_HOME}/dags/classification/data/"
         self.img_tag = df["tag"]
         self.img_path = base_path + df["img_path"]
         self.transform = transform
@@ -70,15 +68,9 @@ class Model(LightningModule):
         return preds
 
 
-def read_feather(file_path):
-    if os.path.isfile(file_path):
-        return pd.read_csv(file_path)
-    else:
-        assert os.path.isfile(file_path), f"{file_path} is not found"
-
-
 def get_metadata_from_api() -> pd.DataFrame:
-    """get metadata from api
+    """get metadata dataframe from api
+    this dataframe has a data that have to be get inference
 
     Returns:
         pd.DataFrame: metadata dataframe
@@ -112,22 +104,34 @@ def inference_img(df: pd.DataFrame) -> np.ndarray:
     return predictions
 
 
-def set_batch_size(data_set, batch_size):
-    return min(batch_size, len(data_set))
+def set_batch_size(dataset: torch.utils.data.Dataset, max_batch_size: int) -> int:
+    """set batch size based on the length of a dataset
 
 
-def pred2imgnetlabel(predictions: np.array, imagenet_labels: pd.DataFrame) -> list:
+    Args:
+        dataset (torch.utils.data.Dataset): test dataset
+        max_batch_size (int): max batch size
+
+    Returns:
+        int: batch size
+    """
+    return min(max_batch_size, len(dataset))
+
+
+def pred2imgnetlabel(
+    predictions: np.array, imagenet_labels: pd.DataFrame
+) -> Tuple(List[str], List[bool]):
     """prediction to imagenet label
 
-    remove label that is not for usage
-    ("use" column value is 0)
+    remove label that is not for usage in service
+                      ⬆️ ("use" column value is 0)
 
     Args:
         predictions (np.array): prediction from model (imgnet class)
         imagenet_labels (pd.DataFrame): imagenet korean labels
 
     Returns:
-        list: korean labels that match with prediction
+        List: korean labels that match with prediction
     """
     df = imagenet_labels.loc[predictions]
     for i in df[df["use"] == 0].index:
@@ -137,12 +141,12 @@ def pred2imgnetlabel(predictions: np.array, imagenet_labels: pd.DataFrame) -> li
 
 
 def read_imgnet_labels() -> pd.DataFrame:
-    """read imagenet labels
+    """read imagenet labels from csv file
 
     Returns:
         pd.DataFrame: imagenet label dataframe
     """
-    df = pd.read_csv(f"{AIRFLOW_HOME}/imagenet_class.csv")
+    df = pd.read_csv(f"{AIRFLOW_HOME}/dags/classification/imagenet_class.csv")
     df.drop("english", axis=1, inplace=True)
     return df
 
@@ -159,8 +163,7 @@ def make_img_label() -> pd.DataFrame:
 
     imagenet_labels = read_imgnet_labels()
     df = get_metadata_from_api()
-    print(df)
-    print(df["tag"])
+    print(df["tag"].head())
     if len(df) == 0:
         return df
     predictions = inference_img(df)
@@ -174,45 +177,12 @@ def make_img_label() -> pd.DataFrame:
     return df
 
 
-def join_df2db(df: pd.DataFrame, host: str = "34.145.38.251"):
-    """join prediction labels to table in gcp docker container PostgreSQL
-    1. read table from PostgreSQL
-    2. merge prediction labels to table
-    3. update table in PostgreSQL
-
-    Args:
-        df (pd.DataFrame): dataframe with prediction labels
-        host (str): host address of gcp docker container PostgreSQL
-    """
-    # PostgreSQL configs
-    user = "airflow"
-    password = "airflow"
-    port = 5432
-    database = "airflow"
-
-    # connect to PostgreSQL
-    engine = create_engine(f"postgresql://{user}:{password}@{host}:{port}/{database}")
-
-    # Read the table from PostgreSQL
-    new_df = pd.read_sql_table(KEYWORD, engine)
-    new_df["label"] = new_df["label"].fillna("")
-
-    # merge prediction labels to table
-    new_df = pd.merge(new_df, df, on="img_path", how="left", suffixes=("", "_y"))
-    new_df["label_y"] = new_df["label_y"].fillna("")
-    new_df["label"] = new_df["label"] + new_df["label_y"]
-    new_df = new_df.filter(regex="^(?!.*_y$).*")
-
-    # Update the table in PostgreSQL
-    new_df.to_sql(name=KEYWORD, con=engine, if_exists="replace", index=False)
-
-
-def send_metadata2api(df: pd.DataFrame, KEYWORD: str) -> None:
+def send_pred_2api(df: pd.DataFrame) -> None:
     """send metadata dataframe to api server
+    the dataframe has label column that is filled by prediction
 
     Args:
         df (pd.DataFrame): metadata dataframe
-        KEYWORD (str): keyword for metadata
     """
     df = df.drop("tag", axis=1)
     url = f"{secret['api_url']}/api/v1/meta/update"
@@ -233,7 +203,7 @@ def send_metadata2api(df: pd.DataFrame, KEYWORD: str) -> None:
 
 def make_duration_list(
     num_frame: int = 200, total_time: int = 10, mode: str = "LINEAR"
-) -> list:
+) -> List:
     """make frame duration list for animation
 
     Args:
@@ -242,7 +212,7 @@ def make_duration_list(
         mode (str, optional): mode of duration list. Defaults to "LINEAR".
 
     Returns:
-        list: duration list
+        List: duration list
     """
 
     exp_dict = {
@@ -276,7 +246,7 @@ def img2ani(df: pd.DataFrame) -> None:
         df (pd.DataFrame): metadata dataframe
     """
 
-    base_path = f"{AIRFLOW_HOME}/data/"
+    base_path = f"{AIRFLOW_HOME}/dags/classification/data/"
     time_consume = make_duration_list(num_frame=200, total_time=10, mode="LINEAR")
 
     resize_l = 1024
@@ -321,6 +291,6 @@ if __name__ == "__main__":
         print("No image to process")
         sys.exit(0)
     img2ani(df)
-    send_metadata2api(df, KEYWORD)
+    send_pred_2api(df, KEYWORD)
     print("label: ", df["label"])
 # TODO animation 인메모리로 GCS 전송
