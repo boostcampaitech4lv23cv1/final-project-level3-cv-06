@@ -5,14 +5,13 @@ import os
 import sys
 
 import pandas as pd
-import pyarrow as pa
-import pyarrow.feather as feather
 import requests
-import yaml
 
 # from webp import WebP
 from google.cloud import storage
 from PIL import Image
+from progress import Progressbar
+from utils.utils import read_yaml, send_data2api
 
 # request timeout
 TIMEOUT = 60
@@ -25,8 +24,7 @@ KEYWORD, SITE, SCRAPED_TIME, N_IMGS = sys.argv[1:]
 N_IMGS = int(N_IMGS)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f"{AIRFLOW_HOME}/m2-key.json"
 
-with open(f"{AIRFLOW_HOME}/secret.yml", "r") as f:
-    secret = yaml.load(f, Loader=yaml.FullLoader)
+secret = read_yaml(AIRFLOW_HOME)
 
 
 class PixabayCrawler:
@@ -115,7 +113,7 @@ class PixabayCrawler:
                                     break
                                 if self.is_valid(img_dict["id"]):
                                     self.send_img2gcs(img_dict)
-                                    df = self.add_data2df(df, img_dict)
+                                    df = self.append_df(df, img_dict)
                                     n_imgs2gcs += 1
 
                                 imgs_progress += 1
@@ -139,8 +137,16 @@ class PixabayCrawler:
                 logger.warning(f"an error occured proccesing the class {keyword}")
         return df, n_imgs2gcs
 
-    def add_data2df(self, df, img_dict):
+    def append_df(self, df: pd.DataFrame, img_dict: dict) -> pd.DataFrame:
+        """append new dataframe to the old one
 
+        Args:
+            df (pd.DataFrame): dataframe
+            img_dict (dict): img_dict from pixabay api
+
+        Returns:
+            pd.DataFrame: new dataframe with old dataframe
+        """ """"""
         df = pd.concat(
             [
                 pd.DataFrame(
@@ -191,7 +197,7 @@ class PixabayCrawler:
             bool: True if not duplicate
         """
         url = f"{secret['api_url']}/api/v1/meta/duplicate_check"
-        data = {"id": str(img_id), "category": keyword[0]}
+        data = {"id": str(img_id), "category": KEYWORD}
 
         try:
             res = requests.post(url, json=data)
@@ -201,7 +207,12 @@ class PixabayCrawler:
             logger.warning(err)
             logger.warning("an error occured requesting duplicate check")
 
-    def send_img2gcs(self, img_dict):
+    def send_img2gcs(self, img_dict: dict) -> None:
+        """send img to gcs
+
+        Args:
+            img_dict (dict): img_dict from pixabay api
+        """
         file_name = f"{KEYWORD}/{SITE}/{SCRAPED_TIME}/{str(img_dict['id'])}.webp"
         img_bytes = self.download_img(img_dict["webformatURL"])
         img_PIL = Image.open(io.BytesIO(img_bytes))
@@ -215,100 +226,6 @@ class PixabayCrawler:
             logger.warning(
                 f"an error occured saving this images {img_dict['largeImageURL']}"
             )
-
-    def resize_keep_aspect_ratio(self, img, size: int = 640):
-        """resize image while keeping aspect ratio
-
-        Args:
-            img (PIL image): image to resize
-            size (int): (resize size)
-
-        Returns:
-            PIL image: resized image
-        """
-        original_w, original_h = img.size
-        if original_w >= 640 or original_h >= 640:
-            if original_w > original_h:
-                img = img.resize(
-                    (size, int(size / original_w * original_h)), resample=Image.NEAREST
-                )
-            else:
-                img = img.resize(
-                    (int(size / original_h * original_w), size), resample=Image.NEAREST
-                )
-        return img, img.size
-
-
-class Progressbar:
-    def __init__(self, to_value, name="", prefix="Progress:", suffix="Complete"):
-        self.to_value = to_value
-        self.is_value = 0
-        self.name = name
-        self.prefix = prefix
-        self.suffix = suffix
-        self.form = "\r{prefix} [{bar}] {is_value}/{to_value} {name} {suffix} "
-        self.print_bar()
-
-    def print_bar(self):
-        BAR_SIZE = 30
-        test_value = lambda isv: 1 if (isv > 0) else 0
-        equal = round(BAR_SIZE * self.is_value / self.to_value) - 1
-        under = BAR_SIZE - equal
-
-        if self.is_value == 0:
-            equal = 0
-            under = BAR_SIZE
-        if self.is_value == self.to_value:
-            under = 0
-            equal = BAR_SIZE
-
-        bar = (
-            "=" * equal + ">" * test_value(self.is_value / self.to_value) + "_" * under
-        )
-
-        print(
-            self.form.format(
-                bar=bar,
-                prefix=self.prefix,
-                name=self.name,
-                suffix=self.suffix,
-                is_value=self.is_value,
-                to_value=self.to_value,
-            ),
-            end="\r",
-        )
-        if self.is_value == self.to_value:
-            print()
-
-    def add(self, value):
-        self.is_value += value
-        self.print_bar()
-
-    def set(self, value):
-        self.is_value = value
-        self.print_bar()
-
-
-def send_metadata2api(df):
-    url = f"{secret['api_url']}/api/v1/meta/create"
-
-    buffer = pa.BufferOutputStream()
-    feather.write_feather(df, buffer)
-
-    file = {"file": buffer.getvalue().to_pybytes()}
-    category = {"category": KEYWORD}
-
-    try:
-        res = requests.post(url, files=file, data=category)
-    except Exception as err:
-        logger.warning(err)
-        logger.warning("an error occured sending feather file to api")
-
-    # Check the status code of the response
-    if res.status_code == 200:
-        print("metadata sent successfully")
-    else:
-        print("Failed to send data")
 
 
 if __name__ == "__main__":
@@ -355,15 +272,6 @@ if __name__ == "__main__":
 
     if KEYWORD == "animal":
         keyword = [KEYWORD, "Mammal"]
-        #     '금붕어', '상어', '가오리', '닭', '타조', '까치', '독수리', '올빼미', '개구리', '거북이',
-        #    '도마뱀', '카멜레온', '악어', '뱀', '전갈', '거미', '공작', '앵무새', '오리', '거위',
-        #    '백조', '코끼리', '오리너구리', '캥거루', '코알라', '해파리', '말미잘', '달팽이', '게', '홍학',
-        #    '펠리컨', '펭귄', '고래', '범고래', '바다사자', '개', '늑대', '하이에나', '여우', '고양이',
-        #    '퓨마', '표범', '재규어', '사자', '호랑이', '치타', '곰', '미어캣', '무당벌레', '벌',
-        #    '개미', '메뚜기', '사마귀', '잠자리', '나비', '불가사리', '성게', '해삼', '토끼', '햄스터',
-        #    '호저', '다람쥐', '비버', '기니피그', '얼룩말', '돼지', '멧돼지', '하마', '소', '양',
-        #    '낙타', '족제비', '수달', '스컹크', '오소리', '아르마딜로', '나무늘보', '오랑우탄', '고릴라',
-        #    '침팬지', '원숭이', '레서판다', '판다', '복어'
         params["category"] = category[0]
     elif KEYWORD == "landmark":
         keyword = [KEYWORD, "Unesco", "tourist attraction"]
@@ -371,6 +279,7 @@ if __name__ == "__main__":
     scraper = PixabayCrawler(keyword, params, bucket)
     df, n_imgs2gcs = scraper.scraper(n_imgs=N_IMGS)
     print(f"Number of img2gcs is {n_imgs2gcs}")
-    send_metadata2api(df)
+    # send_metadata2api(df)
+    send_data2api(logger, KEYWORD, secret, df, "create")
     # TODO: 이전에 크롤링했던 사진 이후부터 크롤링
     # TODO: pixabay에서 url전부 뽑고 url리스트를 api에 전달해서 한번에 중복체크, 그 후 멀티프로세싱이나 비동기로 이미지 다운
