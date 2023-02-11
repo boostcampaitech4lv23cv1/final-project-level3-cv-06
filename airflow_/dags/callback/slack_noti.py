@@ -37,6 +37,3 @@ def send_slack_task_retry(context):
 
     slack_hook = SlackWebhookHook(slack_webhook_conn_id="slack_connection")
     slack_hook.send(text=slack_msg)
-
-
-
